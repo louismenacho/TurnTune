@@ -15,6 +15,7 @@
 		95C7715B25944C1F00EDF930 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 95C7715A25944C1F00EDF930 /* Assets.xcassets */; };
 		95C7715E25944C1F00EDF930 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 95C7715C25944C1F00EDF930 /* LaunchScreen.storyboard */; };
 		95C7716D2597F07100EDF930 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 95C7716C2597F07100EDF930 /* GoogleService-Info.plist */; };
+		95DD20AC259B1E65000EE8B3 /* SearchResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DD20AB259B1E65000EE8B3 /* SearchResultsViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		95C7715D25944C1F00EDF930 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		95C7715F25944C1F00EDF930 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		95C7716C2597F07100EDF930 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		95DD20AB259B1E65000EE8B3 /* SearchResultsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsViewController.swift; sourceTree = "<group>"; };
 		96CEE28A2363DF96884CEC1C /* Pods-TurnTune.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TurnTune.release.xcconfig"; path = "Target Support Files/Pods-TurnTune/Pods-TurnTune.release.xcconfig"; sourceTree = "<group>"; };
 		E6D7B2221757087C9FA0A71E /* Pods-TurnTune.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TurnTune.debug.xcconfig"; path = "Target Support Files/Pods-TurnTune/Pods-TurnTune.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -99,6 +101,7 @@
 			isa = PBXGroup;
 			children = (
 				95C7715525944C1E00EDF930 /* ViewController.swift */,
+				95DD20AB259B1E65000EE8B3 /* SearchResultsViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -242,6 +245,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				95C7715625944C1E00EDF930 /* ViewController.swift in Sources */,
+				95DD20AC259B1E65000EE8B3 /* SearchResultsViewController.swift in Sources */,
 				95C7715225944C1E00EDF930 /* AppDelegate.swift in Sources */,
 				95C7715425944C1E00EDF930 /* SceneDelegate.swift in Sources */,
 			);
