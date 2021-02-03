@@ -43,6 +43,7 @@ class RoomViewController: UIViewController {
         guard let searchResultsViewController = storyboard?.instantiateViewController(identifier: "SearchResultsViewController") as? SearchResultsViewController else {
             fatalError("Could not instantiate SearchResultsViewController")
         }
+        searchResultsViewController.searcherViewModel = SearcherViewModel()
         searchResultsViewController.roomViewModel = roomViewModel
         return searchResultsViewController
     }

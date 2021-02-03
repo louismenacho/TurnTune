@@ -80,6 +80,4 @@ class CurrentUserViewModel: FirestoreViewModel {
         currentUserQueue.songs.remove(at: index)
         try? currentUserQueueDocumentRef.setData(from: currentUserQueue)
     }
-    
-    #warning("Adding updates firestore but not user queue, 1 row count less than firestore")
 }

@@ -11,6 +11,7 @@ import FirebaseFirestoreSwift
 
 class SearchResultsViewController: UIViewController {
 
+    var searcherViewModel: SearcherViewModel!
     var roomViewModel: RoomViewModel!
     
     @IBOutlet weak var tableview: UITableView!
@@ -24,25 +25,32 @@ class SearchResultsViewController: UIViewController {
 
 extension SearchResultsViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-        
+        if searchController.searchBar.searchTextField.text!.isEmpty { return }
+        searcherViewModel.search(query: searchController.searchBar.searchTextField.text!) {
+            DispatchQueue.main.async {
+                self.tableview.reloadData()
+            }
+        }
     }
 }
 
 extension SearchResultsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 25
+        return searcherViewModel.searchResult.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let song = searcherViewModel.searchResult[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "SearchResultsTableViewCell", for: indexPath) as! SearchResultsTableViewCell
+        cell.song = song
         return cell
     }
 }
 
 extension SearchResultsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let testSong = Song(id: "", name: "", artistName: "", artworkURL: "", durationInMillis: 0, addedBy: nil)
-        roomViewModel.appendSong(testSong, to: roomViewModel.currentUserQueue)
+        let selectedCell = tableview.cellForRow(at: indexPath) as! SearchResultsTableViewCell
+        roomViewModel.appendSong(selectedCell.song!, to: roomViewModel.currentUserQueue)
         tableview.deselectRow(at: indexPath, animated: true)
     }
 }

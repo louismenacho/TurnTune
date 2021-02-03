@@ -9,6 +9,13 @@ import UIKit
 
 class SearchResultsTableViewCell: UITableViewCell {
     
+    var song: Song? {
+        didSet {
+            songLabel.text = song!.name
+            artistLabel.text = song!.artistName
+        }
+    }
+    
     @IBOutlet weak var albumImageView: UIImageView!
     @IBOutlet weak var songLabel: UILabel!
     @IBOutlet weak var artistLabel: UILabel!
