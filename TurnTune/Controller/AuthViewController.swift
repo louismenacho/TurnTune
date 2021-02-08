@@ -19,8 +19,6 @@ class AuthViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -51,5 +49,15 @@ class AuthViewController: UIViewController {
                 self.performSegue(withIdentifier: "RoomViewController", sender: self)
             }
         }
+    }
+}
+
+extension AuthViewController: SPTSessionManagerDelegate {
+    func sessionManager(manager: SPTSessionManager, didInitiate session: SPTSession) {
+        print("did initiate")
+    }
+    
+    func sessionManager(manager: SPTSessionManager, didFailWith error: Error) {
+        print(error)
     }
 }

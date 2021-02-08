@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  TokenResponse.swift
 //  TurnTune
 //
 //  Created by Louis Menacho on 1/29/21.
