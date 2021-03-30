@@ -1,5 +1,5 @@
 //
-//  SearchResultsCollectionViewCell.swift
+//  SearchResultsTableViewCell.swift
 //  TurnTune
 //
 //  Created by Louis Menacho on 1/18/21.

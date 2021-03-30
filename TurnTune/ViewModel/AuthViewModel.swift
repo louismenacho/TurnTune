@@ -2,151 +2,58 @@
 //  AuthViewModel.swift
 //  TurnTune
 //
-//  Created by Louis Menacho on 7/7/20.
-//  Copyright © 2020 Louis Menacho. All rights reserved.
+//  Created by Louis Menacho on 2/8/21.
 //
 
-import Combine
 import Foundation
-import FirebaseAuth
-import FirebaseFirestore
+import Firebase
 
 class AuthViewModel {
     
-    var cancellable: AnyCancellable?
+    private(set) var roomDocumentRef: DocumentReference!
+    private(set) var room: Room!
     
-    private(set) var roomDocumentRef: DocumentReference?
+    private(set) var authService = AuthService()
+    private(set) var firestoreDatabase = FirestoreDatabase()
     
-    private var auth: Auth { Auth.auth() }
-    
-    func join(room code: String, name: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        guard isCodeValid(code: code) && isNameValid(name: name) else { return }
+    func join(room code: String, displayName: String, completion: (() -> Void)? = nil) {
+        guard isCodeValid(code: code) && isNameValid(name: displayName) else { return }
         
-        cancellable =
-            self.signInAnonymously()
-        .flatMap { currentUser in
-            self.setDisplayName(to: name, for: currentUser)
-        }
-        .flatMap { currentUser in
-            self.addRoomMember(user: currentUser, room: code)
-        }
-        .eraseToAnyPublisher()
-        .sink(receiveCompletion: {
-            switch $0 {
-            case .failure(let error):
-                completion(.failure(error))
-            case .finished:
-                completion(.success(()))
-            }
-        }, receiveValue: { roomDocumentRef in
-            self.roomDocumentRef = roomDocumentRef
-        })
-    }
-    
-    func host(name: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        guard isNameValid(name: name) else { return }
-        
-        cancellable =
-            self.signInAnonymously()
-        .flatMap { currentUser in
-            self.setDisplayName(to: name, for: currentUser)
-        }
-        .flatMap { currentUser in
-            self.createRoom(host: currentUser)
-        }
-        .sink(receiveCompletion: {
-            switch $0 {
-            case .failure(let error):
-                completion(.failure(error))
-            case .finished:
-                completion(.success(()))
-            }
-        }, receiveValue: { roomDocumentRef in
-            self.roomDocumentRef = roomDocumentRef
-        })
-    }
-        
-    private func signInAnonymously() -> Future<User, Error> {
-        Future<User, Error> { promise in
-            Auth.auth().signInAnonymously { (authResult, error) in
-                if let error = error {
-                    promise(.failure(error))
-                } else
-                if let user = authResult?.user {
-                    promise(.success(user))
-                }
-            }
-        }
-    }
-    
-    private func setDisplayName(to name: String, for user: User) -> Future<User, Error> {
-        Future<User, Error> { promise in
-            let changeRequest = user.createProfileChangeRequest()
-            changeRequest.displayName = name
-            changeRequest.commitChanges { error in
-                if let error = error {
-                    promise(.failure(error))
-                } else {
-                    promise(.success(user))
-                }
-            }
-        }
-    }
-    
-    private func createRoom(host user: User) -> Future<DocumentReference, Error> {
-        Future<DocumentReference, Error> { promise in
-            do {
-                let currentUser = Member(uid: user.uid, displayName: user.displayName!)
-                let currentUserQueue = Queue(owner: currentUser, songs: [Song]())
-                let room = Room(code: self.generateRoomCode(), host: currentUser)
-                
-                let roomDocumentRef = Firestore.firestore().collection("rooms").document(room.code)
-                try roomDocumentRef.setData(from: room)
-                
-                let currentUserDocumentRef = roomDocumentRef.collection("members").document(user.uid)
-                try currentUserDocumentRef.setData(from: currentUser)
-                
-                let currentUserQueueDocumentRef = roomDocumentRef.collection("queues").document(user.uid)
-                try currentUserQueueDocumentRef.setData(from: currentUserQueue)
-                
-                promise(.success(roomDocumentRef))
-            } catch {
-                promise(.failure(error))
-            }
-        }
-    }
-    
-    private func addRoomMember(user: User, room code: String) -> Future<DocumentReference, Error> {
-        Future<DocumentReference, Error> { promise in
+        authService.signIn(displayName: displayName) { user in
             let roomDocumentRef = Firestore.firestore().collection("rooms").document(code)
-            roomDocumentRef.getDocument { (document, error) in
-                if let error = error {
-                    promise(.failure(error))
-                }
-                guard let roomDocument = document, roomDocument.exists else {
-                    promise(.failure(TurnTuneError.invalidRoomCode))
-                    return
-                }
-                do {
-                    let currentUser = Member(uid: user.uid, displayName: user.displayName!)
-                    let currentUserQueue = Queue(owner: currentUser,songs: [Song]())
-                    
-                    let currentUserDocumentRef = roomDocumentRef.collection("members").document(user.uid)
-                    try currentUserDocumentRef.setData(from: currentUser)
-                    
-                    let currentUserQueueDocumentRef = roomDocumentRef.collection("queues").document(user.uid)
-                    try currentUserQueueDocumentRef.setData(from: currentUserQueue)
-                    
-                    promise(.success(roomDocumentRef))
-                } catch {
-                    promise(.failure(error))
-                }
-
-                promise(.success(roomDocumentRef))
+            self.firestoreDatabase.getDocumentData(documentRef: roomDocumentRef) { (room: Room) in
+                let newMember = Member(uid: user.uid, displayName: user.displayName!)
+                
+                let newMemberDocumentRef = roomDocumentRef.collection("members").document(user.uid)
+                self.firestoreDatabase.setDocumentData(from: newMember, in: newMemberDocumentRef)
+                
+                self.roomDocumentRef = roomDocumentRef
+                self.room = room
+                completion?()
             }
         }
     }
-
+    
+    func host(displayName: String, completion: (() -> Void)? = nil) {
+        guard isNameValid(name: displayName) else { return }
+        let roomCode = generateRoomCode()
+        
+        authService.signIn(displayName: displayName) { user in
+            let newMember = Member(uid: user.uid, displayName: user.displayName!)
+            let newRoom = Room(code: roomCode, host: newMember)
+            
+            let newRoomDocumentRef = Firestore.firestore().collection("rooms").document(newRoom.code)
+            self.firestoreDatabase.setDocumentData(from: newRoom, in: newRoomDocumentRef)
+            
+            let newMemberDocumentRef = newRoomDocumentRef.collection("members").document(user.uid)
+            self.firestoreDatabase.setDocumentData(from: newMember, in: newMemberDocumentRef)
+            
+            self.roomDocumentRef = newRoomDocumentRef
+            self.room = newRoom
+            completion?()
+        }
+    }
+    
     private func isCodeValid(code: String) -> Bool {
         if code.isEmpty || code.count != 4 {
             print("Invalid code")
@@ -173,4 +80,5 @@ class AuthViewModel {
         }
         return code
     }
+    
 }

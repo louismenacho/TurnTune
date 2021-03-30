@@ -11,29 +11,27 @@ enum SpotifySearchAPI {
     case search(query: String, type: String, limit: Int)
 }
 
-extension SpotifySearchAPI: APIEndpoint {
+extension SpotifySearchAPI: APIResource {
     
     var baseURL: URL {
-        URL(string: "https://api.spotify.com/v1")!
+        URL(string: "https://api.spotify.com/v1/search")!
     }
     
-    var authorization: APIAuthorization? {
-        .bearer(token: Constants.Spotify.accessToken)
+    var authorization: HTTPAuthorization {
+        .bearer(token: Spotify.APIToken.searchToken)
     }
     
-    var request: APIRequest {
+    var endpoint: APIEndpoint {
         switch self {
         case let .search(query, type, limit):
-            return APIRequest(
+            return APIEndpoint(
                 method: .get,
-                path: "/search",
-                query: [
+                params: [
                     "q": query,
                     "type": type,
                     "limit": "\(limit)"
                 ]
             )
         }
-
     }
 }

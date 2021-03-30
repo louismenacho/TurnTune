@@ -15,7 +15,7 @@ protocol CurrentUserViewModelDelegate: class {
     func currentUserViewModel(currentUserViewModel: CurrentUserViewModel, didUpdate currentUserQueue: Queue)
 }
 
-class CurrentUserViewModel: FirestoreViewModel {
+class CurrentUserViewModel: FirebaseViewModel {
     
     // Delegates
     weak var delegate: CurrentUserViewModelDelegate?

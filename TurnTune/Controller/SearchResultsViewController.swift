@@ -26,7 +26,7 @@ class SearchResultsViewController: UIViewController {
 extension SearchResultsViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         if searchController.searchBar.searchTextField.text!.isEmpty { return }
-        searcherViewModel.search(query: searchController.searchBar.searchTextField.text!) {
+        searcherViewModel.search(query: searchController.searchBar.searchTextField.text!) { _ in 
             DispatchQueue.main.async {
                 self.tableview.reloadData()
             }
@@ -50,7 +50,7 @@ extension SearchResultsViewController: UITableViewDataSource {
 extension SearchResultsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedCell = tableview.cellForRow(at: indexPath) as! SearchResultsTableViewCell
-        roomViewModel.appendSong(selectedCell.song!, to: roomViewModel.currentUserQueue)
+        roomViewModel.setMemberSelectedSong(selectedCell.song!, for: roomViewModel.currentMember!)
         tableview.deselectRow(at: indexPath, animated: true)
     }
 }

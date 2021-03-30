@@ -15,7 +15,7 @@ struct SearchResponse: Codable {
 // MARK: - Tracks
 struct Tracks: Codable {
     var href: String?
-    var items: [Item]
+    var items: [TrackItem?]
     var limit: Int?
     var next: String?
     var offset: Int?
@@ -23,8 +23,8 @@ struct Tracks: Codable {
     var total: Int?
 }
 
-// MARK: - Item
-struct Item: Codable {
+// MARK: - TrackItem
+struct TrackItem: Codable {
     var album: Album
     var artists: [Artist]
     var availableMarkets: [String]?

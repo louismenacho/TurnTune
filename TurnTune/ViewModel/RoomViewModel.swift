@@ -13,63 +13,51 @@ protocol RoomViewModelDelegate: class {
     func roomViewModel(roomViewModel: RoomViewModel, didInitialize: Bool)
     func roomViewModel(roomViewModel: RoomViewModel, didUpdate room: Room)
     func roomViewModel(roomViewModel: RoomViewModel, didUpdate members: [Member])
-    func roomViewModel(roomViewModel: RoomViewModel, didUpdate queues: [Queue])
 }
 
-class RoomViewModel: FirestoreViewModel {
+class RoomViewModel {
     
     // Delegates
     weak var delegate: RoomViewModelDelegate?
     
-    // Firestore References
+    // Firestore
+    private(set) var database = FirestoreDatabase()
     private(set) var roomDocumentRef: DocumentReference
     private(set) var membersCollectionRef: CollectionReference
-    private(set) var queuesCollectionRef: CollectionReference
     
     // Models
     private(set) var room: Room!
     private(set) var members: [Member]!
-    private(set) var queues: [Queue]!
     
-    // View Model Children
-    private(set) var currentUserViewModel: CurrentUserViewModel
+    // Service
+    private var spotifyPlayer: SpotifyPlayer { SpotifyPlayer.shared }
     
-    // Computed Properties
-    var playingSong: Song? { room.playingSong }
-    var currentUser: Member { currentUserViewModel.currentUser }
-    var currentUserQueue: Queue { currentUserViewModel.currentUserQueue }
-    
+    // Computed
+    var currentMember: Member? { members.first { $0.uid == Auth.auth().currentUser?.uid } }
+    var isCurrentMemberTurn: Bool { members[room.turn].uid == Auth.auth().currentUser?.uid }
     
     init(_ roomDocumentRef: DocumentReference) {
         self.roomDocumentRef = roomDocumentRef
         membersCollectionRef = roomDocumentRef.collection("members")
-        queuesCollectionRef = roomDocumentRef.collection("queues")
-        currentUserViewModel = CurrentUserViewModel(
-            membersCollectionRef.document(Auth.auth().currentUser!.uid),
-            queuesCollectionRef.document(Auth.auth().currentUser!.uid)
-        )
-        super.init()
-        getFirestoreData(completion:) { self.addFirestoreListeners() }
+        SpotifySessionManager.shared.initiateSession()
+        spotifyPlayer.delegate = self
+        getFirestoreData(completion:) {
+            self.addFirestoreListeners()
+        }
     }
     
     private func getFirestoreData(completion: @escaping () -> Void) {
         let group = DispatchGroup()
         
         group.enter()
-        getDocumentData(documentRef: roomDocumentRef) { (room: Room) in
+        database.getDocumentData(documentRef: roomDocumentRef) { (room: Room) in
             self.room = room
             group.leave()
         }
         
         group.enter()
-        getCollectionData(query: membersCollectionRef.order(by: "dateJoined")) { (members: [Member]) in
+        database.getCollectionData(query: membersCollectionRef.order(by: "dateJoined")) { (members: [Member]) in
             self.members = members
-            group.leave()
-        }
-        
-        group.enter()
-        getCollectionData(query: queuesCollectionRef.order(by: "owner.dateJoined")) { (queues: [Queue]) in
-            self.queues = queues
             group.leave()
         }
         
@@ -80,40 +68,103 @@ class RoomViewModel: FirestoreViewModel {
     }
     
     private func addFirestoreListeners() {
-        addDocumentListener(documentRef: roomDocumentRef) { (room: Room) in
+        database.addDocumentListener(documentRef: roomDocumentRef) { (room: Room) in
             self.room = room
             self.delegate?.roomViewModel(roomViewModel: self, didUpdate: room)
         }
-        addCollectionListener(query: membersCollectionRef.order(by: "dateJoined")) { (members: [Member]) in
+        database.addCollectionListener(query: membersCollectionRef.order(by: "dateJoined")) { (members: [Member]) in
             self.members = members
+            if self.room.isAwaitingSongSelection, let selectedSong = self.members[self.room.turn].selectedSong {
+                self.play(selectedSong) {
+                    self.deleteMemberSelectedSong(for: self.currentMember!)
+                }
+            }
             self.delegate?.roomViewModel(roomViewModel: self, didUpdate: members)
         }
-        addCollectionListener(query: queuesCollectionRef.order(by: "owner.dateJoined")) { (queues: [Queue]) in
-            self.queues = queues
-            self.delegate?.roomViewModel(roomViewModel: self, didUpdate: queues)
+    }
+    
+    func incrementRoomTurn(completion: @escaping (Int) -> Void) {
+        var room = self.room!
+        room.turn = room.turn == members.count - 1 ? 0 : room.turn + 1
+        database.setDocumentData(from: room, in: roomDocumentRef) {
+            completion(room.turn)
         }
     }
     
-    func appendSong(_ song: Song, to queue: Queue) {
-        if queue.owner.uid == currentUser.uid {
-            currentUserViewModel.appendSong(song)
+    func setIsRoomAwaitingSongSelection(_ flag: Bool, completion: ((Bool) -> Void)? = nil) {
+        var room = self.room!
+        room.isAwaitingSongSelection = flag
+        #warning("check to not save the same value multiple times)")
+        database.setDocumentData(from: room, in: roomDocumentRef) {
+            completion?(self.room.isAwaitingSongSelection)
         }
-        else {
-            var newQueue = queue
-            newQueue.songs.append(song)
-            try? queuesCollectionRef.document(queue.owner.uid).setData(from: newQueue)
+    }
+    
+    func setRoomPlayingSong(_ song: Song, completion: (() -> Void)? = nil) {
+        var room = self.room!
+        room.playingSong = members[room.turn].selectedSong
+        self.database.setDocumentData(from: room, in: roomDocumentRef) {
+            completion?()
         }
+    }
+    
+    func setMemberSelectedSong(_ song: Song, for member: Member, completion: ((Song) -> Void)? = nil) {
+        var member = member
+        member.selectedSong = song
+        database.setDocumentData(from: member, in: membersCollectionRef.document(member.uid)) {
+            completion?(song)
+        }
+    }
+
+    func deleteMemberSelectedSong(for member: Member, completion: (() -> Void)? = nil) {
+        var member = member
+        member.selectedSong = nil
+        database.setDocumentData(from: member, in: membersCollectionRef.document(member.uid)) {
+            completion?()
+        }
+    }
+    
+    // Spotify Player Methods
         
+    func play(_ song: Song, completion: (() -> Void)? = nil) {
+        self.setIsRoomAwaitingSongSelection(false)
+        spotifyPlayer.playTrack(uri: song.spotifyURI!)
     }
     
-    func deleteSong(from queue: Queue, at index: Int) {
-        if queue.owner.uid == currentUser.uid {
-            currentUserViewModel.deleteSong(at: index)
+    func pause(completion: (() -> Void)? = nil) {
+        spotifyPlayer.pausePlayback() {
+            completion?()
         }
-        else {
-            var newQueue = queue
-            newQueue.songs.remove(at: index)
-            try? queuesCollectionRef.document(queue.owner.uid).setData(from: newQueue)
+    }
+    
+    // Chain functions
+    
+    func setAndPlaySelectedSong(_ song: Song, for member: Member) {
+        setMemberSelectedSong(song, for: member) { selectedSong in
+            self.play(selectedSong)
         }
+    }
+    
+    func incrementTurnAndPlayNextSong() {
+        self.deleteMemberSelectedSong(for: self.members[room.turn])
+        incrementRoomTurn() { newTurn in
+            let turnMember = self.members[newTurn]
+            guard let nextSong = turnMember.selectedSong else {
+                print("Spotify paused, turn member did not select song")
+                self.setIsRoomAwaitingSongSelection(true)
+                return
+            }
+            self.play(nextSong)
+        }
+    }
+}
+
+extension RoomViewModel: SpotifyPlayerDelegate {
+    func spotifyPlayer(spotifyPlayer: SpotifyPlayer, didChangeTrack track: SPTAppRemoteTrack) {
+        setRoomPlayingSong(Song(spotifyTrack: track))
+    }
+    
+    func spotifyPlayer(spotifyPlayer: SpotifyPlayer, didFinishTrack track: SPTAppRemoteTrack) {
+        incrementTurnAndPlayNextSong()
     }
 }

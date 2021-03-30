@@ -2,13 +2,22 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CLIENT_ID</key>
+	<key>clientID</key>
 	<string>695de2c68a184c69aaebdf6b2ed02260</string>
-	<key>REDIRECT_URL</key>
-	<string>TurnTune://spotify-login-callback</string>
-	<key>TOKEN_SWAP_URL</key>
-	<string>https://turntune-spotify-token-swap.herokuapp.com/api/token</string>
-	<key>TOKEN_REFRESH_URL</key>
-	<string>https://turntune-spotify-token-swap.herokuapp.com/api/refresh_token</string>
+	<key>redirectURL</key>
+	<dict>
+		<key>relative</key>
+		<string>TurnTune://spotify-login-callback</string>
+	</dict>
+	<key>tokenSwapURL</key>
+	<dict>
+		<key>relative</key>
+		<string>https://turntune-spotify-token-swap.herokuapp.com/api/token</string>
+	</dict>
+	<key>tokenRefreshURL</key>
+	<dict>
+		<key>relative</key>
+		<string>https://turntune-spotify-token-swap.herokuapp.com/api/refresh_token</string>
+	</dict>
 </dict>
 </plist>

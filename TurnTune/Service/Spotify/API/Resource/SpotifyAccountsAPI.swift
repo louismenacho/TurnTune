@@ -11,20 +11,20 @@ enum SpotifyAccountsAPI {
     case apiToken
 }
 
-extension SpotifyAccountsAPI: APIEndpoint {
+extension SpotifyAccountsAPI: APIResource {
     
     var baseURL: URL {
-        URL(string: "https://accounts.spotify.com")!
+        return URL(string: "https://accounts.spotify.com")!
     }
     
-    var authorization: APIAuthorization? {
-        .basic(username: Constants.Spotify.clientID, password: Constants.Spotify.clientSecret)
+    var authorization: HTTPAuthorization {
+        .basic(username: Spotify.Credentials.clientID, password: Spotify.Credentials.clientSecret)
     }
     
-    var request: APIRequest {
+    var endpoint: APIEndpoint {
         switch self {
         case .apiToken:
-            return APIRequest(
+            return APIEndpoint(
                 method: .post,
                 path: "/api/token",
                 headers: ["Content-Type": "application/x-www-form-urlencoded"],

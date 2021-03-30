@@ -12,7 +12,10 @@ class RoomViewController: UIViewController {
     var roomViewModel: RoomViewModel!
     
     @IBOutlet weak var collectionView: UICollectionView!
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var playbackStateLabel: UILabel!
+    @IBOutlet weak var artworkImage: UIImageView!
+    @IBOutlet weak var songName: UILabel!
+    @IBOutlet weak var artistName: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,32 +50,75 @@ class RoomViewController: UIViewController {
         searchResultsViewController.roomViewModel = roomViewModel
         return searchResultsViewController
     }
+    
+    @IBAction func play(_ sender: UIBarButtonItem) {
+//        if let selectedSong = roomViewModel.currentMember?.selectedSong {
+//            roomViewModel.setAndPlaySelectedSong(selectedSong, for: roomViewModel.currentMember!)
+//        } else {
+//            DispatchQueue.main.async {
+//                self.navigationItem.searchController?.searchBar.becomeFirstResponder()
+//            }
+//        }
+        APIClient<SpotifyPlayerAPI>().request(.playTrack(uris: [""])) { (result: Result<SearchResponse, Error>) in
+            print("playTrack request")
+            print(try? result.get())
+        }
+    }
+    
+    @IBAction func pause(_ sender: Any) {
+//        SpotifyPlayer.shared.pausePlayback()
+        APIClient<SpotifyPlayerAPI>().request(.pausePlayback) { (result: Result<SearchResponse, Error>) in
+            print("pausePlayback request")
+            print(try? result.get())
+        }
+
+    }
+    
+    @IBAction func disconnectPressed(_ sender: UIBarButtonItem) {
+        SpotifyAppRemote.shared.disconnect()
+    }
+    
+    @IBAction func connectButtonPressed(_ sender: UIBarButtonItem) {
+//        SpotifyAppRemote.shared.connect()
+        APIClient<SpotifyPlayerAPI>().request(.currentlyPlayingTrack) { (result: Result<SearchResponse, Error>) in
+            print("currentlyPlayingTrack")
+            print(try? result.get())
+        }
+
+    }
 }
 
 
 
 // MARK: - RoomViewModelDelegate
 extension RoomViewController: RoomViewModelDelegate {
-    
+        
     func roomViewModel(roomViewModel: RoomViewModel, didInitialize: Bool) {
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.reloadData()
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.reloadData()
     }
     
     func roomViewModel(roomViewModel: RoomViewModel, didUpdate room: Room) {
-        self.tableView.reloadSections(IndexSet(integer: 0), with: .automatic)
+        playbackStateLabel.text = roomViewModel.isCurrentMemberTurn ? "Your turn" : "Now playing"
+        
+        guard let playingSong = room.playingSong else { return }
+        songName.text = playingSong.name
+        artistName.text = playingSong.artistName
+        if
+            let artworkURL = URL(string: playingSong.artworkURL),
+            let imageData = try? Data(contentsOf: artworkURL)
+        {
+            artworkImage.image = UIImage(data: imageData)
+        }
     }
     
     func roomViewModel(roomViewModel: RoomViewModel, didUpdate members: [Member]) {
         collectionView.reloadData()
     }
     
-    func roomViewModel(roomViewModel: RoomViewModel, didUpdate queues: [Queue]) {
-        self.tableView.reloadSections(IndexSet(integer: 1), with: .automatic)
+    func roomViewModel(roomViewModel: RoomViewModel, didUpdate queue: [Song]) {
+        print("Queue Count: \(queue.count)")
     }
 }
 
@@ -109,125 +155,3 @@ extension RoomViewController: UICollectionViewDelegate {
         collectionView.deselectItem(at: indexPath, animated: true)
     }
 }
-
-
-
-// MARK: - UITableViewDataSource
-extension RoomViewController: UITableViewDataSource {
-
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
-    }
-
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        var rowCount: Int
-        switch section {
-        case 0:
-            rowCount = 1
-        default:
-            rowCount = roomViewModel.currentUserQueue.songs.count
-        }
-        return rowCount
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "SongTableViewCell") as! SongTableViewCell
-        switch indexPath.section {
-        case 0:
-            cell.nameLabel.text = roomViewModel.playingSong?.name ?? ""
-            cell.artistNameLabel.text = roomViewModel.playingSong?.artistName ?? ""
-        default:
-            cell.nameLabel.text = roomViewModel.currentUserQueue.songs[indexPath.row].name
-            cell.artistNameLabel.text = roomViewModel.currentUserQueue.songs[indexPath.row].artistName
-        }
-        return cell
-    }
-}
-
-
-
-// MARK: - UITableViewDelegate
-extension RoomViewController: UITableViewDelegate {
-
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let titles = ["NOW PLAYING", "YOUR QUEUE"]
-        return titles[section]
-    }
-
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-    }
-    
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            roomViewModel.deleteSong(from: roomViewModel.currentUserQueue, at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .automatic)
-        }
-    }
-}
-
-
-
-
-
-
-//// MARK: - UICollectionViewDataSource
-//extension RoomViewController: UICollectionViewDataSource {
-//    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-//        return 10
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MemberCollectionViewCell", for: indexPath) as! MemberCollectionViewCell
-//        return cell
-//    }
-//}
-//
-//
-//
-//// MARK: - UICollectionViewDelegate
-//extension RoomViewController: UICollectionViewDelegate {
-//
-//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        print("\(indexPath) item selected")
-//        collectionView.deselectItem(at: indexPath, animated: true)
-//    }
-//}
-//
-//
-//
-//// MARK: - UITableViewDataSource
-//extension RoomViewController: UITableViewDataSource {
-//
-//    func numberOfSections(in tableView: UITableView) -> Int {
-//        return 2
-//    }
-//
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        let rowCount = [1,9]
-//        return rowCount[section]
-//    }
-//
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        var cells = [UITableViewCell]()
-//        cells.append(tableView.dequeueReusableCell(withIdentifier: "SongTableViewCell", for: indexPath) as! SongTableViewCell)
-//        cells.append(tableView.dequeueReusableCell(withIdentifier: "SongTableViewCell", for: indexPath) as! SongTableViewCell)
-//        return cells[indexPath.section]
-//    }
-//}
-//
-//
-//
-//// MARK: - UITableViewDelegate
-//extension RoomViewController: UITableViewDelegate {
-//
-//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-//        let titles = ["NOW PLAYING", "UP NEXT"]
-//        return titles[section]
-//    }
-//
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        print("\(indexPath) row selected")
-//        tableView.deselectRow(at: indexPath, animated: true)
-//    }
-//}

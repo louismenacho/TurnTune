@@ -30,24 +30,14 @@ class AuthViewController: UIViewController {
     }
     
     @IBAction func joinButtonPressed(_ sender: UIButton) {
-        authViewModel.join(room: roomCodeTextField.text!, name: nameTextField.text!) { result in
-            switch result {
-            case.failure(let error):
-                print(error.localizedDescription)
-            case .success:
-                self.performSegue(withIdentifier: "RoomViewController", sender: self)
-            }
+        authViewModel.join(room: roomCodeTextField.text!, displayName: nameTextField.text!) {
+            self.performSegue(withIdentifier: "RoomViewController", sender: self)
         }
     }
     
     @IBAction func hostButtonPressed(_ sender: UIButton) {
-        authViewModel.host(name: nameTextField.text!) { result in
-            switch result {
-            case.failure(let error):
-                print(error.localizedDescription)
-            case .success:
-                self.performSegue(withIdentifier: "RoomViewController", sender: self)
-            }
+        authViewModel.host(displayName: nameTextField.text!) {
+            self.performSegue(withIdentifier: "RoomViewController", sender: self)
         }
     }
 }
