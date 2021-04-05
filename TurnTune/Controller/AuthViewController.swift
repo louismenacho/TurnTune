@@ -24,8 +24,7 @@ class AuthViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "RoomViewController" {
             let roomViewController = segue.destination as! RoomViewController
-            let roomDocumentRef = authViewModel.roomDocumentRef!
-            roomViewController.roomViewModel = RoomViewModel(roomDocumentRef)
+            roomViewController.roomViewModel = RoomViewModel(roomPath: authViewModel.roomPath)
         }
     }
     

@@ -21,9 +21,9 @@ class RoomViewModel {
     weak var delegate: RoomViewModelDelegate?
     
     // Firestore
-    private(set) var database = FirestoreDatabase()
-    private(set) var roomDocumentRef: DocumentReference
-    private(set) var membersCollectionRef: CollectionReference
+    private(set) var database = FirebaseFirestore.shared
+    private(set) var roomPath: String
+    private(set) var membersCollectionPath: String
     
     // Models
     private(set) var room: Room!
@@ -36,28 +36,39 @@ class RoomViewModel {
     var currentMember: Member? { members.first { $0.uid == Auth.auth().currentUser?.uid } }
     var isCurrentMemberTurn: Bool { members[room.turn].uid == Auth.auth().currentUser?.uid }
     
-    init(_ roomDocumentRef: DocumentReference) {
-        self.roomDocumentRef = roomDocumentRef
-        membersCollectionRef = roomDocumentRef.collection("members")
-        SpotifySessionManager.shared.initiateSession()
-        spotifyPlayer.delegate = self
-        getFirestoreData(completion:) {
+    init(roomPath: String) {
+        self.roomPath = roomPath
+        membersCollectionPath = roomPath+"/members"
+        loadFirestoreData(completion:) {
             self.addFirestoreListeners()
         }
+        
+        SpotifySessionManager.shared.initiateSession()
+        spotifyPlayer.delegate = self
     }
     
-    private func getFirestoreData(completion: @escaping () -> Void) {
+    private func loadFirestoreData(completion: @escaping () -> Void) {
         let group = DispatchGroup()
         
         group.enter()
-        database.getDocumentData(documentRef: roomDocumentRef) { (room: Room) in
-            self.room = room
+        database.getDocumentData(documentPath: roomPath) { (result: Result<Room, Error>) in
+            switch result {
+            case let .failure(error):
+                print(error)
+            case let .success(room):
+                self.room = room
+            }
             group.leave()
         }
         
         group.enter()
-        database.getCollectionData(query: membersCollectionRef.order(by: "dateJoined")) { (members: [Member]) in
-            self.members = members
+        database.getCollectionData(collectionPath: membersCollectionPath, orderBy: "dateJoined") { (result: Result<[Member], Error>) in
+            switch result {
+            case let .failure(error):
+                print(error)
+            case let .success(members):
+                self.members = members
+            }
             group.leave()
         }
         
@@ -68,42 +79,38 @@ class RoomViewModel {
     }
     
     private func addFirestoreListeners() {
-        database.addDocumentListener(documentRef: roomDocumentRef) { (room: Room) in
-            self.room = room
-            self.delegate?.roomViewModel(roomViewModel: self, didUpdate: room)
-        }
-        database.addCollectionListener(query: membersCollectionRef.order(by: "dateJoined")) { (members: [Member]) in
-            self.members = members
-            if self.room.isAwaitingSongSelection, let selectedSong = self.members[self.room.turn].selectedSong {
-                self.play(selectedSong) {
-                    self.deleteMemberSelectedSong(for: self.currentMember!)
-                }
+        database.addDocumentListener(documentPath: roomPath) { (result: Result<Room, Error>) in
+            switch result {
+            case let .failure(error):
+                print(error)
+            case let .success(room):
+                self.room = room
+                self.delegate?.roomViewModel(roomViewModel: self, didUpdate: room)
             }
-            self.delegate?.roomViewModel(roomViewModel: self, didUpdate: members)
+        }
+        database.addCollectionListener(collectionPath: membersCollectionPath, orderBy: "dateJoined") { (result: Result<[Member], Error>) in
+            switch result {
+            case let .failure(error):
+                print(error)
+            case let .success(members):
+                self.members = members
+                self.delegate?.roomViewModel(roomViewModel: self, didUpdate: members)
+            }
         }
     }
     
     func incrementRoomTurn(completion: @escaping (Int) -> Void) {
         var room = self.room!
         room.turn = room.turn == members.count - 1 ? 0 : room.turn + 1
-        database.setDocumentData(from: room, in: roomDocumentRef) {
+        database.setData(from: room, in: roomPath) { error in
             completion(room.turn)
-        }
-    }
-    
-    func setIsRoomAwaitingSongSelection(_ flag: Bool, completion: ((Bool) -> Void)? = nil) {
-        var room = self.room!
-        room.isAwaitingSongSelection = flag
-        #warning("check to not save the same value multiple times)")
-        database.setDocumentData(from: room, in: roomDocumentRef) {
-            completion?(self.room.isAwaitingSongSelection)
         }
     }
     
     func setRoomPlayingSong(_ song: Song, completion: (() -> Void)? = nil) {
         var room = self.room!
         room.playingSong = members[room.turn].selectedSong
-        self.database.setDocumentData(from: room, in: roomDocumentRef) {
+        self.database.setData(from: room, in: roomPath) { error in
             completion?()
         }
     }
@@ -111,7 +118,7 @@ class RoomViewModel {
     func setMemberSelectedSong(_ song: Song, for member: Member, completion: ((Song) -> Void)? = nil) {
         var member = member
         member.selectedSong = song
-        database.setDocumentData(from: member, in: membersCollectionRef.document(member.uid)) {
+        database.setData(from: member, in: membersCollectionPath+"/"+member.uid) { error in
             completion?(song)
         }
     }
@@ -119,7 +126,7 @@ class RoomViewModel {
     func deleteMemberSelectedSong(for member: Member, completion: (() -> Void)? = nil) {
         var member = member
         member.selectedSong = nil
-        database.setDocumentData(from: member, in: membersCollectionRef.document(member.uid)) {
+        database.setData(from: member, in: membersCollectionPath+"/"+member.uid) { error in
             completion?()
         }
     }
@@ -127,7 +134,6 @@ class RoomViewModel {
     // Spotify Player Methods
         
     func play(_ song: Song, completion: (() -> Void)? = nil) {
-        self.setIsRoomAwaitingSongSelection(false)
         spotifyPlayer.playTrack(uri: song.spotifyURI!)
     }
     
@@ -151,7 +157,6 @@ class RoomViewModel {
             let turnMember = self.members[newTurn]
             guard let nextSong = turnMember.selectedSong else {
                 print("Spotify paused, turn member did not select song")
-                self.setIsRoomAwaitingSongSelection(true)
                 return
             }
             self.play(nextSong)

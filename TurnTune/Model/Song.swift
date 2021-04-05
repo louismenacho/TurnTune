@@ -18,7 +18,7 @@ struct Song: Codable {
     // Spotify Identifiers
     var spotifyURI: String?
     
-    init(spotifyTrack: TrackItem) {
+    init(spotifyTrack: SearchResponse.TrackItem) {
         spotifyURI = spotifyTrack.uri
         name = spotifyTrack.name
         artistName = spotifyTrack.artists.map { $0.name }.joined(separator: ", ")

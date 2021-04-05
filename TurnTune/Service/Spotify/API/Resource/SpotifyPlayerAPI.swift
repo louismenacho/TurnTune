@@ -21,7 +21,7 @@ extension SpotifyPlayerAPI: APIResource {
     }
     
     var authorization: HTTPAuthorization {
-        .bearer(token: Spotify.APIToken.accessToken)
+        .bearer(token: SpotifyAPI.shared.playerToken)
     }
     
     var endpoint: APIEndpoint {

@@ -19,7 +19,6 @@ class RoomViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.title = roomViewModel.roomDocumentRef.documentID
         navigationController!.navigationBar.standardAppearance.shadowColor = .clear
         navigationItem.hidesBackButton = true
         navigationItem.hidesSearchBarWhenScrolling = false
@@ -94,6 +93,7 @@ class RoomViewController: UIViewController {
 extension RoomViewController: RoomViewModelDelegate {
         
     func roomViewModel(roomViewModel: RoomViewModel, didInitialize: Bool) {
+        navigationItem.title = roomViewModel.room.code
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.reloadData()
