@@ -11,8 +11,8 @@ import FirebaseFirestore
 class SpotifyApp {
     
     private(set) static var shared = SpotifyApp()
+    private(set) static var fileConfig = FileConfig()
     
-    private(set) var fileConfig = FileConfig()
     private(set) var configuration: SPTConfiguration
     
     struct FileConfig: Decodable {
@@ -24,15 +24,16 @@ class SpotifyApp {
     }
     
     private init() {
-        configuration = SPTConfiguration(clientID: fileConfig.clientID, redirectURL: fileConfig.redirectURL)
-        configuration.tokenSwapURL = fileConfig.tokenSwapURL
-        configuration.tokenRefreshURL = fileConfig.tokenRefreshURL
+        configuration = SPTConfiguration(clientID: SpotifyApp.fileConfig.clientID, redirectURL: SpotifyApp.fileConfig.redirectURL)
+        configuration.tokenSwapURL = SpotifyApp.fileConfig.tokenSwapURL
+        configuration.tokenRefreshURL = SpotifyApp.fileConfig.tokenRefreshURL
+        configuration.playURI = ""
     }
     
     static func configure() {
         let path = Bundle.main.path(forResource: "SpotifyService-Info", ofType: "plist")!
         let data = FileManager.default.contents(atPath: path)!
-        shared.fileConfig = try! PropertyListDecoder().decode(FileConfig.self, from: data)
+        fileConfig = try! PropertyListDecoder().decode(FileConfig.self, from: data)
         loadClientSecret()
     }
     
@@ -42,7 +43,7 @@ class SpotifyApp {
                 print("Could not load Spotify client secret")
                 return
             }
-            shared.fileConfig.clientSecret = document.get("clientSecret") as? String
+            SpotifyApp.fileConfig.clientSecret = document.get("clientSecret") as? String
         }
     }
 }

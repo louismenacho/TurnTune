@@ -7,15 +7,21 @@
 
 import Foundation
 
+protocol SpotifyAppRemoteDelegate: class {
+    func spotifyAppRemote(spotifyAppRemote: SpotifyAppRemote, trackDidChange track: SPTAppRemoteTrack)
+}
+
 class SpotifyAppRemote: NSObject {
+    
+    weak var delegate: SpotifyAppRemoteDelegate?
     
     private(set) static var shared = SpotifyAppRemote()
     
     private let appRemote: SPTAppRemote
+    private var playerState: SPTAppRemotePlayerState?
     
     var isConnected: Bool { appRemote.isConnected }
     var hasAccessToken: Bool { appRemote.connectionParameters.accessToken != nil }
-    var playerAPI: SPTAppRemotePlayerAPI? { appRemote.playerAPI }
     
     private override init() {
         appRemote = SPTAppRemote(configuration: SpotifyApp.shared.configuration, logLevel: .debug)
@@ -28,20 +34,36 @@ class SpotifyAppRemote: NSObject {
     }
     
     func connect() {
-        appRemote.connect()
+        if !appRemote.isConnected {
+            appRemote.connect()
+        }
     }
     
     func disconnect() {
-        appRemote.disconnect()
+        if appRemote.isConnected {
+            appRemote.disconnect()
+        }
     }
     
     func connectIfNeeded() {
         SPTAppRemote.checkIfSpotifyAppIsActive { [self] isActive in
             if isActive {
-                isConnected ? () : connect()
+                connect()
             } else {
                 SpotifySessionManager.shared.initiateSession()
             }
+        }
+    }
+    
+    func configurePlayerAPI() {
+        guard let player = appRemote.playerAPI else {
+            print("appRemote.playerAPI is nil")
+            return
+        }
+        if player.delegate == nil {
+            player.delegate = self
+            player.subscribe()
+            player.setRepeatMode(.off)
         }
     }
     
@@ -76,13 +98,11 @@ class SpotifyAppRemote: NSObject {
     }
 }
 
-//Fix issue with double pressing pause, perhaps automatic retry with retry limit
 extension SpotifyAppRemote: SPTAppRemoteDelegate {
     
     func appRemoteDidEstablishConnection(_ appRemote: SPTAppRemote) {
         print("SPTAppRemote appRemoteDidEstablishConnection")
-        SpotifyPlayer.shared.configure()
-//        SpotifyPlayer.shared.isPendingPlayback() ? SpotifyPlayer.shared.retryPlayback() : ()
+        configurePlayerAPI()
     }
     
     func appRemote(_ appRemote: SPTAppRemote, didFailConnectionAttemptWithError error: Error?) {
@@ -93,5 +113,16 @@ extension SpotifyAppRemote: SPTAppRemoteDelegate {
     func appRemote(_ appRemote: SPTAppRemote, didDisconnectWithError error: Error?) {
         print("appRemote didDisconnectWithError")
         _  = handleAppRemoteError(error)
+    }
+}
+
+extension SpotifyAppRemote: SPTAppRemotePlayerStateDelegate {
+    
+    func playerStateDidChange(_ playerState: SPTAppRemotePlayerState) {
+        if self.playerState?.track.uri != playerState.track.uri {
+            self.delegate?.spotifyAppRemote(spotifyAppRemote: self, trackDidChange: playerState.track)
+            print("spotifyAppRemote trackDidChange")
+        }
+        self.playerState = playerState
     }
 }

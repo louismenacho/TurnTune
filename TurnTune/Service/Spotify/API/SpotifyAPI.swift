@@ -20,56 +20,57 @@ class SpotifyAPI {
     
     private func generateSearchToken() {
         APIClient<SpotifyAccountsAPI>().request(.apiToken, responseType: TokenResponse.self) { [self] result in
-            if let response = handleResult(result) {
+            switch result {
+            case let .failure(error):
+                print(error)
+            case let .success(response):
                 searchToken = response.accessToken
             }
         }
     }
     
-    func search(query: String, completion: @escaping (SearchResponse) -> Void) {
-        APIClient<SpotifySearchAPI>().request(.search(query: query, type: "track", limit: 50), responseType: SearchResponse.self) { [self] result in
-            if let response = handleResult(result) {
-                completion(response)
+    func search(query: String, completion: @escaping (Result<SearchResponse, Error>) -> Void) {
+        APIClient<SpotifySearchAPI>().request(.search(query: query, type: "track", limit: 50)) { result in
+            completion(result)
+        }
+    }
+    
+    func currentlyPlayingTrack(completion: @escaping (Result<CurrentlyPlayingResponse, Error>) -> Void) {
+        APIClient<SpotifyPlayerAPI>().request(.currentlyPlayingTrack) { result in
+            completion(result)
+        }
+    }
+    
+    func playTrack(uris: [String], completion: @escaping (Error?) -> Void) {
+        APIClient<SpotifyPlayerAPI>().request(.playTrack(uris: uris)) { (result: Result<String, Error>) in
+            switch result {
+            case let .failure(error):
+                completion(error)
+            case .success:
+                completion(nil)
             }
         }
     }
     
-    func currentlyPlayingTrack(completion: @escaping (CurrentlyPlayingResponse) -> Void) {
-        APIClient<SpotifyPlayerAPI>().request(.currentlyPlayingTrack, responseType: CurrentlyPlayingResponse.self) { [self] result in
-            if let response = handleResult(result) {
-                completion(response)
+    func pausePlayback(completion: @escaping (Error?) -> Void) {
+        APIClient<SpotifyPlayerAPI>().request(.pausePlayback) { (result: Result<String, Error>) in
+            switch result {
+            case let .failure(error):
+                completion(error)
+            case .success:
+                completion(nil)
             }
         }
     }
     
-    func playTrack(uris: [String], completion: @escaping () -> Void) {
-        APIClient<SpotifyPlayerAPI>().request(.playTrack(uris: uris), responseType: String.self) { [self] result in
-            _ = handleResult(result)
-            completion()
+    func queueTrack(uri: String, completion: @escaping (Error?) -> Void) {
+        APIClient<SpotifyPlayerAPI>().request(.queueTrack(uri: uri)) { (result: Result<String, Error>) in
+            switch result {
+            case let .failure(error):
+                completion(error)
+            case .success:
+                completion(nil)
+            }
         }
-    }
-    
-    func pausePlayback(completion: @escaping () -> Void) {
-        APIClient<SpotifyPlayerAPI>().request(.pausePlayback, responseType: String.self) { [self] result in
-            _ = handleResult(result)
-            completion()
-        }
-    }
-    
-    func queueTrack(uri: String, completion: @escaping () -> Void) {
-        APIClient<SpotifyPlayerAPI>().request(.queueTrack(uri: uri), responseType: String.self) { [self] result in
-            _ = handleResult(result)
-            completion()
-        }
-    }
-    
-    func handleResult<T: Decodable>(_ result: Result<T, Error>) -> T? {
-        switch result {
-        case let .failure(error):
-            print(error)
-        case let .success(value):
-            return value
-        }
-        return nil
     }
 }

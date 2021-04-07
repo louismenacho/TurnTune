@@ -25,8 +25,10 @@ class SearchResultsViewController: UIViewController {
 
 extension SearchResultsViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-        if searchController.searchBar.searchTextField.text!.isEmpty { return }
-        searcherViewModel.search(query: searchController.searchBar.searchTextField.text!) { _ in 
+        if searchController.searchBar.searchTextField.text!.isEmpty {
+            return
+        }
+        searcherViewModel.search(query: searchController.searchBar.searchTextField.text!) {
             DispatchQueue.main.async {
                 self.tableview.reloadData()
             }
@@ -40,6 +42,9 @@ extension SearchResultsViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if indexPath.row >= searcherViewModel.searchResult.count {
+            return UITableViewCell()
+        }
         let song = searcherViewModel.searchResult[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "SearchResultsTableViewCell", for: indexPath) as! SearchResultsTableViewCell
         cell.song = song
@@ -50,7 +55,7 @@ extension SearchResultsViewController: UITableViewDataSource {
 extension SearchResultsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedCell = tableview.cellForRow(at: indexPath) as! SearchResultsTableViewCell
-        roomViewModel.setMemberSelectedSong(selectedCell.song!, for: roomViewModel.currentMember!)
+        roomViewModel.queueSong(selectedCell.song!)
         tableview.deselectRow(at: indexPath, animated: true)
     }
 }

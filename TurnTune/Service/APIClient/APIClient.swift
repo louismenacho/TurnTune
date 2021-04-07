@@ -27,7 +27,7 @@ class APIClient<Resource: APIResource> {
             }
             
             do {
-                self.debug(data: data)
+//                self.debug(data: data)
                 let object = try JSONDecoder().decode(T.self, from: data)
                 completion(.success(object))
             } catch {

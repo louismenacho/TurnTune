@@ -18,7 +18,7 @@ extension SpotifyAccountsAPI: APIResource {
     }
     
     var authorization: HTTPAuthorization {
-        .basic(username: SpotifyApp.shared.fileConfig.clientID, password: SpotifyApp.shared.fileConfig.clientSecret)
+        .basic(username: SpotifyApp.fileConfig.clientID, password: SpotifyApp.fileConfig.clientSecret)
     }
     
     var endpoint: APIEndpoint {

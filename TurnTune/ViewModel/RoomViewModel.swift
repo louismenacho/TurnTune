@@ -20,17 +20,20 @@ class RoomViewModel {
     // Delegates
     weak var delegate: RoomViewModelDelegate?
     
-    // Firestore
-    private(set) var database = FirebaseFirestore.shared
-    private(set) var roomPath: String
-    private(set) var membersCollectionPath: String
-    
     // Models
     private(set) var room: Room!
     private(set) var members: [Member]!
+    private(set) var queue: [Song]!
     
-    // Service
-    private var spotifyPlayer: SpotifyPlayer { SpotifyPlayer.shared }
+    // Firestore
+    private(set) var roomPath: String
+    private(set) lazy var membersCollectionPath = roomPath+"/members"
+    private(set) lazy var queueCollectionPath = roomPath+"/queue"
+    private(set) var firestore = FirebaseFirestore.shared
+    
+    // Spotify
+    private var spotifyAppRemote = SpotifyAppRemote.shared
+    private var spotifyWebAPI = SpotifyAPI.shared
     
     // Computed
     var currentMember: Member? { members.first { $0.uid == Auth.auth().currentUser?.uid } }
@@ -38,20 +41,49 @@ class RoomViewModel {
     
     init(roomPath: String) {
         self.roomPath = roomPath
-        membersCollectionPath = roomPath+"/members"
         loadFirestoreData(completion:) {
             self.addFirestoreListeners()
         }
         
         SpotifySessionManager.shared.initiateSession()
-        spotifyPlayer.delegate = self
+        spotifyAppRemote.delegate = self
+    }
+    
+    func queueSong(_ song: Song, completion: (() -> Void)? = nil) {
+        queue.append(song)
+        firestore.setData(from: queue, in: queueCollectionPath) { error in
+            if let error = error {
+                print(error)
+            }
+            completion?()
+        }
+    }
+    
+    // Spotify Player Methods
+        
+    func play(_ song: Song, completion: (() -> Void)? = nil) {
+        spotifyWebAPI.playTrack(uris: [song.spotifyURI!]) { error in
+            if let error = error {
+                print(error)
+            }
+            completion?()
+        }
+    }
+    
+    func pause(completion: (() -> Void)? = nil) {
+        spotifyWebAPI.pausePlayback { error in
+            if let error = error {
+                print(error)
+            }
+            completion?()
+        }
     }
     
     private func loadFirestoreData(completion: @escaping () -> Void) {
         let group = DispatchGroup()
         
         group.enter()
-        database.getDocumentData(documentPath: roomPath) { (result: Result<Room, Error>) in
+        firestore.getDocumentData(documentPath: roomPath) { (result: Result<Room, Error>) in
             switch result {
             case let .failure(error):
                 print(error)
@@ -62,7 +94,7 @@ class RoomViewModel {
         }
         
         group.enter()
-        database.getCollectionData(collectionPath: membersCollectionPath, orderBy: "dateJoined") { (result: Result<[Member], Error>) in
+        firestore.getCollectionData(collectionPath: membersCollectionPath, orderBy: "dateJoined") { (result: Result<[Member], Error>) in
             switch result {
             case let .failure(error):
                 print(error)
@@ -79,7 +111,7 @@ class RoomViewModel {
     }
     
     private func addFirestoreListeners() {
-        database.addDocumentListener(documentPath: roomPath) { (result: Result<Room, Error>) in
+        firestore.addDocumentListener(documentPath: roomPath) { (result: Result<Room, Error>) in
             switch result {
             case let .failure(error):
                 print(error)
@@ -88,7 +120,7 @@ class RoomViewModel {
                 self.delegate?.roomViewModel(roomViewModel: self, didUpdate: room)
             }
         }
-        database.addCollectionListener(collectionPath: membersCollectionPath, orderBy: "dateJoined") { (result: Result<[Member], Error>) in
+        firestore.addCollectionListener(collectionPath: membersCollectionPath, orderBy: "dateJoined") { (result: Result<[Member], Error>) in
             switch result {
             case let .failure(error):
                 print(error)
@@ -98,78 +130,10 @@ class RoomViewModel {
             }
         }
     }
-    
-    func incrementRoomTurn(completion: @escaping (Int) -> Void) {
-        var room = self.room!
-        room.turn = room.turn == members.count - 1 ? 0 : room.turn + 1
-        database.setData(from: room, in: roomPath) { error in
-            completion(room.turn)
-        }
-    }
-    
-    func setRoomPlayingSong(_ song: Song, completion: (() -> Void)? = nil) {
-        var room = self.room!
-        room.playingSong = members[room.turn].selectedSong
-        self.database.setData(from: room, in: roomPath) { error in
-            completion?()
-        }
-    }
-    
-    func setMemberSelectedSong(_ song: Song, for member: Member, completion: ((Song) -> Void)? = nil) {
-        var member = member
-        member.selectedSong = song
-        database.setData(from: member, in: membersCollectionPath+"/"+member.uid) { error in
-            completion?(song)
-        }
-    }
-
-    func deleteMemberSelectedSong(for member: Member, completion: (() -> Void)? = nil) {
-        var member = member
-        member.selectedSong = nil
-        database.setData(from: member, in: membersCollectionPath+"/"+member.uid) { error in
-            completion?()
-        }
-    }
-    
-    // Spotify Player Methods
-        
-    func play(_ song: Song, completion: (() -> Void)? = nil) {
-        spotifyPlayer.playTrack(uri: song.spotifyURI!)
-    }
-    
-    func pause(completion: (() -> Void)? = nil) {
-        spotifyPlayer.pausePlayback() {
-            completion?()
-        }
-    }
-    
-    // Chain functions
-    
-    func setAndPlaySelectedSong(_ song: Song, for member: Member) {
-        setMemberSelectedSong(song, for: member) { selectedSong in
-            self.play(selectedSong)
-        }
-    }
-    
-    func incrementTurnAndPlayNextSong() {
-        self.deleteMemberSelectedSong(for: self.members[room.turn])
-        incrementRoomTurn() { newTurn in
-            let turnMember = self.members[newTurn]
-            guard let nextSong = turnMember.selectedSong else {
-                print("Spotify paused, turn member did not select song")
-                return
-            }
-            self.play(nextSong)
-        }
-    }
 }
 
-extension RoomViewModel: SpotifyPlayerDelegate {
-    func spotifyPlayer(spotifyPlayer: SpotifyPlayer, didChangeTrack track: SPTAppRemoteTrack) {
-        setRoomPlayingSong(Song(spotifyTrack: track))
-    }
-    
-    func spotifyPlayer(spotifyPlayer: SpotifyPlayer, didFinishTrack track: SPTAppRemoteTrack) {
-        incrementTurnAndPlayNextSong()
+extension RoomViewModel: SpotifyAppRemoteDelegate {
+    func spotifyAppRemote(spotifyAppRemote: SpotifyAppRemote, trackDidChange track: SPTAppRemoteTrack) {
+        
     }
 }
