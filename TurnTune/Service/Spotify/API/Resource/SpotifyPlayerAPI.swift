@@ -35,6 +35,7 @@ extension SpotifyPlayerAPI: APIResource {
             return APIEndpoint(
                 method: .put,
                 path: "/play",
+                headers: ["Content-Type": "application/json"],
                 body: [
                     "uris": uris
                 ]
@@ -48,6 +49,7 @@ extension SpotifyPlayerAPI: APIResource {
             return APIEndpoint(
                 method: .post,
                 path: "/queue",
+                headers: ["Content-Type": "application/json"],
                 body: [
                     "uri": uri
                 ]

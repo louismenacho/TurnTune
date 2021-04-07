@@ -29,6 +29,10 @@ class SpotifyAPI {
         }
     }
     
+    func setPlayerToken(_ token: String) {
+        playerToken = token
+    }
+    
     func search(query: String, completion: @escaping (Result<SearchResponse, Error>) -> Void) {
         APIClient<SpotifySearchAPI>().request(.search(query: query, type: "track", limit: 50)) { result in
             completion(result)

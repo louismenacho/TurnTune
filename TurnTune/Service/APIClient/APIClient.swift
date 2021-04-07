@@ -22,7 +22,11 @@ class APIClient<Resource: APIResource> {
             }
 
             guard 200...299 ~= response.statusCode else {
-                completion(.failure(HTTPError.status(code: response.statusCode)))
+                let statusCode = response.statusCode
+                let statusDescription = HTTPURLResponse.localizedString(forStatusCode: statusCode)
+                let httpError = HTTPError.status(code: statusCode, description: statusDescription)
+                self.debug(data: data)
+                completion(.failure(httpError))
                 return
             }
             

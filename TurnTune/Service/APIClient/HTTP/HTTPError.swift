@@ -9,5 +9,5 @@ import Foundation
 
 enum HTTPError: Error {
     case noResponse
-    case status(code: Int)
+    case status(code: Int, description: String)
 }

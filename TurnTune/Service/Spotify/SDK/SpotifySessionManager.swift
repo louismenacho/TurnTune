@@ -67,6 +67,7 @@ extension SpotifySessionManager: SPTSessionManagerDelegate {
     func sessionManager(manager: SPTSessionManager, didInitiate session: SPTSession) {
         print("SPTSession didInitiate")
         SpotifyAppRemote.shared.setAccessToken(session.accessToken)
+        SpotifyAPI.shared.setPlayerToken(session.accessToken)
     }
     
     func sessionManager(manager: SPTSessionManager, didRenew session: SPTSession) {

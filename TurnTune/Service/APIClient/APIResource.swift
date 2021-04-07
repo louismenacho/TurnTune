@@ -57,6 +57,13 @@ extension APIResource {
             var components = URLComponents()
             components.queryItems = endpoint.body.map { URLQueryItem(name: $0.key, value: "\($0.value)") }
             return components.query?.data(using: .utf8)
+        case "application/json":
+            do {
+                return try JSONSerialization.data(withJSONObject: endpoint.body, options: .prettyPrinted)
+            } catch {
+                print(error)
+                return nil
+            }
         default:
             return nil
         }
