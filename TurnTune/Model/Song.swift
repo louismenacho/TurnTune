@@ -10,10 +10,12 @@ import Firebase
 import FirebaseFirestoreSwift
 
 struct Song: Codable {
+    @DocumentID var id: String?
     var name: String
     var artistName: String
     var artworkURL: String
     var durationInMillis: Int
+    @ServerTimestamp var dateAdded: Timestamp?
     
     // Spotify Identifiers
     var spotifyURI: String?
@@ -22,10 +24,7 @@ struct Song: Codable {
         spotifyURI = spotifyTrack.uri
         name = spotifyTrack.name
         artistName = spotifyTrack.artists.map { $0.name }.joined(separator: ", ")
-        
-        #warning("index ot of range, when searching and selecting too fast")
         artworkURL = spotifyTrack.album.images[0].url
-        
         durationInMillis = spotifyTrack.durationMS
     }
     

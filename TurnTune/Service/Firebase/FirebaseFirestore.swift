@@ -55,6 +55,16 @@ class FirebaseFirestore {
         }
     }
     
+    func appendData<T: Encodable>(from value: T, in collectionPath: String, completion: ((Error?) -> Void)? = nil) {
+        do {
+            _ = try Firestore.firestore().collection(collectionPath).addDocument(from: value) { error in
+                completion?(error)
+            }
+        } catch {
+            completion?(error)
+        }
+    }
+    
     private func dataResult<T: Decodable>(for documentSnapshot: DocumentSnapshot?, _ error: Error?) -> Result<T, Error> {
         if let error = error {
             return .failure(error)

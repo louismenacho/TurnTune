@@ -45,6 +45,10 @@ class RoomViewController: UIViewController {
         searchResultsViewController.roomViewModel = roomViewModel
         return searchResultsViewController
     }
+    
+    @IBAction func reconnectButtonPressed(_ sender: UIBarButtonItem) {
+        SpotifyAppRemote.shared.connectIfNeeded()
+    }
 }
 
 
@@ -54,10 +58,13 @@ extension RoomViewController: RoomViewModelDelegate {
         
     func roomViewModel(roomViewModel: RoomViewModel, didInitialize: Bool) {
         navigationItem.title = roomViewModel.room.code
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.reloadData()
     }
     
     func roomViewModel(roomViewModel: RoomViewModel, didUpdate room: Room) {
-        
+        tableView.reloadSections(IndexSet(integersIn: 0...0), with: .automatic)
     }
     
     func roomViewModel(roomViewModel: RoomViewModel, didUpdate members: [Member]) {
@@ -66,6 +73,7 @@ extension RoomViewController: RoomViewModelDelegate {
     
     func roomViewModel(roomViewModel: RoomViewModel, didUpdate queue: [Song]) {
         print("Queue Count: \(queue.count)")
+        tableView.reloadData()
     }
 }
 
@@ -75,5 +83,62 @@ extension RoomViewController: RoomViewModelDelegate {
 extension RoomViewController: UISearchControllerDelegate {
     func presentSearchController(_ searchController: UISearchController) {
         searchController.showsSearchResultsController = true
+    }
+}
+
+
+
+// MARK: - UITableViewDataSource
+extension RoomViewController: UITableViewDataSource {
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let sectionCount = [1, roomViewModel.queue.count]
+        return sectionCount[section]
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if indexPath.section == 0 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "CurrentSongTableViewCell", for: indexPath) as! CurrentSongTableViewCell
+            if let song = roomViewModel.room.playingSong {
+                cell.song = song
+            } else {
+                cell.songLabel.text = "No song playing"
+                cell.artistLabel.text = ""
+            }
+            return cell
+        }
+        
+        else {
+            let song = roomViewModel.queue[indexPath.row]
+            let cell = tableView.dequeueReusableCell(withIdentifier: "SongTableViewCell", for: indexPath) as! SongTableViewCell
+            cell.song = song
+            return cell
+        }
+    }
+}
+
+
+
+// MARK: - UITableViewDelegate
+extension RoomViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.section == 1 {
+            let selectedCell = tableView.cellForRow(at: indexPath) as! SongTableViewCell
+            roomViewModel.play(selectedCell.song!)
+        }
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if indexPath.section == 0 {
+            return tableView.frame.width/2.5
+        } else {
+            return 82
+        }
     }
 }

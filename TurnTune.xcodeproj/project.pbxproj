@@ -47,6 +47,7 @@
 		95D9747D25B41D80000286C9 /* TurnTuneError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D9747C25B41D7F000286C9 /* TurnTuneError.swift */; };
 		95DD20AC259B1E65000EE8B3 /* SearchResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DD20AB259B1E65000EE8B3 /* SearchResultsViewController.swift */; };
 		95DD4CB925B81E580051C4E4 /* Room.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DD4CB825B81E580051C4E4 /* Room.swift */; };
+		95E13D5E2623E52B0026334A /* CurrentSongTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E13D5D2623E52B0026334A /* CurrentSongTableViewCell.swift */; };
 		95FA8BDF2601C643003FA6FD /* APIResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95FA8BDE2601C643003FA6FD /* APIResource.swift */; };
 		95FA8BE22601C716003FA6FD /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95FA8BE12601C716003FA6FD /* HTTPMethod.swift */; };
 /* End PBXBuildFile section */
@@ -96,6 +97,7 @@
 		95D9747C25B41D7F000286C9 /* TurnTuneError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TurnTuneError.swift; sourceTree = "<group>"; };
 		95DD20AB259B1E65000EE8B3 /* SearchResultsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsViewController.swift; sourceTree = "<group>"; };
 		95DD4CB825B81E580051C4E4 /* Room.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Room.swift; sourceTree = "<group>"; };
+		95E13D5D2623E52B0026334A /* CurrentSongTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentSongTableViewCell.swift; sourceTree = "<group>"; };
 		95FA8BDE2601C643003FA6FD /* APIResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIResource.swift; sourceTree = "<group>"; };
 		95FA8BE12601C716003FA6FD /* HTTPMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
 		E0FA0346E301380620068D19 /* Pods-TurnTune.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TurnTune.release.xcconfig"; path = "Target Support Files/Pods-TurnTune/Pods-TurnTune.release.xcconfig"; sourceTree = "<group>"; };
@@ -137,6 +139,7 @@
 			children = (
 				954A26A7261AB9D90034356D /* SongTableViewCell.swift */,
 				95A218FE25B67FAD008EA6C7 /* SearchResultsTableViewCell.swift */,
+				95E13D5D2623E52B0026334A /* CurrentSongTableViewCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -453,6 +456,7 @@
 				954A26A8261AB9D90034356D /* SongTableViewCell.swift in Sources */,
 				954A26972618D7920034356D /* Constants.swift in Sources */,
 				95C7715225944C1E00EDF930 /* AppDelegate.swift in Sources */,
+				95E13D5E2623E52B0026334A /* CurrentSongTableViewCell.swift in Sources */,
 				959DA05F25D0FF0900D86C73 /* AuthViewModel.swift in Sources */,
 				95A5629B2604406000C9496B /* SpotifyPlayerAPI.swift in Sources */,
 				95C7715425944C1E00EDF930 /* SceneDelegate.swift in Sources */,

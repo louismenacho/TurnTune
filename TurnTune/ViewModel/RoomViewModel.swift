@@ -13,6 +13,7 @@ protocol RoomViewModelDelegate: class {
     func roomViewModel(roomViewModel: RoomViewModel, didInitialize: Bool)
     func roomViewModel(roomViewModel: RoomViewModel, didUpdate room: Room)
     func roomViewModel(roomViewModel: RoomViewModel, didUpdate members: [Member])
+    func roomViewModel(roomViewModel: RoomViewModel, didUpdate queue: [Song])
 }
 
 class RoomViewModel {
@@ -22,8 +23,8 @@ class RoomViewModel {
     
     // Models
     private(set) var room: Room!
-    private(set) var members: [Member]!
-    private(set) var queue: [Song]!
+    private(set) var members = [Member]()
+    private(set) var queue = [Song]()
     
     // Firestore
     private(set) var roomPath: String
@@ -49,9 +50,18 @@ class RoomViewModel {
         spotifyAppRemote.delegate = self
     }
     
+    func setRoomPlayingSong(_ song: Song, completion: (() -> Void)? = nil) {
+        room.playingSong = song
+        firestore.setData(from: room, in: roomPath) { error in
+            if let error = error {
+                print(error)
+            }
+            completion?()
+        }
+    }
+    
     func queueSong(_ song: Song, completion: (() -> Void)? = nil) {
-        queue.append(song)
-        firestore.setData(from: queue, in: queueCollectionPath) { error in
+        firestore.appendData(from: song, in: queueCollectionPath) { error in
             if let error = error {
                 print(error)
             }
@@ -104,6 +114,17 @@ class RoomViewModel {
             group.leave()
         }
         
+        group.enter()
+        firestore.getCollectionData(collectionPath: queueCollectionPath, orderBy: "dateAdded") { (result: Result<[Song], Error>) in
+            switch result {
+            case let .failure(error):
+                print(error)
+            case let .success(queue):
+                self.queue = queue
+            }
+            group.leave()
+        }
+        
         group.notify(queue: .main) {
             self.delegate?.roomViewModel(roomViewModel: self, didInitialize: true)
             completion()
@@ -120,6 +141,7 @@ class RoomViewModel {
                 self.delegate?.roomViewModel(roomViewModel: self, didUpdate: room)
             }
         }
+        
         firestore.addCollectionListener(collectionPath: membersCollectionPath, orderBy: "dateJoined") { (result: Result<[Member], Error>) in
             switch result {
             case let .failure(error):
@@ -129,11 +151,33 @@ class RoomViewModel {
                 self.delegate?.roomViewModel(roomViewModel: self, didUpdate: members)
             }
         }
+        
+        firestore.addCollectionListener(collectionPath: queueCollectionPath, orderBy: "dateAdded") { (result: Result<[Song], Error>) in
+            switch result {
+            case let .failure(error):
+                print(error)
+            case let .success(queue):
+                self.queue = queue
+                self.delegate?.roomViewModel(roomViewModel: self, didUpdate: queue)
+            }
+        }
     }
 }
 
 extension RoomViewModel: SpotifyAppRemoteDelegate {
-    func spotifyAppRemote(spotifyAppRemote: SpotifyAppRemote, trackDidChange track: SPTAppRemoteTrack) {
-        
+    func spotifyAppRemote(spotifyAppRemote: SpotifyAppRemote, trackDidChange newTrack: SPTAppRemoteTrack) {
+        if let nextSong = queue.filter({ $0.spotifyURI == newTrack.uri }).first {
+            setRoomPlayingSong(nextSong)
+        }
+    }
+    
+    func spotifyAppRemote(spotifyAppRemote: SpotifyAppRemote, trackDidFinish track: SPTAppRemoteTrack) {
+        print(queue.count)
+        if !queue.isEmpty {
+            let song = queue.removeFirst()
+            play(song) {
+                Firestore.firestore().document(self.queueCollectionPath+"/"+song.id!).delete()
+            }
+        }
     }
 }

@@ -8,7 +8,8 @@
 import Foundation
 
 protocol SpotifyAppRemoteDelegate: class {
-    func spotifyAppRemote(spotifyAppRemote: SpotifyAppRemote, trackDidChange track: SPTAppRemoteTrack)
+    func spotifyAppRemote(spotifyAppRemote: SpotifyAppRemote, trackDidChange newTrack: SPTAppRemoteTrack)
+    func spotifyAppRemote(spotifyAppRemote: SpotifyAppRemote, trackDidFinish track: SPTAppRemoteTrack)
 }
 
 class SpotifyAppRemote: NSObject {
@@ -18,7 +19,7 @@ class SpotifyAppRemote: NSObject {
     private(set) static var shared = SpotifyAppRemote()
     
     private let appRemote: SPTAppRemote
-    private var playerState: SPTAppRemotePlayerState?
+    private var lastPlayerState: SPTAppRemotePlayerState?
     
     var isConnected: Bool { appRemote.isConnected }
     var hasAccessToken: Bool { appRemote.connectionParameters.accessToken != nil }
@@ -119,10 +120,30 @@ extension SpotifyAppRemote: SPTAppRemoteDelegate {
 extension SpotifyAppRemote: SPTAppRemotePlayerStateDelegate {
     
     func playerStateDidChange(_ playerState: SPTAppRemotePlayerState) {
-        if self.playerState?.track.uri != playerState.track.uri {
+        print("playerStateDidChange")
+        
+        if self.lastPlayerState?.track.uri != playerState.track.uri {
             self.delegate?.spotifyAppRemote(spotifyAppRemote: self, trackDidChange: playerState.track)
             print("spotifyAppRemote trackDidChange")
         }
-        self.playerState = playerState
+        
+        if playerState.isPaused && playerState.playbackPosition == 0 {
+            self.delegate?.spotifyAppRemote(spotifyAppRemote: self, trackDidFinish: playerState.track)
+            print("spotifyAppRemote trackDidChange")
+        }
+        
+        self.lastPlayerState = playerState
+    }
+    
+    func debugPlayerState(playerState: SPTAppRemotePlayerState) {
+        print("contextTitle: \(playerState.contextTitle)")
+        print("contextURI: \(playerState.contextURI)")
+        print("isPaused: \(playerState.isPaused)")
+        print("playbackPosition: \(playerState.playbackPosition)")
+        print("playbackSpeed: \(playerState.playbackSpeed)")
+        print("uri: \(playerState.track.uri)")
+        print("track name: \(playerState.track.name)")
+        print("artist name: \(playerState.track.artist.name)")
+        print("albumb name: \(playerState.track.album.name)")
     }
 }
