@@ -33,6 +33,7 @@ class RoomViewModel {
     private(set) var firestore = FirebaseFirestore.shared
     
     // Spotify
+    private var spotifySessionManager = SpotifySessionManager.shared
     private var spotifyAppRemote = SpotifyAppRemote.shared
     private var spotifyWebAPI = SpotifyAPI.shared
     
@@ -42,12 +43,14 @@ class RoomViewModel {
     
     init(roomPath: String) {
         self.roomPath = roomPath
-        loadFirestoreData(completion:) {
+        loadFirestoreData(completion:) { [self] in
             self.addFirestoreListeners()
+            
+            if room.host.uid == currentMember?.uid {
+                spotifySessionManager.initiateSession()
+                spotifyAppRemote.delegate = self
+            }
         }
-        
-        SpotifySessionManager.shared.initiateSession()
-        spotifyAppRemote.delegate = self
     }
     
     func setRoomPlayingSong(_ song: Song, completion: (() -> Void)? = nil) {

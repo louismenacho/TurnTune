@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		223E31EA27955DAC254BD939 /* Pods_TurnTune.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5BBF6B19608B3982A6725405 /* Pods_TurnTune.framework */; };
+		16412D7393C3D5F243D44036 /* Pods_TurnTune.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 777A9658ACE9A56805CB14CB /* Pods_TurnTune.framework */; };
 		954A268526154B640034356D /* SpotifyAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 954A268426154B640034356D /* SpotifyAPI.swift */; };
 		954A2688261566B10034356D /* CurrentlyPlayingResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 954A2687261566B10034356D /* CurrentlyPlayingResponse.swift */; };
 		954A26972618D7920034356D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 954A26962618D7920034356D /* Constants.swift */; };
@@ -53,8 +53,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		5BBF6B19608B3982A6725405 /* Pods_TurnTune.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TurnTune.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		71457E558984F9A2C4B7C32E /* Pods-TurnTune.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TurnTune.debug.xcconfig"; path = "Target Support Files/Pods-TurnTune/Pods-TurnTune.debug.xcconfig"; sourceTree = "<group>"; };
+		777A9658ACE9A56805CB14CB /* Pods_TurnTune.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TurnTune.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8907FF71062BB6AED1BE5AAD /* Pods-TurnTune.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TurnTune.debug.xcconfig"; path = "Target Support Files/Pods-TurnTune/Pods-TurnTune.debug.xcconfig"; sourceTree = "<group>"; };
 		954A268426154B640034356D /* SpotifyAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyAPI.swift; sourceTree = "<group>"; };
 		954A2687261566B10034356D /* CurrentlyPlayingResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentlyPlayingResponse.swift; sourceTree = "<group>"; };
 		954A26962618D7920034356D /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -100,7 +100,7 @@
 		95E13D5D2623E52B0026334A /* CurrentSongTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentSongTableViewCell.swift; sourceTree = "<group>"; };
 		95FA8BDE2601C643003FA6FD /* APIResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIResource.swift; sourceTree = "<group>"; };
 		95FA8BE12601C716003FA6FD /* HTTPMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
-		E0FA0346E301380620068D19 /* Pods-TurnTune.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TurnTune.release.xcconfig"; path = "Target Support Files/Pods-TurnTune/Pods-TurnTune.release.xcconfig"; sourceTree = "<group>"; };
+		B1C17C9E91A1B7C7711B3100 /* Pods-TurnTune.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TurnTune.release.xcconfig"; path = "Target Support Files/Pods-TurnTune/Pods-TurnTune.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,7 +109,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				956640A925CBC57B007794E4 /* SpotifyiOS.framework in Frameworks */,
-				223E31EA27955DAC254BD939 /* Pods_TurnTune.framework in Frameworks */,
+				16412D7393C3D5F243D44036 /* Pods_TurnTune.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -120,7 +120,7 @@
 			isa = PBXGroup;
 			children = (
 				956640A825CBC57B007794E4 /* SpotifyiOS.framework */,
-				5BBF6B19608B3982A6725405 /* Pods_TurnTune.framework */,
+				777A9658ACE9A56805CB14CB /* Pods_TurnTune.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -128,8 +128,8 @@
 		6E071289CF6B62E1E3FFBCD5 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				71457E558984F9A2C4B7C32E /* Pods-TurnTune.debug.xcconfig */,
-				E0FA0346E301380620068D19 /* Pods-TurnTune.release.xcconfig */,
+				8907FF71062BB6AED1BE5AAD /* Pods-TurnTune.debug.xcconfig */,
+				B1C17C9E91A1B7C7711B3100 /* Pods-TurnTune.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -321,11 +321,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 95C7716225944C1F00EDF930 /* Build configuration list for PBXNativeTarget "TurnTune" */;
 			buildPhases = (
-				6C1076488076A797C75ADEE9 /* [CP] Check Pods Manifest.lock */,
+				DCF3CD11471347F8FF718446 /* [CP] Check Pods Manifest.lock */,
 				95C7714A25944C1E00EDF930 /* Sources */,
 				95C7714B25944C1E00EDF930 /* Frameworks */,
 				95C7714C25944C1E00EDF930 /* Resources */,
-				07EBFDBE0622B280F8200074 /* [CP] Embed Pods Frameworks */,
+				D70BB5217BACFB86E5CF93D2 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -384,7 +384,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		07EBFDBE0622B280F8200074 /* [CP] Embed Pods Frameworks */ = {
+		D70BB5217BACFB86E5CF93D2 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -401,7 +401,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TurnTune/Pods-TurnTune-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		6C1076488076A797C75ADEE9 /* [CP] Check Pods Manifest.lock */ = {
+		DCF3CD11471347F8FF718446 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -609,7 +609,7 @@
 		};
 		95C7716325944C1F00EDF930 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 71457E558984F9A2C4B7C32E /* Pods-TurnTune.debug.xcconfig */;
+			baseConfigurationReference = 8907FF71062BB6AED1BE5AAD /* Pods-TurnTune.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -637,7 +637,7 @@
 		};
 		95C7716425944C1F00EDF930 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E0FA0346E301380620068D19 /* Pods-TurnTune.release.xcconfig */;
+			baseConfigurationReference = B1C17C9E91A1B7C7711B3100 /* Pods-TurnTune.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

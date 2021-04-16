@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SDWebImage
 
 class SongTableViewCell: UITableViewCell {
     
@@ -13,6 +14,7 @@ class SongTableViewCell: UITableViewCell {
         didSet {
             songLabel.text = song!.name
             artistLabel.text = song!.artistName
+            albumImageView.sd_setImage(with: URL(string: song!.artworkURL), placeholderImage: UIImage(systemName: "photo.fill"))
         }
     }
     

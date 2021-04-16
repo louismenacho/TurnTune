@@ -1,0 +1,15 @@
+{
+  "images" : [
+    {
+      "filename" : "Spotify_Logo_RGB_Green.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "properties" : {
+    "preserves-vector-representation" : true
+  }
+}

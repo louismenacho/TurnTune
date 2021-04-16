@@ -17,7 +17,7 @@ class RoomViewController: UIViewController {
         super.viewDidLoad()
         navigationController!.navigationBar.standardAppearance.shadowColor = .clear
         navigationItem.hidesBackButton = true
-        navigationItem.hidesSearchBarWhenScrolling = false
+//        navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.searchController = prepareSearchController()
         roomViewModel.delegate = self
     }
@@ -92,11 +92,11 @@ extension RoomViewController: UISearchControllerDelegate {
 extension RoomViewController: UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 3
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let sectionCount = [1, roomViewModel.queue.count]
+        let sectionCount = [1, 1, roomViewModel.queue.count]
         return sectionCount[section]
     }
     
@@ -109,6 +109,11 @@ extension RoomViewController: UITableViewDataSource {
                 cell.songLabel.text = "No song playing"
                 cell.artistLabel.text = ""
             }
+            return cell
+        }
+        
+        if indexPath.section == 1 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "AddSongButtonTableViewCell", for: indexPath)
             return cell
         }
         
@@ -127,7 +132,7 @@ extension RoomViewController: UITableViewDataSource {
 extension RoomViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.section == 1 {
+        if indexPath.section == 2 {
             let selectedCell = tableView.cellForRow(at: indexPath) as! SongTableViewCell
             roomViewModel.play(selectedCell.song!)
         }
@@ -136,9 +141,27 @@ extension RoomViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.section == 0 {
-            return tableView.frame.width/2.5
+            return tableView.frame.width * (124.5/414)
+        }
+        if indexPath.section == 1 {
+            return tableView.frame.width * (30/414)
         } else {
             return 82
         }
     }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if section == 0 {
+            return "Now Playing"
+        }
+        if section == 1 {
+            return nil
+        }
+        if section == 2 {
+            return "Room Queue"
+        }
+        return nil
+    }
 }
+
+//AddSongButtonTableViewCell
