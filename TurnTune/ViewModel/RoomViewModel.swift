@@ -22,7 +22,7 @@ class RoomViewModel {
     weak var delegate: RoomViewModelDelegate?
     
     // Models
-    private(set) var room: Room!
+    private(set) var room: Room?
     private(set) var members = [Member]()
     private(set) var queue = [Song]()
     
@@ -39,14 +39,13 @@ class RoomViewModel {
     
     // Computed
     var currentMember: Member? { members.first { $0.uid == Auth.auth().currentUser?.uid } }
-    var isCurrentMemberTurn: Bool { members[room.turn].uid == Auth.auth().currentUser?.uid }
     
     init(roomPath: String) {
         self.roomPath = roomPath
         loadFirestoreData(completion:) { [self] in
             self.addFirestoreListeners()
             
-            if room.host.uid == currentMember?.uid {
+            if room?.host.uid == currentMember?.uid {
                 spotifySessionManager.initiateSession()
                 spotifyAppRemote.delegate = self
             }
@@ -54,7 +53,7 @@ class RoomViewModel {
     }
     
     func setRoomPlayingSong(_ song: Song, completion: (() -> Void)? = nil) {
-        room.playingSong = song
+        room?.playingSong = song
         firestore.setData(from: room, in: roomPath) { error in
             if let error = error {
                 print(error)

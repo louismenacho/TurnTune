@@ -7,11 +7,9 @@
 
 import UIKit
 
-class RoomViewController: UIViewController {
+class RoomViewController: UITableViewController {
     
     var roomViewModel: RoomViewModel!
-    
-    @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,10 +20,10 @@ class RoomViewController: UIViewController {
         roomViewModel.delegate = self
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        navigationItem.hidesSearchBarWhenScrolling = true
-    }
+//    override func viewDidAppear(_ animated: Bool) {
+//        super.viewDidAppear(animated)
+//        navigationItem.hidesSearchBarWhenScrolling = true
+//    }
     
     private func prepareSearchController() -> UISearchController {
         let searchResultsViewController = prepareSearchResultsViewController()
@@ -57,9 +55,7 @@ class RoomViewController: UIViewController {
 extension RoomViewController: RoomViewModelDelegate {
         
     func roomViewModel(roomViewModel: RoomViewModel, didInitialize: Bool) {
-        navigationItem.title = roomViewModel.room.code
-        tableView.dataSource = self
-        tableView.delegate = self
+        navigationItem.title = roomViewModel.room?.code
         tableView.reloadData()
     }
     
@@ -89,21 +85,21 @@ extension RoomViewController: UISearchControllerDelegate {
 
 
 // MARK: - UITableViewDataSource
-extension RoomViewController: UITableViewDataSource {
+extension RoomViewController {
     
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 3
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let sectionCount = [1, 1, roomViewModel.queue.count]
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let sectionCount = [1, roomViewModel.queue.count]
         return sectionCount[section]
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "CurrentSongTableViewCell", for: indexPath) as! CurrentSongTableViewCell
-            if let song = roomViewModel.room.playingSong {
+            if let song = roomViewModel.room?.playingSong {
                 cell.song = song
             } else {
                 cell.songLabel.text = "No song playing"
@@ -111,17 +107,13 @@ extension RoomViewController: UITableViewDataSource {
             }
             return cell
         }
-        
-        if indexPath.section == 1 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "AddSongButtonTableViewCell", for: indexPath)
-            return cell
-        }
-        
-        else {
+        else if !roomViewModel.queue.isEmpty {
             let song = roomViewModel.queue[indexPath.row]
             let cell = tableView.dequeueReusableCell(withIdentifier: "SongTableViewCell", for: indexPath) as! SongTableViewCell
             cell.song = song
             return cell
+        } else {
+            return UITableViewCell()
         }
     }
 }
@@ -129,39 +121,36 @@ extension RoomViewController: UITableViewDataSource {
 
 
 // MARK: - UITableViewDelegate
-extension RoomViewController: UITableViewDelegate {
+extension RoomViewController {
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.section == 2 {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.section == 1 {
             let selectedCell = tableView.cellForRow(at: indexPath) as! SongTableViewCell
             roomViewModel.play(selectedCell.song!)
         }
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.section == 0 {
             return tableView.frame.width * (124.5/414)
         }
-        if indexPath.section == 1 {
-            return tableView.frame.width * (30/414)
-        } else {
-            return 82
+        else {
+            return tableView.frame.width * (82/414)
         }
     }
     
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if section == 0 {
             return "Now Playing"
         }
         if section == 1 {
-            return nil
-        }
-        if section == 2 {
             return "Room Queue"
         }
         return nil
     }
+    
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 30
+    }
 }
-
-//AddSongButtonTableViewCell
