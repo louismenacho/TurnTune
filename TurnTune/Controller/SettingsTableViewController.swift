@@ -1,0 +1,117 @@
+//
+//  SettingsTableViewController.swift
+//  TurnTune
+//
+//  Created by Louis Menacho on 4/21/21.
+//
+
+import UIKit
+
+class SettingsTableViewController: UITableViewController {
+    
+    var roomViewModel: RoomViewModel!
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        navigationItem.title = "Settings"
+    }
+
+    // MARK: - Table view data source
+
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return 3
+    }
+
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let sectionCounts = [1, 1, roomViewModel.members.count]
+        return sectionCounts[section]
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        switch indexPath.section {
+        case 0:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "SettingTableViewCell", for: indexPath) as! SettingTableViewCell
+            cell.label.text = "Fair"
+            return cell
+        case 1:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "SettingTableViewCell", for: indexPath) as! SettingTableViewCell
+            cell.label.text = "Automatic"
+            return cell
+        case 2:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "SettingTableViewCell", for: indexPath) as! SettingTableViewCell
+            let member = roomViewModel.members[indexPath.row]
+            cell.label.text = roomViewModel.room?.host.uid == member.uid ? "\(member.displayName) (Host)" : member.displayName
+            return cell
+        default:
+            return UITableViewCell()
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let sectionTitle = ["Queue Mode", "Dark Mode", "Members"][indexPath.section]
+        
+        switch sectionTitle {
+        case "Queue Mode":
+            showAlert(title: sectionTitle, message: nil, actions: createAlertActions(titles: ["Fair", "FIFO"]))
+            
+        case "Dark Mode":
+            showAlert(title: sectionTitle, message: nil, actions: createAlertActions(titles: ["Automatic", "Light","Dark"]) { alertAction  in
+                let cell = tableView.cellForRow(at: indexPath) as! SettingTableViewCell
+                cell.label.text = alertAction.title
+            
+                guard
+                    let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                    let sceneDelegate = windowScene.delegate as? SceneDelegate,
+                    let window = sceneDelegate.window
+                else {
+                    return
+                }
+                
+                switch alertAction.title {
+                case "Light":
+                    window.overrideUserInterfaceStyle = .light
+                    break
+                case "Dark":
+                    window.overrideUserInterfaceStyle = .dark
+                    break
+                default:
+                    window.overrideUserInterfaceStyle = .unspecified
+                }
+            })
+            
+        case "Members":
+            let alertActions = [
+                UIAlertAction(title: "Make Admin", style: .default, handler: nil),
+                UIAlertAction(title: "Remove", style: .destructive, handler: nil)
+            ]
+            showAlert(title: sectionTitle, message: nil, actions: alertActions)
+            
+        default:
+            break
+        }
+        
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    func showAlert(title: String, message: String?, actions: [UIAlertAction]) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
+        actions.forEach { alert.addAction($0) }
+        present(alert, animated: true) {
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.dismissAction))
+            alert.view.superview?.subviews[0].addGestureRecognizer(tapGesture)
+        }
+    }
+    
+    func createAlertActions(titles: [String], handler: ((UIAlertAction) -> Void)? = nil) -> [UIAlertAction] {
+        return titles.map { UIAlertAction(title: $0, style: .default, handler: handler) }
+    }
+    
+    @objc func dismissAction() {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let sectionHeaders = ["Queue Mode", "Dark Mode", "Members"]
+        return sectionHeaders[section]
+    }
+}

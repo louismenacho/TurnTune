@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol SpotifyAppRemoteDelegate: class {
+protocol SpotifyAppRemoteDelegate: AnyObject {
     func spotifyAppRemote(spotifyAppRemote: SpotifyAppRemote, trackDidChange newTrack: SPTAppRemoteTrack)
     func spotifyAppRemote(spotifyAppRemote: SpotifyAppRemote, trackDidFinish track: SPTAppRemoteTrack)
 }

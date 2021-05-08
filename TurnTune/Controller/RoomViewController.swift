@@ -44,8 +44,15 @@ class RoomViewController: UITableViewController {
         return searchResultsViewController
     }
     
-    @IBAction func reconnectButtonPressed(_ sender: UIBarButtonItem) {
-        SpotifyAppRemote.shared.connectIfNeeded()
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "SettingsTableViewController" {
+            let settingsTableViewController = segue.destination as! SettingsTableViewController
+            settingsTableViewController.roomViewModel = roomViewModel
+        }
+    }
+    
+    @IBAction func settingsButtonPressed(_ sender: UIBarButtonItem) {
+        performSegue(withIdentifier: "SettingsTableViewController", sender: self)
     }
 }
 

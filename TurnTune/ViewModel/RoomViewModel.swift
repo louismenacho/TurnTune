@@ -9,17 +9,23 @@ import Foundation
 import Firebase
 import FirebaseFirestoreSwift
 
-protocol RoomViewModelDelegate: class {
+protocol RoomViewModelDelegate: AnyObject {
     func roomViewModel(roomViewModel: RoomViewModel, didInitialize: Bool)
     func roomViewModel(roomViewModel: RoomViewModel, didUpdate room: Room)
     func roomViewModel(roomViewModel: RoomViewModel, didUpdate members: [Member])
     func roomViewModel(roomViewModel: RoomViewModel, didUpdate queue: [Song])
 }
 
+protocol RoomViewModelMembersDelegate: AnyObject {
+    func roomViewModel(roomViewModel: RoomViewModel, didUpdate members: [Member])
+}
+
 class RoomViewModel {
     
     // Delegates
     weak var delegate: RoomViewModelDelegate?
+    weak var membersDelegate: RoomViewModelMembersDelegate?
+
     
     // Models
     private(set) var room: Room?
@@ -151,6 +157,7 @@ class RoomViewModel {
             case let .success(members):
                 self.members = members
                 self.delegate?.roomViewModel(roomViewModel: self, didUpdate: members)
+                self.membersDelegate?.roomViewModel(roomViewModel: self, didUpdate: members)
             }
         }
         

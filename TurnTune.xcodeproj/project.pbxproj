@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		16412D7393C3D5F243D44036 /* Pods_TurnTune.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 777A9658ACE9A56805CB14CB /* Pods_TurnTune.framework */; };
+		50716431FF83787EDF0025F6 /* Pods_TurnTune.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BAEF06DC6FFD47EC0E6E4B2 /* Pods_TurnTune.framework */; };
 		954A268526154B640034356D /* SpotifyAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 954A268426154B640034356D /* SpotifyAPI.swift */; };
 		954A2688261566B10034356D /* CurrentlyPlayingResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 954A2687261566B10034356D /* CurrentlyPlayingResponse.swift */; };
 		954A26972618D7920034356D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 954A26962618D7920034356D /* Constants.swift */; };
@@ -18,6 +18,7 @@
 		956634EA25EC4FC900D6EEEB /* SpotifySessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 956634E925EC4FC900D6EEEB /* SpotifySessionManager.swift */; };
 		956640A925CBC57B007794E4 /* SpotifyiOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 956640A825CBC57B007794E4 /* SpotifyiOS.framework */; };
 		956640AC25CBC722007794E4 /* SpotifyService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 956640AB25CBC722007794E4 /* SpotifyService-Info.plist */; };
+		9586D6CF262FF30C00DBE910 /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9586D6CE262FF30C00DBE910 /* SettingsTableViewController.swift */; };
 		958B339F25C941F8002B8F7E /* HTTPAuthorization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958B339E25C941F8002B8F7E /* HTTPAuthorization.swift */; };
 		95979E6C25DF9512007BDB4A /* FirebaseFirestore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95979E6B25DF9512007BDB4A /* FirebaseFirestore.swift */; };
 		95979E7025DF95BC007BDB4A /* FirebaseAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95979E6F25DF95BC007BDB4A /* FirebaseAuth.swift */; };
@@ -42,6 +43,8 @@
 		95C7715E25944C1F00EDF930 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 95C7715C25944C1F00EDF930 /* LaunchScreen.storyboard */; };
 		95C7716D2597F07100EDF930 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 95C7716C2597F07100EDF930 /* GoogleService-Info.plist */; };
 		95CA144225C93D970079C395 /* SpotifySearchAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95CA144125C93D970079C395 /* SpotifySearchAPI.swift */; };
+		95D00B212635C7450004B833 /* SettingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D00B202635C7450004B833 /* SettingTableViewCell.swift */; };
+		95D00B242635C7BA0004B833 /* ToggleSettingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D00B232635C7BA0004B833 /* ToggleSettingTableViewCell.swift */; };
 		95D9747025B41CB9000286C9 /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D9746F25B41CB9000286C9 /* AuthViewController.swift */; };
 		95D9747925B41CE0000286C9 /* Member.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D9747625B41CDF000286C9 /* Member.swift */; };
 		95D9747D25B41D80000286C9 /* TurnTuneError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D9747C25B41D7F000286C9 /* TurnTuneError.swift */; };
@@ -53,8 +56,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		777A9658ACE9A56805CB14CB /* Pods_TurnTune.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TurnTune.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		8907FF71062BB6AED1BE5AAD /* Pods-TurnTune.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TurnTune.debug.xcconfig"; path = "Target Support Files/Pods-TurnTune/Pods-TurnTune.debug.xcconfig"; sourceTree = "<group>"; };
+		537A5C2DC5E0264383DD95D1 /* Pods-TurnTune.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TurnTune.release.xcconfig"; path = "Target Support Files/Pods-TurnTune/Pods-TurnTune.release.xcconfig"; sourceTree = "<group>"; };
 		954A268426154B640034356D /* SpotifyAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyAPI.swift; sourceTree = "<group>"; };
 		954A2687261566B10034356D /* CurrentlyPlayingResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentlyPlayingResponse.swift; sourceTree = "<group>"; };
 		954A26962618D7920034356D /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -65,6 +67,7 @@
 		956634E925EC4FC900D6EEEB /* SpotifySessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifySessionManager.swift; sourceTree = "<group>"; };
 		956640A825CBC57B007794E4 /* SpotifyiOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpotifyiOS.framework; path = Frameworks/SpotifyiOS.framework; sourceTree = "<group>"; };
 		956640AB25CBC722007794E4 /* SpotifyService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "SpotifyService-Info.plist"; sourceTree = "<group>"; };
+		9586D6CE262FF30C00DBE910 /* SettingsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
 		958B339E25C941F8002B8F7E /* HTTPAuthorization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPAuthorization.swift; sourceTree = "<group>"; };
 		958B33DD25CBAE47002B8F7E /* TurnTune-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TurnTune-Bridging-Header.h"; sourceTree = "<group>"; };
 		95979E6B25DF9512007BDB4A /* FirebaseFirestore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseFirestore.swift; sourceTree = "<group>"; };
@@ -92,6 +95,8 @@
 		95C7715F25944C1F00EDF930 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		95C7716C2597F07100EDF930 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		95CA144125C93D970079C395 /* SpotifySearchAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifySearchAPI.swift; sourceTree = "<group>"; };
+		95D00B202635C7450004B833 /* SettingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingTableViewCell.swift; sourceTree = "<group>"; };
+		95D00B232635C7BA0004B833 /* ToggleSettingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleSettingTableViewCell.swift; sourceTree = "<group>"; };
 		95D9746F25B41CB9000286C9 /* AuthViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
 		95D9747625B41CDF000286C9 /* Member.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Member.swift; sourceTree = "<group>"; };
 		95D9747C25B41D7F000286C9 /* TurnTuneError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TurnTuneError.swift; sourceTree = "<group>"; };
@@ -100,7 +105,8 @@
 		95E13D5D2623E52B0026334A /* CurrentSongTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentSongTableViewCell.swift; sourceTree = "<group>"; };
 		95FA8BDE2601C643003FA6FD /* APIResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIResource.swift; sourceTree = "<group>"; };
 		95FA8BE12601C716003FA6FD /* HTTPMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
-		B1C17C9E91A1B7C7711B3100 /* Pods-TurnTune.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TurnTune.release.xcconfig"; path = "Target Support Files/Pods-TurnTune/Pods-TurnTune.release.xcconfig"; sourceTree = "<group>"; };
+		9BAEF06DC6FFD47EC0E6E4B2 /* Pods_TurnTune.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TurnTune.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		EAF91C1AEFE99FE1C2136EE8 /* Pods-TurnTune.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TurnTune.debug.xcconfig"; path = "Target Support Files/Pods-TurnTune/Pods-TurnTune.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,7 +115,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				956640A925CBC57B007794E4 /* SpotifyiOS.framework in Frameworks */,
-				16412D7393C3D5F243D44036 /* Pods_TurnTune.framework in Frameworks */,
+				50716431FF83787EDF0025F6 /* Pods_TurnTune.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -120,7 +126,7 @@
 			isa = PBXGroup;
 			children = (
 				956640A825CBC57B007794E4 /* SpotifyiOS.framework */,
-				777A9658ACE9A56805CB14CB /* Pods_TurnTune.framework */,
+				9BAEF06DC6FFD47EC0E6E4B2 /* Pods_TurnTune.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -128,8 +134,8 @@
 		6E071289CF6B62E1E3FFBCD5 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				8907FF71062BB6AED1BE5AAD /* Pods-TurnTune.debug.xcconfig */,
-				B1C17C9E91A1B7C7711B3100 /* Pods-TurnTune.release.xcconfig */,
+				EAF91C1AEFE99FE1C2136EE8 /* Pods-TurnTune.debug.xcconfig */,
+				537A5C2DC5E0264383DD95D1 /* Pods-TurnTune.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -137,9 +143,11 @@
 		9528764A25D2544D001B962D /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				95E13D5D2623E52B0026334A /* CurrentSongTableViewCell.swift */,
 				954A26A7261AB9D90034356D /* SongTableViewCell.swift */,
 				95A218FE25B67FAD008EA6C7 /* SearchResultsTableViewCell.swift */,
-				95E13D5D2623E52B0026334A /* CurrentSongTableViewCell.swift */,
+				95D00B202635C7450004B833 /* SettingTableViewCell.swift */,
+				95D00B232635C7BA0004B833 /* ToggleSettingTableViewCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -228,6 +236,7 @@
 				95D9746F25B41CB9000286C9 /* AuthViewController.swift */,
 				95C7715525944C1E00EDF930 /* RoomViewController.swift */,
 				95DD20AB259B1E65000EE8B3 /* SearchResultsViewController.swift */,
+				9586D6CE262FF30C00DBE910 /* SettingsTableViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -321,11 +330,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 95C7716225944C1F00EDF930 /* Build configuration list for PBXNativeTarget "TurnTune" */;
 			buildPhases = (
-				DCF3CD11471347F8FF718446 /* [CP] Check Pods Manifest.lock */,
+				3B67F65BCEA6B45D9D9A566B /* [CP] Check Pods Manifest.lock */,
 				95C7714A25944C1E00EDF930 /* Sources */,
 				95C7714B25944C1E00EDF930 /* Frameworks */,
 				95C7714C25944C1E00EDF930 /* Resources */,
-				D70BB5217BACFB86E5CF93D2 /* [CP] Embed Pods Frameworks */,
+				E32BB1D3B6C27F24163C0986 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -384,24 +393,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		D70BB5217BACFB86E5CF93D2 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-TurnTune/Pods-TurnTune-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-TurnTune/Pods-TurnTune-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TurnTune/Pods-TurnTune-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		DCF3CD11471347F8FF718446 /* [CP] Check Pods Manifest.lock */ = {
+		3B67F65BCEA6B45D9D9A566B /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -423,6 +415,23 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		E32BB1D3B6C27F24163C0986 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TurnTune/Pods-TurnTune-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TurnTune/Pods-TurnTune-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TurnTune/Pods-TurnTune-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -435,12 +444,14 @@
 				95D9747D25B41D80000286C9 /* TurnTuneError.swift in Sources */,
 				95A4049025C541F700F10E36 /* SpotifyAccountsAPI.swift in Sources */,
 				954A2688261566B10034356D /* CurrentlyPlayingResponse.swift in Sources */,
+				9586D6CF262FF30C00DBE910 /* SettingsTableViewController.swift in Sources */,
 				95A4048925C52CEA00F10E36 /* APIEndpoint.swift in Sources */,
 				958B339F25C941F8002B8F7E /* HTTPAuthorization.swift in Sources */,
 				95DD4CB925B81E580051C4E4 /* Room.swift in Sources */,
 				956634EA25EC4FC900D6EEEB /* SpotifySessionManager.swift in Sources */,
 				954A268526154B640034356D /* SpotifyAPI.swift in Sources */,
 				95A218FF25B67FAD008EA6C7 /* SearchResultsTableViewCell.swift in Sources */,
+				95D00B212635C7450004B833 /* SettingTableViewCell.swift in Sources */,
 				954A269D2618D83F0034356D /* Constants+Spotify.swift in Sources */,
 				95A2190225B69464008EA6C7 /* RoomViewModel.swift in Sources */,
 				95979E7025DF95BC007BDB4A /* FirebaseAuth.swift in Sources */,
@@ -462,6 +473,7 @@
 				95C7715425944C1E00EDF930 /* SceneDelegate.swift in Sources */,
 				95A4046525C3EBB200F10E36 /* SearchResponse.swift in Sources */,
 				95A2190725B6AF34008EA6C7 /* Song.swift in Sources */,
+				95D00B242635C7BA0004B833 /* ToggleSettingTableViewCell.swift in Sources */,
 				954A269A2618D8030034356D /* Constants+Firebase.swift in Sources */,
 				95A4046025C3EB8800F10E36 /* TokenResponse.swift in Sources */,
 				95D9747925B41CE0000286C9 /* Member.swift in Sources */,
@@ -538,6 +550,7 @@
 				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
@@ -593,6 +606,7 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
@@ -609,10 +623,11 @@
 		};
 		95C7716325944C1F00EDF930 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8907FF71062BB6AED1BE5AAD /* Pods-TurnTune.debug.xcconfig */;
+			baseConfigurationReference = EAF91C1AEFE99FE1C2136EE8 /* Pods-TurnTune.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = RUKEA88AF2;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -622,6 +637,7 @@
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/Frameworks",
 				);
+				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
 				INFOPLIST_FILE = TurnTune/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -637,10 +653,11 @@
 		};
 		95C7716425944C1F00EDF930 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B1C17C9E91A1B7C7711B3100 /* Pods-TurnTune.release.xcconfig */;
+			baseConfigurationReference = 537A5C2DC5E0264383DD95D1 /* Pods-TurnTune.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = RUKEA88AF2;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -650,6 +667,7 @@
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/Frameworks",
 				);
+				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
 				INFOPLIST_FILE = TurnTune/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

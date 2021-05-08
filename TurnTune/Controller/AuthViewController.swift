@@ -18,6 +18,7 @@ class AuthViewController: UIViewController {
     @IBOutlet weak var nameTextField: UITextField!
     
     override func viewDidLoad() {
+        roomCodeTextField.text = "ALNE"
         super.viewDidLoad()
     }
     
