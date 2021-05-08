@@ -15,8 +15,29 @@ class SettingsTableViewController: UITableViewController {
         super.viewDidLoad()
         navigationItem.title = "Settings"
     }
+    
+    func showAlert(title: String, message: String?, actions: [UIAlertAction]) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
+        actions.forEach { alert.addAction($0) }
+        present(alert, animated: true) {
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.dismissAction))
+            alert.view.superview?.subviews[0].addGestureRecognizer(tapGesture)
+        }
+    }
+    
+    func createAlertActions(titles: [String], handler: ((UIAlertAction) -> Void)? = nil) -> [UIAlertAction] {
+        return titles.map { UIAlertAction(title: $0, style: .default, handler: handler) }
+    }
+    
+    @objc func dismissAction() {
+        self.dismiss(animated: true, completion: nil)
+    }
+}
 
-    // MARK: - Table view data source
+
+
+// MARK: - UITableViewDataSource
+extension SettingsTableViewController {
 
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 3
@@ -45,6 +66,17 @@ class SettingsTableViewController: UITableViewController {
         default:
             return UITableViewCell()
         }
+    }
+}
+
+
+
+// MARK: - UITableViewDelegate
+extension SettingsTableViewController {
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let sectionTitles = ["Queue Mode", "Dark Mode", "Members"]
+        return sectionTitles[section]
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -91,27 +123,5 @@ class SettingsTableViewController: UITableViewController {
         }
         
         tableView.deselectRow(at: indexPath, animated: true)
-    }
-    
-    func showAlert(title: String, message: String?, actions: [UIAlertAction]) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
-        actions.forEach { alert.addAction($0) }
-        present(alert, animated: true) {
-            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.dismissAction))
-            alert.view.superview?.subviews[0].addGestureRecognizer(tapGesture)
-        }
-    }
-    
-    func createAlertActions(titles: [String], handler: ((UIAlertAction) -> Void)? = nil) -> [UIAlertAction] {
-        return titles.map { UIAlertAction(title: $0, style: .default, handler: handler) }
-    }
-    
-    @objc func dismissAction() {
-        self.dismiss(animated: true, completion: nil)
-    }
-    
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let sectionHeaders = ["Queue Mode", "Dark Mode", "Members"]
-        return sectionHeaders[section]
     }
 }
