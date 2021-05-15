@@ -13,7 +13,7 @@ class UserSettings {
     
     private init() {}
     
-    @UserSetting(key: "Appearance")
+    @UserDefaultsSetting(key: "Appearance")
     var appearance = UIUserInterfaceStyle.unspecified.rawValue
     
 }
