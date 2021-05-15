@@ -52,11 +52,11 @@ extension SettingsTableViewController {
         switch indexPath.section {
         case 0:
             let cell = tableView.dequeueReusableCell(withIdentifier: "SettingTableViewCell", for: indexPath) as! SettingTableViewCell
-            cell.label.text = "Fair"
+            cell.label.text = "Automatic"
             return cell
         case 1:
             let cell = tableView.dequeueReusableCell(withIdentifier: "SettingTableViewCell", for: indexPath) as! SettingTableViewCell
-            cell.label.text = "Automatic"
+            cell.label.text = "Fair"
             return cell
         case 2:
             let cell = tableView.dequeueReusableCell(withIdentifier: "SettingTableViewCell", for: indexPath) as! SettingTableViewCell
@@ -75,18 +75,16 @@ extension SettingsTableViewController {
 extension SettingsTableViewController {
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let sectionTitles = ["Queue Mode", "Dark Mode", "Members"]
+        let sectionTitles = ["Appearance", "Queue Mode", "Members"]
         return sectionTitles[section]
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let sectionTitle = ["Queue Mode", "Dark Mode", "Members"][indexPath.section]
+        let sectionTitle = ["Appearance", "Queue Mode", "Members"][indexPath.section]
         
         switch sectionTitle {
-        case "Queue Mode":
-            showAlert(title: sectionTitle, message: nil, actions: createAlertActions(titles: ["Fair", "FIFO"]))
-            
-        case "Dark Mode":
+                
+        case "Appearance":
             showAlert(title: sectionTitle, message: nil, actions: createAlertActions(titles: ["Automatic", "Light","Dark"]) { alertAction  in
                 let cell = tableView.cellForRow(at: indexPath) as! SettingTableViewCell
                 cell.label.text = alertAction.title
@@ -99,17 +97,23 @@ extension SettingsTableViewController {
                     return
                 }
                 
+                var style: UIUserInterfaceStyle
                 switch alertAction.title {
                 case "Light":
-                    window.overrideUserInterfaceStyle = .light
-                    break
+                    style = .light
                 case "Dark":
-                    window.overrideUserInterfaceStyle = .dark
-                    break
+                    style = .dark
                 default:
-                    window.overrideUserInterfaceStyle = .unspecified
+                    style = .unspecified
                 }
+                
+                UserSettings.shared.appearance = style.rawValue
+                window.overrideUserInterfaceStyle = style
             })
+            
+        case "Queue Mode":
+            showAlert(title: sectionTitle, message: nil, actions: createAlertActions(titles: ["Fair", "FIFO"]))
+
             
         case "Members":
             let alertActions = [
