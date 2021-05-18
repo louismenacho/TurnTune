@@ -69,7 +69,10 @@ class RoomViewModel {
     }
     
     func queueSong(_ song: Song, completion: (() -> Void)? = nil) {
-        firestore.appendData(from: song, in: queueCollectionPath) { error in
+        var queueSong = song
+        queueSong.orderGroup = queue.filter({ $0.addedBy?.uid == currentMember?.uid }).count
+        queueSong.addedBy = currentMember
+        firestore.appendData(from: queueSong, in: queueCollectionPath) { error in
             if let error = error {
                 print(error)
             }
@@ -123,7 +126,7 @@ class RoomViewModel {
         }
         
         group.enter()
-        firestore.getCollectionData(collectionPath: queueCollectionPath, orderBy: "dateAdded") { (result: Result<[Song], Error>) in
+        firestore.getCollectionData(collectionPath: queueCollectionPath, whereField: ("didPlay", false), orderBy: ["orderGroup", "dateAdded"]) { (result: Result<[Song], Error>) in
             switch result {
             case let .failure(error):
                 print(error)
@@ -161,7 +164,7 @@ class RoomViewModel {
             }
         }
         
-        firestore.addCollectionListener(collectionPath: queueCollectionPath, orderBy: "dateAdded") { (result: Result<[Song], Error>) in
+        firestore.addCollectionListener(collectionPath: queueCollectionPath, whereField: ("didPlay", false), orderBy: ["orderGroup", "dateAdded"]) { (result: Result<[Song], Error>) in
             switch result {
             case let .failure(error):
                 print(error)

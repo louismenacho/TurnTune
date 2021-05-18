@@ -140,10 +140,10 @@ extension RoomViewController {
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.section == 0 {
-            return tableView.frame.width * (124.5/414)
+            return tableView.frame.width * (124.5/tableView.frame.width)
         }
         else {
-            return tableView.frame.width * (82/414)
+            return tableView.frame.width * (82/tableView.frame.width)
         }
     }
     

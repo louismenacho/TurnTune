@@ -112,8 +112,10 @@ extension SettingsTableViewController {
             })
             
         case "Queue Mode":
-            showAlert(title: sectionTitle, message: nil, actions: createAlertActions(titles: ["Fair", "FIFO"]))
-
+            showAlert(title: sectionTitle, message: nil, actions: createAlertActions(titles: ["Fair", "FIFO"]) { alertAction  in
+                let cell = tableView.cellForRow(at: indexPath) as! SettingTableViewCell
+                cell.label.text = alertAction.title
+            })
             
         case "Members":
             let alertActions = [

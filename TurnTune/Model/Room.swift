@@ -12,17 +12,15 @@ import FirebaseFirestoreSwift
 struct Room: Codable {
     var code: String
     var host: Member
-    var turn: Int = 0
+    var queueMode: String = "Fair"
     var playingSong: Song?
-    var isAwaitingSongSelection: Bool = false
     @ServerTimestamp var dateCreated: Timestamp?
     
     private enum CodingKeys: String, CodingKey {
         case code
         case host
-        case turn
+        case queueMode
         case playingSong
-        case isAwaitingSongSelection
         case dateCreated
     }
 }

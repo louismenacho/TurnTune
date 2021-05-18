@@ -12,6 +12,5 @@ import FirebaseFirestoreSwift
 struct Member: Codable {
     var uid: String
     var displayName: String
-    var selectedSong: Song?
     @ServerTimestamp var dateJoined: Timestamp?
 }

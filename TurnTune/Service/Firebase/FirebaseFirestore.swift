@@ -45,6 +45,26 @@ class FirebaseFirestore {
         }
     }
     
+    func getCollectionData<T: Decodable>(collectionPath: String, whereField condition: (String, Any), orderBy fields: [String], completion: @escaping (Result<[T], Error>) -> Void) {
+        var query = Firestore.firestore().collection(collectionPath).whereField(condition.0, isEqualTo: condition.1)
+        fields.forEach {
+            query = query.order(by: $0)
+        }
+        query.getDocuments { [self] querySnapshot, error in
+            completion(dataResult(for: querySnapshot, error))
+        }
+    }
+    
+    func addCollectionListener<T: Decodable>(collectionPath: String, whereField condition: (String, Any), orderBy fields: [String], completion: @escaping (Result<[T], Error>) -> Void) {
+        var query = Firestore.firestore().collection(collectionPath).whereField(condition.0, isEqualTo: condition.1)
+        fields.forEach {
+            query = query.order(by: $0)
+        }
+        query.addSnapshotListener { [self] querySnapshot, error in
+            completion(dataResult(for: querySnapshot, error))
+        }
+    }
+    
     func setData<T: Encodable>(from value: T, in documentPath: String, completion: ((Error?) -> Void)? = nil) {
         do {
             try Firestore.firestore().document(documentPath).setData(from: value) { error in

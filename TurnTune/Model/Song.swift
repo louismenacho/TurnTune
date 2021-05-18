@@ -15,6 +15,9 @@ struct Song: Codable {
     var artistName: String
     var artworkURL: String
     var durationInMillis: Int
+    var didPlay: Bool = false
+    var orderGroup: Int?
+    var addedBy: Member?
     @ServerTimestamp var dateAdded: Timestamp?
     
     // Spotify Identifiers
