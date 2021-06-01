@@ -11,10 +11,13 @@ import Firebase
 class AuthViewModel {
     
     private(set) var roomPath: String = ""
-    private(set) var memberPath: String = ""
     
     private(set) var auth = FirebaseAuth.shared
-    private(set) var firestore = FirebaseFirestore.shared
+//    private(set) var firestore = FirebaseFirestore.shared
+    
+    lazy private(set) var roomCode: String = { generateRoomCode() }()
+    lazy private(set) var memberRepository = FirestoreRepository<Member>(reference: "rooms/"+roomCode+"/members")
+    private(set) var roomRepository = FirestoreRepository<Room>(reference: "rooms")
     
     func join(room code: String, displayName: String, completion: @escaping () -> Void) {
         guard isRoomCodeValid(code: code) && isNameValid(name: displayName) else {
@@ -22,10 +25,9 @@ class AuthViewModel {
         }
         signIn(as: displayName) { [self] user in
             getRoom(code: code) { room in
-                let newMember = Member(uid: user.uid, displayName: displayName)
-                appendMember(newMember, to: room) {
-                    roomPath = "rooms/"+room.code
-                    memberPath = roomPath+"/members/"+newMember.uid
+                let newMember = Member(id: user.uid, displayName: displayName)
+                createRoomMember(newMember) {
+                    roomPath = "rooms/"+code
                     completion()
                 }
             }
@@ -34,15 +36,14 @@ class AuthViewModel {
     
     func host(displayName: String, completion: @escaping () -> Void) {
         guard isNameValid(name: displayName) else { return }
-        let roomCode = generateRoomCode()
+//        let roomCode = generateRoomCode()
         
         signIn(as: displayName) { [self] user in
-            let newMember = Member(uid: user.uid, displayName: user.displayName!)
-            let newRoom = Room(code: roomCode, host: newMember)
+            let newMember = Member(id: user.uid, displayName: user.displayName!)
+            let newRoom = Room(id: roomCode, hostId: user.uid)
             createRoom(newRoom) { room in
-                appendMember(newMember, to: newRoom) {
-                    roomPath = "rooms/"+room.code
-                    memberPath = roomPath+"/members/"+newMember.uid
+                createRoomMember(newMember) {
+                    roomPath = "rooms/"+roomCode
                     completion()
                 }
             }
@@ -63,7 +64,15 @@ class AuthViewModel {
     }
     
     func getRoom(code: String, completion: @escaping (Room) -> Void) {
-        firestore.getDocumentData(documentPath: "rooms/"+code) { (result: Result<Room, Error>) in
+//        firestore.getDocumentData(documentPath: "rooms/"+code) { (result: Result<Room, Error>) in
+//            switch result {
+//            case let .failure(error):
+//                print(error)
+//            case let .success(room):
+//                completion(room)
+//            }
+//        }
+        roomRepository.get(id: code) { (result: Result<Room, Error>) in
             switch result {
             case let .failure(error):
                 print(error)
@@ -74,16 +83,29 @@ class AuthViewModel {
     }
     
     func createRoom(_ room: Room, completion: @escaping (Room) -> Void) {
-        firestore.setData(from: room, in: "rooms/"+room.code) { error in
+//        firestore.setData(from: room, in: "rooms/"+room.id) { error in
+//            if let error = error {
+//                print(error)
+//            }
+//            completion(room)
+//        }
+        roomRepository.create(room) { error in
             if let error = error {
+                print("error on roomRepository.create:")
                 print(error)
             }
             completion(room)
         }
     }
     
-    func appendMember(_ member: Member, to room: Room, completion: @escaping () -> Void) {
-        firestore.setData(from: member, in: "rooms/"+room.code+"/members/"+member.uid) { error in
+    func createRoomMember(_ member: Member, completion: @escaping () -> Void) {
+//        firestore.setData(from: member, in: "rooms/"+room.id+"/members/"+member.uid) { error in
+//            if let error = error {
+//                print(error)
+//            }
+//            completion()
+//        }
+        memberRepository.create(member) { error in
             if let error = error {
                 print(error)
             }

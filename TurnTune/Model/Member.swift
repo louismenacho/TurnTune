@@ -9,8 +9,8 @@ import Foundation
 import Firebase
 import FirebaseFirestoreSwift
 
-struct Member: Codable {
-    var uid: String
+struct Member: FireStoreObject {
+    @DocumentID var id: String?
     var displayName: String
     @ServerTimestamp var dateJoined: Timestamp?
 }

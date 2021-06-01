@@ -1,5 +1,5 @@
 //
-//  UserDefaultsSetting.swift
+//  UserDefaultsProperty.swift
 //  TurnTune
 //
 //  Created by Louis Menacho on 5/14/21.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-@propertyWrapper struct UserDefaultsSetting<Value> {
+@propertyWrapper struct UserDefaultsProperty<Value> {
     
     private let key: String
     private let defaultValue: Value

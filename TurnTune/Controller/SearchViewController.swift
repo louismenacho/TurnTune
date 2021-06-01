@@ -1,5 +1,5 @@
 //
-//  SearchResultsViewController.swift
+//  SearchViewController.swift
 //  TurnTune
 //
 //  Created by Louis Menacho on 12/29/20.
@@ -9,7 +9,7 @@ import UIKit
 import Firebase
 import FirebaseFirestoreSwift
 
-class SearchResultsViewController: UIViewController {
+class SearchViewController: UIViewController {
 
     var searcherViewModel: SearcherViewModel!
     var roomViewModel: RoomViewModel!
@@ -23,7 +23,7 @@ class SearchResultsViewController: UIViewController {
     }
 }
 
-extension SearchResultsViewController: UISearchResultsUpdating {
+extension SearchViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         if searchController.searchBar.searchTextField.text!.isEmpty {
             return
@@ -36,7 +36,7 @@ extension SearchResultsViewController: UISearchResultsUpdating {
     }
 }
 
-extension SearchResultsViewController: UITableViewDataSource {
+extension SearchViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return searcherViewModel.searchResult.count
     }
@@ -52,7 +52,7 @@ extension SearchResultsViewController: UITableViewDataSource {
     }
 }
 
-extension SearchResultsViewController: UITableViewDelegate {
+extension SearchViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedCell = tableview.cellForRow(at: indexPath) as! SearchResultsTableViewCell
         roomViewModel.queueSong(selectedCell.song!)

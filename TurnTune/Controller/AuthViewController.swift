@@ -18,8 +18,9 @@ class AuthViewController: UIViewController {
     @IBOutlet weak var nameTextField: UITextField!
     
     override func viewDidLoad() {
-        roomCodeTextField.text = "DXXU"
+        roomCodeTextField.text = "JQFZ"
         super.viewDidLoad()
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

@@ -9,18 +9,10 @@ import Foundation
 import Firebase
 import FirebaseFirestoreSwift
 
-struct Room: Codable {
-    var code: String
-    var host: Member
+struct Room: FireStoreObject {
+    @DocumentID var id: String?
+    var hostId: String
     var queueMode: String = "Fair"
     var playingSong: Song?
     @ServerTimestamp var dateCreated: Timestamp?
-    
-    private enum CodingKeys: String, CodingKey {
-        case code
-        case host
-        case queueMode
-        case playingSong
-        case dateCreated
-    }
 }

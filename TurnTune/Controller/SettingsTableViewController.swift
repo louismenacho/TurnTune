@@ -52,16 +52,28 @@ extension SettingsTableViewController {
         switch indexPath.section {
         case 0:
             let cell = tableView.dequeueReusableCell(withIdentifier: "SettingTableViewCell", for: indexPath) as! SettingTableViewCell
-            cell.label.text = "Automatic"
+            cell.label.text = "Appearance"
+            cell.valueLabel.text = "Automatic"
             return cell
         case 1:
             let cell = tableView.dequeueReusableCell(withIdentifier: "SettingTableViewCell", for: indexPath) as! SettingTableViewCell
-            cell.label.text = "Fair"
+            cell.label.text = "Queue Mode"
+            cell.valueLabel.text = "Fair"
+            if roomViewModel.room?.hostId != roomViewModel.currentMember?.id {
+                cell.accessoryType = .none
+                cell.selectionStyle = .none
+            }
             return cell
         case 2:
             let cell = tableView.dequeueReusableCell(withIdentifier: "SettingTableViewCell", for: indexPath) as! SettingTableViewCell
+            let hostId = roomViewModel.room?.hostId
             let member = roomViewModel.members[indexPath.row]
-            cell.label.text = roomViewModel.room?.host.uid == member.uid ? "\(member.displayName) (Host)" : member.displayName
+            cell.label.text = member.displayName
+            cell.valueLabel.text = hostId == member.id ? "Host" : ""
+            if hostId == member.id {
+                cell.accessoryType = .none
+                cell.selectionStyle = .none
+            }
             return cell
         default:
             return UITableViewCell()
@@ -75,19 +87,21 @@ extension SettingsTableViewController {
 extension SettingsTableViewController {
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let sectionTitles = ["Appearance", "Queue Mode", "Members"]
+        let sectionTitles = ["User Setting", "Room Info", "Members"]
         return sectionTitles[section]
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let sectionTitle = ["Appearance", "Queue Mode", "Members"][indexPath.section]
+        let sectionTitle = ["User Setting", "Room Info", "Members"][indexPath.section]
+        
+        
         
         switch sectionTitle {
                 
-        case "Appearance":
+        case "User Setting":
             showAlert(title: sectionTitle, message: nil, actions: createAlertActions(titles: ["Automatic", "Light","Dark"]) { alertAction  in
                 let cell = tableView.cellForRow(at: indexPath) as! SettingTableViewCell
-                cell.label.text = alertAction.title
+                cell.valueLabel.text = alertAction.title
             
                 guard
                     let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
@@ -107,17 +121,25 @@ extension SettingsTableViewController {
                     style = .unspecified
                 }
                 
-                UserSettings.shared.appearance = style.rawValue
+                UserDefaultsRepository().appearance = style.rawValue
                 window.overrideUserInterfaceStyle = style
             })
             
-        case "Queue Mode":
-            showAlert(title: sectionTitle, message: nil, actions: createAlertActions(titles: ["Fair", "FIFO"]) { alertAction  in
+        case "Room Info":
+            if roomViewModel.room?.hostId != roomViewModel.currentMember?.id {
+                return
+            }
+            showAlert(title: sectionTitle, message: nil, actions: createAlertActions(titles: ["Fair"]) { alertAction  in
                 let cell = tableView.cellForRow(at: indexPath) as! SettingTableViewCell
                 cell.label.text = alertAction.title
             })
             
         case "Members":
+            let hostId = roomViewModel.room?.hostId
+            let member = roomViewModel.members[indexPath.row]
+            if hostId == member.id {
+                return
+            }
             let alertActions = [
                 UIAlertAction(title: "Make Admin", style: .default, handler: nil),
                 UIAlertAction(title: "Remove", style: .destructive, handler: nil)

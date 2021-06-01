@@ -14,9 +14,10 @@ class RoomViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController!.navigationBar.standardAppearance.shadowColor = .clear
-        navigationItem.hidesBackButton = true
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+//        navigationItem.hidesBackButton = true
 //        navigationItem.hidesSearchBarWhenScrolling = false
-        navigationItem.searchController = prepareSearchController()
+        navigationItem.searchController = prepareSearchViewController()
         roomViewModel.delegate = self
     }
     
@@ -25,19 +26,19 @@ class RoomViewController: UITableViewController {
 //        navigationItem.hidesSearchBarWhenScrolling = true
 //    }
     
-    private func prepareSearchController() -> UISearchController {
-        let searchResultsViewController = prepareSearchResultsViewController()
-        let searchController = UISearchController(searchResultsController: searchResultsViewController)
-        searchController.searchResultsUpdater = searchResultsViewController
+    private func prepareSearchViewController() -> UISearchController {
+        let searchViewController = prepareSearchResultsViewController()
+        let searchController = UISearchController(searchResultsController: searchViewController)
+        searchController.searchResultsUpdater = searchViewController
         searchController.delegate = self
         searchController.searchBar.autocapitalizationType = .none
         searchController.searchBar.placeholder = "Search songs"
         return searchController
     }
     
-    private func prepareSearchResultsViewController() -> SearchResultsViewController {
-        guard let searchResultsViewController = storyboard?.instantiateViewController(identifier: "SearchResultsViewController") as? SearchResultsViewController else {
-            fatalError("Could not instantiate SearchResultsViewController")
+    private func prepareSearchResultsViewController() -> SearchViewController {
+        guard let searchResultsViewController = storyboard?.instantiateViewController(identifier: "SearchViewController") as? SearchViewController else {
+            fatalError("Could not instantiate SearchViewController")
         }
         searchResultsViewController.searcherViewModel = SearcherViewModel()
         searchResultsViewController.roomViewModel = roomViewModel
@@ -62,7 +63,7 @@ class RoomViewController: UITableViewController {
 extension RoomViewController: RoomViewModelDelegate {
         
     func roomViewModel(roomViewModel: RoomViewModel, didInitialize: Bool) {
-        navigationItem.title = roomViewModel.room?.code
+        navigationItem.title = roomViewModel.room?.id
         tableView.reloadData()
     }
     

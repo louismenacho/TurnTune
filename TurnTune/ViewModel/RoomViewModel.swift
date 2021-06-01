@@ -44,14 +44,14 @@ class RoomViewModel {
     private var spotifyWebAPI = SpotifyAPI.shared
     
     // Computed
-    var currentMember: Member? { members.first { $0.uid == Auth.auth().currentUser?.uid } }
+    var currentMember: Member? { members.first { $0.id == Auth.auth().currentUser?.uid } }
     
     init(roomPath: String) {
         self.roomPath = roomPath
         loadFirestoreData(completion:) { [self] in
             self.addFirestoreListeners()
             
-            if room?.host.uid == currentMember?.uid {
+            if room?.hostId == currentMember?.id {
                 spotifySessionManager.initiateSession()
                 spotifyAppRemote.delegate = self
             }
@@ -70,7 +70,7 @@ class RoomViewModel {
     
     func queueSong(_ song: Song, completion: (() -> Void)? = nil) {
         var queueSong = song
-        queueSong.orderGroup = queue.filter({ $0.addedBy?.uid == currentMember?.uid }).count
+        queueSong.orderGroup = queue.filter({ $0.addedBy?.id == currentMember?.id }).count
         queueSong.addedBy = currentMember
         firestore.appendData(from: queueSong, in: queueCollectionPath) { error in
             if let error = error {

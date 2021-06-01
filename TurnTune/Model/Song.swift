@@ -9,7 +9,7 @@ import Foundation
 import Firebase
 import FirebaseFirestoreSwift
 
-struct Song: Codable {
+struct Song: FireStoreObject {
     @DocumentID var id: String?
     var name: String
     var artistName: String
