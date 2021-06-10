@@ -30,7 +30,7 @@ class AuthViewModel {
                     }
                     
                     let roomManager = RoomManagerService(roomId: roomId)
-                    roomManager.addMember(member: Member(id: user.uid, displayName: user.displayName!)) { error in
+                    roomManager.addMember(Member(id: user.uid, displayName: user.displayName!)) { error in
                         if let error = error {
                             print("addMember: \(error)")
                             return
@@ -60,7 +60,7 @@ class AuthViewModel {
                     case let .success(room):
                         
                         let roomManager = RoomManagerService(roomId: room.id!)
-                        roomManager.addMember(member: Member(id: user.uid, displayName: user.displayName!)) { error in
+                        roomManager.addMember(Member(id: user.uid, displayName: user.displayName!)) { error in
                             if let error = error {
                                 print("addMember: \(error)")
                             }

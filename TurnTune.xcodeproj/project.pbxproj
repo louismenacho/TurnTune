@@ -65,6 +65,9 @@
 		95DD20AC259B1E65000EE8B3 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DD20AB259B1E65000EE8B3 /* SearchViewController.swift */; };
 		95DD4CB925B81E580051C4E4 /* Room.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DD4CB825B81E580051C4E4 /* Room.swift */; };
 		95E13D5E2623E52B0026334A /* CurrentSongTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E13D5D2623E52B0026334A /* CurrentSongTableViewCell.swift */; };
+		95EFACC82671B10300506577 /* FirebaseAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95EFACC72671B10300506577 /* FirebaseAuthService.swift */; };
+		95EFACCA2671B11200506577 /* RoomManagerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95EFACC92671B11200506577 /* RoomManagerService.swift */; };
+		95EFACCC2671B12000506577 /* RoomProviderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95EFACCB2671B12000506577 /* RoomProviderService.swift */; };
 		95FA8BDF2601C643003FA6FD /* APIResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95FA8BDE2601C643003FA6FD /* APIResource.swift */; };
 		95FA8BE22601C716003FA6FD /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95FA8BE12601C716003FA6FD /* HTTPMethod.swift */; };
 /* End PBXBuildFile section */
@@ -132,6 +135,9 @@
 		95DD20AB259B1E65000EE8B3 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		95DD4CB825B81E580051C4E4 /* Room.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Room.swift; sourceTree = "<group>"; };
 		95E13D5D2623E52B0026334A /* CurrentSongTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentSongTableViewCell.swift; sourceTree = "<group>"; };
+		95EFACC72671B10300506577 /* FirebaseAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAuthService.swift; sourceTree = "<group>"; };
+		95EFACC92671B11200506577 /* RoomManagerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomManagerService.swift; sourceTree = "<group>"; };
+		95EFACCB2671B12000506577 /* RoomProviderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomProviderService.swift; sourceTree = "<group>"; };
 		95FA8BDE2601C643003FA6FD /* APIResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIResource.swift; sourceTree = "<group>"; };
 		95FA8BE12601C716003FA6FD /* HTTPMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
 		C71631CD8526C1E3B3318EA0 /* Pods-TurnTune.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TurnTune.debug.xcconfig"; path = "Target Support Files/Pods-TurnTune/Pods-TurnTune.debug.xcconfig"; sourceTree = "<group>"; };
@@ -225,6 +231,9 @@
 			isa = PBXGroup;
 			children = (
 				959CE0892669B70400ADD5D9 /* AuthenticationService.swift */,
+				95EFACC72671B10300506577 /* FirebaseAuthService.swift */,
+				95EFACCB2671B12000506577 /* RoomProviderService.swift */,
+				95EFACC92671B11200506577 /* RoomManagerService.swift */,
 				959CE08B2669B71300ADD5D9 /* MusicService.swift */,
 				95FA8BB925FD02C5003FA6FD /* APIClient */,
 				95979E6A25DF9413007BDB4A /* Firebase */,
@@ -519,12 +528,14 @@
 				959CE08C2669B71300ADD5D9 /* MusicService.swift in Sources */,
 				959CE08A2669B70400ADD5D9 /* AuthenticationService.swift in Sources */,
 				954A269D2618D83F0034356D /* Constants+Spotify.swift in Sources */,
+				95EFACC82671B10300506577 /* FirebaseAuthService.swift in Sources */,
 				95A2190225B69464008EA6C7 /* RoomViewModel.swift in Sources */,
 				9504E62A2665616F002B712E /* FireStoreObject.swift in Sources */,
 				95979E7025DF95BC007BDB4A /* FirebaseAuth.swift in Sources */,
 				959CE0782665DAE800ADD5D9 /* NewRoomViewModel.swift in Sources */,
 				95FA8BE22601C716003FA6FD /* HTTPMethod.swift in Sources */,
 				95FA8BDF2601C643003FA6FD /* APIResource.swift in Sources */,
+				95EFACCC2671B12000506577 /* RoomProviderService.swift in Sources */,
 				95A4046D25C4F19E00F10E36 /* APIClient.swift in Sources */,
 				95979E6C25DF9512007BDB4A /* FirebaseFirestore.swift in Sources */,
 				95C7715625944C1E00EDF930 /* RoomViewController.swift in Sources */,
@@ -537,6 +548,7 @@
 				959CE07E266708AE00ADD5D9 /* QueueViewModel.swift in Sources */,
 				954A26972618D7920034356D /* Constants.swift in Sources */,
 				95C7715225944C1E00EDF930 /* AppDelegate.swift in Sources */,
+				95EFACCA2671B11200506577 /* RoomManagerService.swift in Sources */,
 				95E13D5E2623E52B0026334A /* CurrentSongTableViewCell.swift in Sources */,
 				95A5629B2604406000C9496B /* SpotifyPlayerAPI.swift in Sources */,
 				959CE08426674B3700ADD5D9 /* RepoViewModel.swift in Sources */,

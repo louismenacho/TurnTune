@@ -18,7 +18,7 @@ class AuthViewController: UIViewController {
     @IBOutlet weak var nameTextField: UITextField!
     
     override func viewDidLoad() {
-        roomCodeTextField.text = "JQFZ"
+        roomCodeTextField.text = "HWHC"
         super.viewDidLoad()
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
@@ -26,7 +26,7 @@ class AuthViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "RoomViewController" {
             let roomViewController = segue.destination as! RoomViewController
-            roomViewController.roomManager = authViewModel.roomManager
+            roomViewController.newRoomViewModel = NewRoomViewModel(roomManager: authViewModel.roomManager!)
         }
     }
     
