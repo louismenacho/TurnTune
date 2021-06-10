@@ -29,7 +29,15 @@
 		95979E6C25DF9512007BDB4A /* FirebaseFirestore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95979E6B25DF9512007BDB4A /* FirebaseFirestore.swift */; };
 		95979E7025DF95BC007BDB4A /* FirebaseAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95979E6F25DF95BC007BDB4A /* FirebaseAuth.swift */; };
 		95979E7425DF9A17007BDB4A /* SpotifyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95979E7325DF9A17007BDB4A /* SpotifyApp.swift */; };
-		959DA05F25D0FF0900D86C73 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 959DA05E25D0FF0900D86C73 /* AuthViewModel.swift */; };
+		959CE0782665DAE800ADD5D9 /* NewRoomViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 959CE0772665DAE800ADD5D9 /* NewRoomViewModel.swift */; };
+		959CE07C2667088A00ADD5D9 /* MemberListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 959CE07B2667088A00ADD5D9 /* MemberListViewModel.swift */; };
+		959CE07E266708AE00ADD5D9 /* QueueViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 959CE07D266708AE00ADD5D9 /* QueueViewModel.swift */; };
+		959CE080266709FC00ADD5D9 /* MemberViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 959CE07F266709FC00ADD5D9 /* MemberViewModel.swift */; };
+		959CE08226670A0C00ADD5D9 /* SongViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 959CE08126670A0C00ADD5D9 /* SongViewModel.swift */; };
+		959CE08426674B3700ADD5D9 /* RepoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 959CE08326674B3700ADD5D9 /* RepoViewModel.swift */; };
+		959CE08826699A2D00ADD5D9 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 959CE08726699A2D00ADD5D9 /* AuthViewModel.swift */; };
+		959CE08A2669B70400ADD5D9 /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 959CE0892669B70400ADD5D9 /* AuthenticationService.swift */; };
+		959CE08C2669B71300ADD5D9 /* MusicService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 959CE08B2669B71300ADD5D9 /* MusicService.swift */; };
 		95A218FF25B67FAD008EA6C7 /* SearchResultsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A218FE25B67FAD008EA6C7 /* SearchResultsTableViewCell.swift */; };
 		95A2190225B69464008EA6C7 /* RoomViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A2190125B69464008EA6C7 /* RoomViewModel.swift */; };
 		95A2190725B6AF34008EA6C7 /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A2190625B6AF34008EA6C7 /* Song.swift */; };
@@ -86,7 +94,15 @@
 		95979E6B25DF9512007BDB4A /* FirebaseFirestore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseFirestore.swift; sourceTree = "<group>"; };
 		95979E6F25DF95BC007BDB4A /* FirebaseAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAuth.swift; sourceTree = "<group>"; };
 		95979E7325DF9A17007BDB4A /* SpotifyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyApp.swift; sourceTree = "<group>"; };
-		959DA05E25D0FF0900D86C73 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
+		959CE0772665DAE800ADD5D9 /* NewRoomViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewRoomViewModel.swift; sourceTree = "<group>"; };
+		959CE07B2667088A00ADD5D9 /* MemberListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberListViewModel.swift; sourceTree = "<group>"; };
+		959CE07D266708AE00ADD5D9 /* QueueViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueueViewModel.swift; sourceTree = "<group>"; };
+		959CE07F266709FC00ADD5D9 /* MemberViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberViewModel.swift; sourceTree = "<group>"; };
+		959CE08126670A0C00ADD5D9 /* SongViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongViewModel.swift; sourceTree = "<group>"; };
+		959CE08326674B3700ADD5D9 /* RepoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepoViewModel.swift; sourceTree = "<group>"; };
+		959CE08726699A2D00ADD5D9 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
+		959CE0892669B70400ADD5D9 /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
+		959CE08B2669B71300ADD5D9 /* MusicService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicService.swift; sourceTree = "<group>"; };
 		95A218FE25B67FAD008EA6C7 /* SearchResultsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsTableViewCell.swift; sourceTree = "<group>"; };
 		95A2190125B69464008EA6C7 /* RoomViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomViewModel.swift; sourceTree = "<group>"; };
 		95A2190625B6AF34008EA6C7 /* Song.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Song.swift; sourceTree = "<group>"; };
@@ -208,6 +224,8 @@
 		95A4045E25C3EB7900F10E36 /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				959CE0892669B70400ADD5D9 /* AuthenticationService.swift */,
+				959CE08B2669B71300ADD5D9 /* MusicService.swift */,
 				95FA8BB925FD02C5003FA6FD /* APIClient */,
 				95979E6A25DF9413007BDB4A /* Firebase */,
 				95CA144425C93ED80079C395 /* Spotify */,
@@ -286,8 +304,14 @@
 		95C7716A2597ED8500EDF930 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				959DA05E25D0FF0900D86C73 /* AuthViewModel.swift */,
+				959CE08326674B3700ADD5D9 /* RepoViewModel.swift */,
+				959CE08726699A2D00ADD5D9 /* AuthViewModel.swift */,
 				95A2190125B69464008EA6C7 /* RoomViewModel.swift */,
+				959CE0772665DAE800ADD5D9 /* NewRoomViewModel.swift */,
+				959CE07B2667088A00ADD5D9 /* MemberListViewModel.swift */,
+				959CE07F266709FC00ADD5D9 /* MemberViewModel.swift */,
+				959CE07D266708AE00ADD5D9 /* QueueViewModel.swift */,
+				959CE08126670A0C00ADD5D9 /* SongViewModel.swift */,
 				95A4045B25C3BD8B00F10E36 /* SearcherViewModel.swift */,
 				95D9747C25B41D7F000286C9 /* TurnTuneError.swift */,
 			);
@@ -481,33 +505,41 @@
 				9586D6CF262FF30C00DBE910 /* SettingsTableViewController.swift in Sources */,
 				9504E6212663786A002B712E /* RemoteRepository.swift in Sources */,
 				958EC56E264F583200337A9E /* UserDefaultsRepository.swift in Sources */,
+				959CE07C2667088A00ADD5D9 /* MemberListViewModel.swift in Sources */,
 				95A4048925C52CEA00F10E36 /* APIEndpoint.swift in Sources */,
 				958B339F25C941F8002B8F7E /* HTTPAuthorization.swift in Sources */,
 				95DD4CB925B81E580051C4E4 /* Room.swift in Sources */,
 				958EC571264F68AB00337A9E /* UserDefaultsProperty.swift in Sources */,
+				959CE08826699A2D00ADD5D9 /* AuthViewModel.swift in Sources */,
 				956634EA25EC4FC900D6EEEB /* SpotifySessionManager.swift in Sources */,
 				954A268526154B640034356D /* SpotifyAPI.swift in Sources */,
 				95A218FF25B67FAD008EA6C7 /* SearchResultsTableViewCell.swift in Sources */,
+				959CE080266709FC00ADD5D9 /* MemberViewModel.swift in Sources */,
 				95D00B212635C7450004B833 /* SettingTableViewCell.swift in Sources */,
+				959CE08C2669B71300ADD5D9 /* MusicService.swift in Sources */,
+				959CE08A2669B70400ADD5D9 /* AuthenticationService.swift in Sources */,
 				954A269D2618D83F0034356D /* Constants+Spotify.swift in Sources */,
 				95A2190225B69464008EA6C7 /* RoomViewModel.swift in Sources */,
 				9504E62A2665616F002B712E /* FireStoreObject.swift in Sources */,
 				95979E7025DF95BC007BDB4A /* FirebaseAuth.swift in Sources */,
+				959CE0782665DAE800ADD5D9 /* NewRoomViewModel.swift in Sources */,
 				95FA8BE22601C716003FA6FD /* HTTPMethod.swift in Sources */,
 				95FA8BDF2601C643003FA6FD /* APIResource.swift in Sources */,
 				95A4046D25C4F19E00F10E36 /* APIClient.swift in Sources */,
 				95979E6C25DF9512007BDB4A /* FirebaseFirestore.swift in Sources */,
 				95C7715625944C1E00EDF930 /* RoomViewController.swift in Sources */,
 				95A4045C25C3BD8B00F10E36 /* SearcherViewModel.swift in Sources */,
+				959CE08226670A0C00ADD5D9 /* SongViewModel.swift in Sources */,
 				95DD20AC259B1E65000EE8B3 /* SearchViewController.swift in Sources */,
 				95A56298260325A900C9496B /* HTTPError.swift in Sources */,
 				95979E7425DF9A17007BDB4A /* SpotifyApp.swift in Sources */,
 				954A26A8261AB9D90034356D /* SongTableViewCell.swift in Sources */,
+				959CE07E266708AE00ADD5D9 /* QueueViewModel.swift in Sources */,
 				954A26972618D7920034356D /* Constants.swift in Sources */,
 				95C7715225944C1E00EDF930 /* AppDelegate.swift in Sources */,
 				95E13D5E2623E52B0026334A /* CurrentSongTableViewCell.swift in Sources */,
-				959DA05F25D0FF0900D86C73 /* AuthViewModel.swift in Sources */,
 				95A5629B2604406000C9496B /* SpotifyPlayerAPI.swift in Sources */,
+				959CE08426674B3700ADD5D9 /* RepoViewModel.swift in Sources */,
 				95C7715425944C1E00EDF930 /* SceneDelegate.swift in Sources */,
 				95A4046525C3EBB200F10E36 /* SearchResponse.swift in Sources */,
 				95A2190725B6AF34008EA6C7 /* Song.swift in Sources */,

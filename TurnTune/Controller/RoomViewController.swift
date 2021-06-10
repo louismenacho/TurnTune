@@ -9,6 +9,8 @@ import UIKit
 
 class RoomViewController: UITableViewController {
     
+    var roomManager: RoomManagerService?
+    var newRoomViewModel: NewRoomViewModel?
     var roomViewModel: RoomViewModel!
     
     override func viewDidLoad() {
@@ -18,7 +20,11 @@ class RoomViewController: UITableViewController {
 //        navigationItem.hidesBackButton = true
 //        navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.searchController = prepareSearchViewController()
+        
         roomViewModel.delegate = self
+        
+
+        //The controller constructs the view model using data obtained from an application service or directly from a repository. The view model can contain a constructor which accepts an entity returned by the service or repository.
     }
     
 //    override func viewDidAppear(_ animated: Bool) {

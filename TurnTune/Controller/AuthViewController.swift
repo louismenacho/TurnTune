@@ -26,19 +26,19 @@ class AuthViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "RoomViewController" {
             let roomViewController = segue.destination as! RoomViewController
-            roomViewController.roomViewModel = RoomViewModel(roomPath: authViewModel.roomPath)
+            roomViewController.roomManager = authViewModel.roomManager
         }
     }
     
     @IBAction func joinButtonPressed(_ sender: UIButton) {
-        authViewModel.join(room: roomCodeTextField.text!, displayName: nameTextField.text!) {
-            self.performSegue(withIdentifier: "RoomViewController", sender: self)
+        authViewModel.joinRoom(roomId: roomCodeTextField.text!, as: nameTextField.text!) { [self] in
+            performSegue(withIdentifier: "RoomViewController", sender: self)
         }
     }
     
     @IBAction func hostButtonPressed(_ sender: UIButton) {
-        authViewModel.host(displayName: nameTextField.text!) {
-            self.performSegue(withIdentifier: "RoomViewController", sender: self)
+        authViewModel.hostRoom(as: roomCodeTextField.text!) { [self] in
+            performSegue(withIdentifier: "RoomViewController", sender: self)
         }
     }
 }

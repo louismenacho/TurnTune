@@ -8,113 +8,16 @@
 import Foundation
 
 protocol RemoteRepository {
+    associatedtype ObjectId
     associatedtype Object
-    associatedtype Identifier
-    associatedtype RepoQuery
+    associatedtype Query
     
-    func create(_ item: Object, completion: @escaping (Error?) -> Void)
-    func update(_ item: Object, completion: @escaping (Error?) -> Void)
-    func delete(_ item: Object, completion: @escaping (Error?) -> Void)
-    func get(id: Identifier, completion: @escaping (Result<Object, Error>) -> Void)
-    func list(_ query: RepoQuery?, completion: @escaping (Result<[Object], Error>) -> Void)
+    // read
+    func get(id: ObjectId, completion: @escaping (Result<Object, Error>) -> Void)
+    func list(_ query: Query?, completion: @escaping (Result<[Object], Error>) -> Void)
+    
+    // write
+    func create(_ object: Object, completion: @escaping (Error?) -> Void)
+    func update(_ object: Object, completion: @escaping (Error?) -> Void)
+    func delete(_ object: Object, completion: @escaping (Error?) -> Void)
 }
-
-//class FirestoreCollectionRepository: RemoteRepository {
-//
-//    func get(reference: Query, completion: (Result<QuerySnapshot, Error>) -> Void) {
-//
-//    }
-//
-//    func add(_ item: QuerySnapshot, completion: (Error?) -> Void) {
-//
-//    }
-//
-//    func edit(_ item: QuerySnapshot, completion: (Error?) -> Void) {
-//
-//    }
-//
-//    func delete(_ item: QuerySnapshot, completion: (Error?) -> Void) {
-//
-//    }
-//}
-
-//class RoomRepository: FirestoreRepository<Room> {
-//
-//}
-//
-//class MemberRepository: Repository {
-//
-//    func get(reference: String, completion: (Result<Member, Error>) -> Void) {
-//
-//    }
-//
-//    func add(_ item: Member, completion: (Error?) -> Void) {
-//
-//    }
-//
-//    func edit(_ item: Member, completion: (Error?) -> Void) {
-//
-//    }
-//
-//    func delete(_ item: Member, completion: (Error?) -> Void) {
-//
-//    }
-//}
-//
-//class MemberListRepository: Repository {
-//
-//    func get(reference: String, completion: (Result<[Member], Error>) -> Void) {
-//
-//    }
-//
-//    func add(_ item: [Member], completion: (Error?) -> Void) {
-//
-//    }
-//
-//    func edit(_ item: [Member], completion: (Error?) -> Void) {
-//
-//    }
-//
-//    func delete(_ item: [Member], completion: (Error?) -> Void) {
-//
-//    }
-//}
-//
-//class SongRepository: Repository {
-//
-//    func get(reference: String, completion: (Result<Song, Error>) -> Void) {
-//
-//    }
-//
-//    func add(_ item: Song, completion: (Error?) -> Void) {
-//
-//    }
-//
-//    func edit(_ item: Song, completion: (Error?) -> Void) {
-//
-//    }
-//
-//    func delete(_ item: Song, completion: (Error?) -> Void) {
-//
-//    }
-//}
-//
-//class QueueRepository: Repository {
-//
-//    func get(reference: String, completion: (Result<[Song], Error>) -> Void) {
-//
-//    }
-//
-//    func add(_ item: [Song], completion: (Error?) -> Void) {
-//
-//    }
-//
-//    func edit(_ item: [Song], completion: (Error?) -> Void) {
-//
-//    }
-//
-//    func delete(_ item: [Song], completion: (Error?) -> Void) {
-//
-//    }
-//}
-

@@ -9,15 +9,15 @@ import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-struct FirestoreRepository<DocumentData: FireStoreObject>: RemoteRepository {
+class FirestoreRepository<Object: FireStoreObject>: RemoteRepository {
     
     var collectionReference: CollectionReference
     
-    init(reference: String) {
-        collectionReference = Firestore.firestore().collection(reference)
+    init(collectionPath: String) {
+        collectionReference = Firestore.firestore().collection(collectionPath)
     }
-        
-    func get(id: String, completion: @escaping (Result<DocumentData, Error>) -> Void) {
+    
+    func get(id: String, completion: @escaping (Result<Object, Error>) -> Void) {
         collectionReference.document(id).getDocument { documentSnapshot, error in
             if let error = error {
                 completion(.failure(error))
@@ -25,7 +25,7 @@ struct FirestoreRepository<DocumentData: FireStoreObject>: RemoteRepository {
             }
 
             do {
-                guard let data = try documentSnapshot?.data(as: DocumentData.self) else {
+                guard let data = try documentSnapshot?.data(as: Object.self) else {
                     completion(.failure(RepositoryError.notFound))
                     return
                 }
@@ -36,8 +36,7 @@ struct FirestoreRepository<DocumentData: FireStoreObject>: RemoteRepository {
         }
     }
     
-    
-    func list(_ query: Query? = nil, completion: @escaping (Result<[DocumentData], Error>) -> Void) {
+    func list(_ query: Query? = nil, completion: @escaping (Result<[Object], Error>) -> Void) {
         (query ?? collectionReference).getDocuments { querySnapshot, error in
             if let error = error {
                 completion(.failure(error))
@@ -50,7 +49,7 @@ struct FirestoreRepository<DocumentData: FireStoreObject>: RemoteRepository {
             }
             
             do {
-                let dataList = try query.documents.compactMap { try $0.data(as: DocumentData.self) }
+                let dataList = try query.documents.compactMap { try $0.data(as: Object.self) }
                 completion(.success(dataList))
             } catch {
                 completion(.failure(error))
@@ -58,14 +57,14 @@ struct FirestoreRepository<DocumentData: FireStoreObject>: RemoteRepository {
         }
     }
     
-    func create(_ item: DocumentData, completion: @escaping (Error?) -> Void) {
+    func create(_ object: Object, completion: @escaping (Error?) -> Void) {
         do {
-            if let id = item.id {
-                try collectionReference.document(id).setData(from: item) { error in
+            if let id = object.id {
+                try collectionReference.document(id).setData(from: object) { error in
                     completion(error)
                 }
             } else {
-                _ = try collectionReference.addDocument(from: item) { error in
+                _ = try collectionReference.addDocument(from: object) { error in
                     completion(error)
                 }
             }
@@ -74,13 +73,13 @@ struct FirestoreRepository<DocumentData: FireStoreObject>: RemoteRepository {
         }
     }
     
-    func update(_ item: DocumentData, completion: @escaping (Error?) -> Void) {
-        guard let id = item.id else {
+    func update(_ object: Object, completion: @escaping (Error?) -> Void) {
+        guard let id = object.id else {
             print("FireStoreObject has no documentID")
             return
         }
         do {
-            try collectionReference.document(id).setData(from: item) { error in
+            try collectionReference.document(id).setData(from: object) { error in
                 completion(error)
             }
         } catch {
@@ -88,13 +87,53 @@ struct FirestoreRepository<DocumentData: FireStoreObject>: RemoteRepository {
         }
     }
     
-    func delete(_ item: DocumentData, completion: @escaping (Error?) -> Void) {
-        guard let id = item.id else {
+    func delete(_ object: Object, completion: @escaping (Error?) -> Void) {
+        guard let id = object.id else {
             print("FireStoreObject has no documentID")
             return
         }
         collectionReference.document(id).delete() { error in
             completion(error)
+        }
+    }
+    
+    func addListener(id: String, completion: @escaping (Result<Object, Error>) -> Void) {
+        collectionReference.document(id).addSnapshotListener { documentSnapshot, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+
+            do {
+                guard let data = try documentSnapshot?.data(as: Object.self) else {
+                    completion(.failure(RepositoryError.notFound))
+                    return
+                }
+                completion(.success(data))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+    }
+
+    func addListener(_ query: Query? = nil, completion: @escaping (Result<[Object], Error>) -> Void) {
+        (query ?? collectionReference).addSnapshotListener { querySnapshot, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let query = querySnapshot else {
+                completion(.failure(RepositoryError.notFound))
+                return
+            }
+            
+            do {
+                let dataList = try query.documents.compactMap { try $0.data(as: Object.self) }
+                completion(.success(dataList))
+            } catch {
+                completion(.failure(error))
+            }
         }
     }
 }
