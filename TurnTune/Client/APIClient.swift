@@ -2,15 +2,18 @@
 //  APIClient.swift
 //  TurnTune
 //
-//  Created by Louis Menacho on 1/29/21.
+//  Created by Louis Menacho on 6/12/21.
 //
 
 import Foundation
 
-class APIClient<Resource: APIResource> {
+class APIClient<Endpoint: APIEndpoint> {
     
-    func request<T: Decodable>(_ resource: Resource, responseType: T.Type = T.self, completion: @escaping (Result<T, Error>) -> Void) {
-        URLSession.shared.dataTask(with: resource.request) { (data, response, error) in
+    func request<Response: Decodable>(_ endpoint: Endpoint, auth: HTTPAuthorization = .none, completion: @escaping (Result<Response, Error>) -> Void) {
+        var apiRequest = endpoint.request
+        
+        apiRequest.auth = auth
+        URLSession.shared.dataTask(with: apiRequest.asURLRequest) { (data, response, error) in
             if let error = error {
                 completion(.failure(error))
                 return
@@ -31,9 +34,9 @@ class APIClient<Resource: APIResource> {
             }
             
             do {
-//                self.debug(data: data)
-                let object = try JSONDecoder().decode(T.self, from: data)
-                completion(.success(object))
+                self.debug(data: data)
+                let responseData = try JSONDecoder().decode(Response.self, from: data)
+                completion(.success(responseData))
             } catch {
                 completion(.failure(error))
             }
@@ -49,4 +52,5 @@ class APIClient<Resource: APIResource> {
             print("json data malformed")
         }
     }
+
 }

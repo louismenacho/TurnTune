@@ -19,7 +19,7 @@ class SpotifyAPI {
     }
     
     private func generateSearchToken() {
-        APIClient<SpotifyAccountsAPI>().request(.apiToken, responseType: TokenResponse.self) { [self] result in
+        APIClient<SpotifyAccountsAPI>().request(.apiToken) { [self] result in
             switch result {
             case let .failure(error):
                 print(error)

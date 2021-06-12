@@ -21,7 +21,7 @@ class RoomManagerService {
     }
     
     func getRoom(completion: @escaping (Result<Room, Error>) -> Void) {
-        roomRepository.get(id: roomId) { (result: Result<Room, Error>) in
+        roomRepository.get(id: roomId) { result in
             switch result {
             case let .failure(error):
                 completion(.failure(error))
@@ -53,7 +53,7 @@ class RoomManagerService {
     }
     
     func listMembers(completion: @escaping (Result<[Member], Error>) -> Void) {
-        memberRepository.list(memberRepository.collectionReference.order(by: "dateJoined")) { (result: Result<[Member], Error>) in
+        memberRepository.list(memberRepository.collectionReference.order(by: "dateJoined")) { result in
             switch result {
             case let .failure(error):
                 completion(.failure(error))

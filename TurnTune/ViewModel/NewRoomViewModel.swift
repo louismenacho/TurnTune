@@ -23,10 +23,10 @@ class NewRoomViewModel {
     init(roomManager: RoomManagerService) {
         self.roomManager = roomManager
         loadRoom { room in
-//            if room.hostId == currentMember?.id {
-//            self.spotifySessionManager.initiateSession()
-//            self.spotifyAppRemote.delegate = self
-//            }
+            if room.hostId == self.authentication.currentUser()?.uid {
+                self.spotifySessionManager.initiateSession()
+                self.spotifyAppRemote.delegate = self
+            }
         }
     }
     
@@ -79,7 +79,7 @@ class NewRoomViewModel {
     }
     
     func loadQueue(completion: @escaping ([Song]) -> Void) {
-        roomManager.listQueue(queueMode: "") { result in
+        roomManager.listQueue(queueMode: room?.id ?? "") { result in
             switch result {
             case let .failure(error):
                 print(error)
@@ -91,7 +91,7 @@ class NewRoomViewModel {
     }
     
     func queueChangeListener(completion: @escaping ([Song]) -> Void) {
-        roomManager.queueChangeListener(queueMode: "") { result in
+        roomManager.queueChangeListener(queueMode: room?.id ?? "") { result in
             switch result {
             case let .failure(error):
                 print(error)

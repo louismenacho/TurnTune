@@ -13,5 +13,4 @@ protocol AuthenticationService {
     func signIn(displayName: String, completion: @escaping (Result<User, Error>) -> Void)
     func setDisplayName(_ displayName: String, completion: @escaping (Error?) -> Void)
     func signOut(completion: @escaping (Error?) -> Void)
-    
 }

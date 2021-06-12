@@ -12,7 +12,7 @@ class RoomProviderService {
     private var roomRepository = FirestoreRepository<Room>(collectionPath: "rooms")
     
     func getExistingRoom(roomId: String, completion: @escaping (Result<Room, Error>) -> Void) {
-        roomRepository.get(id: roomId) { (result: Result<Room, Error>) in
+        roomRepository.get(id: roomId) { result in
             switch result {
             case let .failure(error):
                 completion(.failure(error))
