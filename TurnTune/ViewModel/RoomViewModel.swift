@@ -2,194 +2,215 @@
 //  RoomViewModel.swift
 //  TurnTune
 //
-//  Created by Louis Menacho on 1/18/21.
+//  Created by Louis Menacho on 5/31/21.
 //
 
 import Foundation
-import Firebase
-import FirebaseFirestoreSwift
-
-protocol RoomViewModelDelegate: AnyObject {
-    func roomViewModel(roomViewModel: RoomViewModel, didInitialize: Bool)
-    func roomViewModel(roomViewModel: RoomViewModel, didUpdate room: Room)
-    func roomViewModel(roomViewModel: RoomViewModel, didUpdate members: [Member])
-    func roomViewModel(roomViewModel: RoomViewModel, didUpdate queue: [Song])
-}
-
-protocol RoomViewModelMembersDelegate: AnyObject {
-    func roomViewModel(roomViewModel: RoomViewModel, didUpdate members: [Member])
-}
 
 class RoomViewModel {
     
-    // Delegates
-    weak var delegate: RoomViewModelDelegate?
-    weak var membersDelegate: RoomViewModelMembersDelegate?
+    private(set) var authentication = FirebaseAuthService()
+    private(set) var roomManager: RoomManagerService
+    private(set) var musicService: MusicServiceable
+    
+    private(set) var room: Room
+    private(set) var memberList = [Member]()
+    private(set) var queue = [Song]()
+    private(set) var queueHistory = [Song]()
+    
+    init(roomManager: RoomManagerService, musicService: MusicServiceable) {
+        self.room = roomManager.room
+        self.roomManager = roomManager
+        self.musicService = musicService
+        self.musicService.delegate = self
+    }
+    
+    func loadRoom(completion: @escaping (Room) -> Void) {
+        roomManager.getRoom { result in
+            switch result {
+            case let .failure(error):
+                print(error)
+            case let .success(room):
+                self.room = room
+                completion(room)
+            }
+        }
+    }
+    
+    func updateRoom(_ room: Room, completion: (() -> Void)? = nil) {
+        roomManager.updateRoom(room) { error in
+            if let error = error {
+                print(error)
+            } else {
+                completion?()
+                print("room updated: \(room)")
+            }
+        }
+    }
 
     
-    // Models
-    private(set) var room: Room?
-    private(set) var members = [Member]()
-    private(set) var queue = [Song]()
-    
-    // Firestore
-    private(set) var roomPath: String
-    private(set) lazy var membersCollectionPath = roomPath+"/members"
-    private(set) lazy var queueCollectionPath = roomPath+"/queue"
-    private(set) var firestore = FirebaseFirestore.shared
-    
-    // Spotify
-    private var spotifySessionManager = SpotifySessionManager.shared
-    private var spotifyAppRemote = SpotifyAppRemote.shared
-    private var spotifyWebAPI = SpotifyAPI.shared
-    
-    // Computed
-    var currentMember: Member? { members.first { $0.id == Auth.auth().currentUser?.uid } }
-    
-    init(roomPath: String) {
-        self.roomPath = roomPath
-        loadFirestoreData(completion:) { [self] in
-            self.addFirestoreListeners()
-            
-            if room?.hostId == currentMember?.id {
-                spotifySessionManager.initiateSession()
-                spotifyAppRemote.delegate = self
-            }
-        }
-    }
-    
-    func setRoomPlayingSong(_ song: Song, completion: (() -> Void)? = nil) {
-        room?.playingSong = song
-        firestore.setData(from: room, in: roomPath) { error in
-            if let error = error {
-                print(error)
-            }
-            completion?()
-        }
-    }
-    
-    func queueSong(_ song: Song, completion: (() -> Void)? = nil) {
-        var queueSong = song
-        queueSong.orderGroup = queue.filter({ $0.addedBy?.id == currentMember?.id }).count
-        queueSong.addedBy = currentMember
-        firestore.appendData(from: queueSong, in: queueCollectionPath) { error in
-            if let error = error {
-                print(error)
-            }
-            completion?()
-        }
-    }
-    
-    // Spotify Player Methods
-        
-    func play(_ song: Song, completion: (() -> Void)? = nil) {
-        spotifyWebAPI.playTrack(uris: [song.spotifyURI!]) { error in
-            if let error = error {
-                print(error)
-            }
-            completion?()
-        }
-    }
-    
-    func pause(completion: (() -> Void)? = nil) {
-        spotifyWebAPI.pausePlayback { error in
-            if let error = error {
-                print(error)
-            }
-            completion?()
-        }
-    }
-    
-    private func loadFirestoreData(completion: @escaping () -> Void) {
-        let group = DispatchGroup()
-        
-        group.enter()
-        firestore.getDocumentData(documentPath: roomPath) { (result: Result<Room, Error>) in
+    func roomChangeListener(completion: @escaping (Room) -> Void) {
+        roomManager.roomChangeListener { result in
             switch result {
             case let .failure(error):
                 print(error)
             case let .success(room):
                 self.room = room
+                completion(room)
             }
-            group.leave()
-        }
-        
-        group.enter()
-        firestore.getCollectionData(collectionPath: membersCollectionPath, orderBy: "dateJoined") { (result: Result<[Member], Error>) in
-            switch result {
-            case let .failure(error):
-                print(error)
-            case let .success(members):
-                self.members = members
-            }
-            group.leave()
-        }
-        
-        group.enter()
-        firestore.getCollectionData(collectionPath: queueCollectionPath, whereField: ("didPlay", false), orderBy: ["orderGroup", "dateAdded"]) { (result: Result<[Song], Error>) in
-            switch result {
-            case let .failure(error):
-                print(error)
-            case let .success(queue):
-                self.queue = queue
-            }
-            group.leave()
-        }
-        
-        group.notify(queue: .main) {
-            self.delegate?.roomViewModel(roomViewModel: self, didInitialize: true)
-            completion()
         }
     }
     
-    private func addFirestoreListeners() {
-        firestore.addDocumentListener(documentPath: roomPath) { (result: Result<Room, Error>) in
+    func loadMemberList(completion: @escaping ([Member]) -> Void) {
+        roomManager.listMembers { result in
             switch result {
             case let .failure(error):
                 print(error)
-            case let .success(room):
-                self.room = room
-                self.delegate?.roomViewModel(roomViewModel: self, didUpdate: room)
+            case let .success(memberList):
+                self.memberList = memberList
+                completion(memberList)
             }
         }
-        
-        firestore.addCollectionListener(collectionPath: membersCollectionPath, orderBy: "dateJoined") { (result: Result<[Member], Error>) in
+    }
+    
+    func memberListChangeListener(completion: @escaping ([Member]) -> Void) {
+        roomManager.membersChangeListener { result in
             switch result {
             case let .failure(error):
                 print(error)
-            case let .success(members):
-                self.members = members
-                self.delegate?.roomViewModel(roomViewModel: self, didUpdate: members)
-                self.membersDelegate?.roomViewModel(roomViewModel: self, didUpdate: members)
+            case let .success(memberList):
+                self.memberList = memberList
+                completion(memberList)
             }
         }
-        
-        firestore.addCollectionListener(collectionPath: queueCollectionPath, whereField: ("didPlay", false), orderBy: ["orderGroup", "dateAdded"]) { (result: Result<[Song], Error>) in
+    }
+    
+    func loadQueue(completion: @escaping ([Song]) -> Void) {
+        roomManager.listQueue(queueMode: room.id ?? "") { result in
             switch result {
             case let .failure(error):
                 print(error)
             case let .success(queue):
                 self.queue = queue
-                self.delegate?.roomViewModel(roomViewModel: self, didUpdate: queue)
+                completion(queue)
+            }
+        }
+    }
+    
+    func queueChangeListener(completion: @escaping ([Song]) -> Void) {
+        roomManager.queueChangeListener(queueMode: room.id ?? "") { result in
+            switch result {
+            case let .failure(error):
+                print(error)
+            case let .success(queue):
+                self.queue = queue
+                completion(queue)
+            }
+        }
+    }
+    
+    func loadQueueHistory(completion: @escaping ([Song]) -> Void) {
+        roomManager.listQueue(queueMode: room.id ?? "", didPlayFlag: true) { result in
+            switch result {
+            case let .failure(error):
+                print(error)
+            case let .success(queueHistory):
+                self.queueHistory = queueHistory.reversed()
+                completion(queueHistory)
+            }
+        }
+    }
+    
+    func queueHistoryChangeListener(completion: @escaping ([Song]) -> Void) {
+        roomManager.queueChangeListener(queueMode: room.id ?? "", didPlayFlag: true) { result in
+            switch result {
+            case let .failure(error):
+                print(error)
+            case let .success(queueHistory):
+                self.queueHistory = queueHistory.reversed()
+                completion(queueHistory)
+            }
+        }
+    }
+    
+    func queueSong(_ song: Song) {
+        var newSong = song
+        newSong.orderGroup = queue.filter({ $0.addedBy?.id == authentication.currentUser()?.uid }).count
+        newSong.addedBy = memberList.first { $0.id == authentication.currentUser()?.uid }
+        roomManager.queueSong(newSong) { error in
+            if let error = error {
+                print(error)
+            }
+        }
+    }
+    
+    func playSong(_ song: [Song]? = nil, position: Int = 0, completion: (() -> Void)? = nil ) {
+        musicService.startPlayback(songs: song, position: position) { error in
+            if let error = error {
+                print(error)
+            } else {
+                print("playing \(song?.compactMap { $0.name } ?? [])")
+                completion?()
+            }
+        }
+    }
+    
+    func dequeueSong(_ song: Song, completion: (() -> Void)? = nil) {
+        roomManager.dequeueSong(song) { error in
+            if let error = error {
+                print(error)
+            } else {
+                print("removed \(song.name)")
+            }
+        }
+    }
+    
+    func getSongRecommendations(from recentSongs: [Song], completion: @escaping ([Song]) -> Void) {
+        musicService.getSongRecommendations(from: recentSongs) { (result: Result<[Song], Error>) in
+            switch result {
+            case let .failure(error):
+                print(error)
+            case let .success(recommendationsResult):
+                print("recommendations: \(recommendationsResult.map { $0.name })")
+                completion(recommendationsResult)
             }
         }
     }
 }
 
-extension RoomViewModel: SpotifyAppRemoteDelegate {
-    func spotifyAppRemote(spotifyAppRemote: SpotifyAppRemote, trackDidChange newTrack: SPTAppRemoteTrack) {
-        if let nextSong = queue.filter({ $0.spotifyURI == newTrack.uri }).first {
-            setRoomPlayingSong(nextSong)
+extension RoomViewModel: MusicServiceableDelegate {
+    func musicServiceable(musicServiceable: MusicServiceable, didInitiateWith playerState: PlayerState) {
+        if let lastPlayingSong = room.playerState.playingSong {
+            playSong([lastPlayingSong], position: room.playerState.playbackPosition)
         }
     }
     
-    func spotifyAppRemote(spotifyAppRemote: SpotifyAppRemote, trackDidFinish track: SPTAppRemoteTrack) {
-        print(queue.count)
-        if !queue.isEmpty {
-            let song = queue.removeFirst()
-            play(song) {
-                Firestore.firestore().document(self.queueCollectionPath+"/"+song.id!).delete()
+    func musicServiceable(musicServiceable: MusicServiceable, playingSongDidChange playerState: PlayerState) {
+        print("playingSongDidChange")
+        if queue.isEmpty {
+            room.playerState = playerState
+            updateRoom(room)
+        } else {
+            
+        }
+    }
+    
+    func musicServiceable(musicServiceable: MusicServiceable, playingSongDidFinish playerState: PlayerState) {
+        print("playingSongDidFinish")
+        if !queue.isEmpty, let nextSong = queue.first {
+            dequeueSong(nextSong)
+            playSong([nextSong]) { [self] in
+                room.playerState.playingSong = nextSong
+                updateRoom(room)
             }
+        }
+        else if !queueHistory.isEmpty {
+            let recentSongs = Array(queueHistory.prefix(5))
+            getSongRecommendations(from: recentSongs) { [self] recommendedSongs in
+                playSong(recommendedSongs)
+            }
+        } else {
+            
         }
     }
 }

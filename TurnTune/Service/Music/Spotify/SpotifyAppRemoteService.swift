@@ -1,41 +1,37 @@
 //
-//  SpotifyAppRemote.swift
+//  SpotifyAppRemoteService.swift
 //  TurnTune
 //
-//  Created by Louis Menacho on 2/28/21.
+//  Created by Louis Menacho on 6/12/21.
 //
 
 import Foundation
 
-protocol SpotifyAppRemoteDelegate: AnyObject {
-    func spotifyAppRemote(spotifyAppRemote: SpotifyAppRemote, trackDidChange newTrack: SPTAppRemoteTrack)
-    func spotifyAppRemote(spotifyAppRemote: SpotifyAppRemote, trackDidFinish track: SPTAppRemoteTrack)
+protocol SpotifyAppRemoteServiceDelegate: AnyObject {
+    func spotifyAppRemoteService(didEstablishConnection appRemote: SPTAppRemote)
+    func spotifyAppRemoteService(playerStateDidChange playerState: SPTAppRemotePlayerState)
 }
 
-class SpotifyAppRemote: NSObject {
+class SpotifyAppRemoteService: NSObject {
     
-    weak var delegate: SpotifyAppRemoteDelegate?
+    weak var delegate: SpotifyAppRemoteServiceDelegate?
     
-    private(set) static var shared = SpotifyAppRemote()
-    
-    private let appRemote: SPTAppRemote
-    private var lastPlayerState: SPTAppRemotePlayerState?
-    
-    var isConnected: Bool { appRemote.isConnected }
-    var hasAccessToken: Bool { appRemote.connectionParameters.accessToken != nil }
-    
-    private override init() {
-        appRemote = SPTAppRemote(configuration: SpotifyApp.shared.configuration, logLevel: .debug)
-        super.init()
+    private(set) lazy var appRemote: SPTAppRemote = {
+        let config = SPTConfiguration(
+            clientID: "695de2c68a184c69aaebdf6b2ed02260",
+            redirectURL: URL(string: "TurnTune://spotify-login-callback")!
+        )
+        let appRemote =  SPTAppRemote(configuration: config, logLevel: .debug)
         appRemote.delegate = self
-    }
+        return appRemote
+    }()
     
-    func setAccessToken(_ token: String) {
-        appRemote.connectionParameters.accessToken = token
+    func setToken(_ accessToken: String) {
+        appRemote.connectionParameters.accessToken = accessToken
     }
     
     func connect() {
-        if !appRemote.isConnected {
+        if !appRemote.isConnected && appRemote.connectionParameters.accessToken != nil {
             appRemote.connect()
         }
     }
@@ -43,28 +39,6 @@ class SpotifyAppRemote: NSObject {
     func disconnect() {
         if appRemote.isConnected {
             appRemote.disconnect()
-        }
-    }
-    
-    func connectIfNeeded() {
-        SPTAppRemote.checkIfSpotifyAppIsActive { [self] isActive in
-            if isActive {
-                connect()
-            } else {
-                SpotifySessionManager.shared.initiateSession()
-            }
-        }
-    }
-    
-    func configurePlayerAPI() {
-        guard let player = appRemote.playerAPI else {
-            print("appRemote.playerAPI is nil")
-            return
-        }
-        if player.delegate == nil {
-            player.delegate = self
-            player.subscribe()
-            player.setRepeatMode(.off)
         }
     }
     
@@ -99,11 +73,18 @@ class SpotifyAppRemote: NSObject {
     }
 }
 
-extension SpotifyAppRemote: SPTAppRemoteDelegate {
+extension SpotifyAppRemoteService: SPTAppRemoteDelegate {
     
     func appRemoteDidEstablishConnection(_ appRemote: SPTAppRemote) {
         print("SPTAppRemote appRemoteDidEstablishConnection")
-        configurePlayerAPI()
+        appRemote.playerAPI?.delegate = self
+        appRemote.playerAPI?.subscribe { id, error in
+            if let error = error {
+                _ = self.handleAppRemoteError(error)
+                print("appRemote playerState subscribe failed: \(error)")
+            }
+        }
+        delegate?.spotifyAppRemoteService(didEstablishConnection: appRemote)
     }
     
     func appRemote(_ appRemote: SPTAppRemote, didFailConnectionAttemptWithError error: Error?) {
@@ -113,26 +94,16 @@ extension SpotifyAppRemote: SPTAppRemoteDelegate {
     
     func appRemote(_ appRemote: SPTAppRemote, didDisconnectWithError error: Error?) {
         print("appRemote didDisconnectWithError")
-        _  = handleAppRemoteError(error)
+        _ = handleAppRemoteError(error)
     }
 }
 
-extension SpotifyAppRemote: SPTAppRemotePlayerStateDelegate {
+extension SpotifyAppRemoteService: SPTAppRemotePlayerStateDelegate {
     
     func playerStateDidChange(_ playerState: SPTAppRemotePlayerState) {
         print("playerStateDidChange")
-        
-        if self.lastPlayerState?.track.uri != playerState.track.uri {
-            self.delegate?.spotifyAppRemote(spotifyAppRemote: self, trackDidChange: playerState.track)
-            print("spotifyAppRemote trackDidChange")
-        }
-        
-        if playerState.isPaused && playerState.playbackPosition == 0 {
-            self.delegate?.spotifyAppRemote(spotifyAppRemote: self, trackDidFinish: playerState.track)
-            print("spotifyAppRemote trackDidChange")
-        }
-        
-        self.lastPlayerState = playerState
+        debugPlayerState(playerState: playerState)
+        delegate?.spotifyAppRemoteService(playerStateDidChange: playerState)
     }
     
     func debugPlayerState(playerState: SPTAppRemotePlayerState) {

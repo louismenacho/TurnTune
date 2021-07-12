@@ -1,33 +1,42 @@
 //
-//  SpotifySessionManager.swift
+//  SpotifySessionManagerService.swift
 //  TurnTune
 //
-//  Created by Louis Menacho on 2/28/21.
+//  Created by Louis Menacho on 6/26/21.
 //
 
 import Foundation
 
-class SpotifySessionManager: NSObject {
+protocol SpotifySessionManagerServiceDelegate: AnyObject {
+    func spotifySessionManagerService(didInitiate session: SPTSession)
+    func spotifySessionManagerService(didRenew session: SPTSession)
+}
+
+
+class SpotifySessionManagerService: NSObject {
     
-    private(set) static var shared = SpotifySessionManager()
+    weak var delegate: SpotifySessionManagerServiceDelegate?
     
-    private let sessionManager: SPTSessionManager
+    private(set) lazy var sessionManager: SPTSessionManager = {
+        let config = SPTConfiguration(
+            clientID: "695de2c68a184c69aaebdf6b2ed02260",
+            redirectURL: URL(string: "TurnTune://spotify-login-callback")!
+        )
+        config.tokenSwapURL = URL(string: "https://turntune-spotify-token-swap.herokuapp.com/api/token")!
+        config.tokenRefreshURL = URL(string: "https://turntune-spotify-token-swap.herokuapp.com/api/refresh_token")!
+        config.playURI = ""
+        return SPTSessionManager(configuration: config, delegate: self)
+    }()
     
-    var session: SPTSession? { sessionManager.session }
-    
-    var scope: SPTScope = [
+    private var scope: SPTScope = [
         .appRemoteControl,
         .userReadCurrentlyPlaying,
+        .userReadRecentlyPlayed,
         .userReadPlaybackState,
         .userModifyPlaybackState
     ]
     
-    private override init() {
-        sessionManager = SPTSessionManager(configuration: SpotifyApp.shared.configuration, delegate: nil)
-    }
-    
     func initiateSession() {
-        sessionManager.delegate = self
         sessionManager.initiateSession(with: scope, options: .default)
     }
     
@@ -35,7 +44,7 @@ class SpotifySessionManager: NSObject {
         sessionManager.application(UIApplication.shared, open: url, options: [:])
     }
     
-    func handleError(_ error: Error?) -> SPTErrorCode? {
+    func handleSessionManagerError(_ error: Error?) -> SPTErrorCode? {
         guard
             let error = error as NSError?
         else {
@@ -62,21 +71,19 @@ class SpotifySessionManager: NSObject {
     }
 }
 
-extension SpotifySessionManager: SPTSessionManagerDelegate {
+extension SpotifySessionManagerService: SPTSessionManagerDelegate {
     
     func sessionManager(manager: SPTSessionManager, didInitiate session: SPTSession) {
         print("SPTSession didInitiate")
-        SpotifyAppRemote.shared.setAccessToken(session.accessToken)
-        SpotifyAPI.shared.setPlayerToken(session.accessToken)
+        delegate?.spotifySessionManagerService(didInitiate: session)
     }
     
     func sessionManager(manager: SPTSessionManager, didRenew session: SPTSession) {
         print("SPTSession didRenew")
-        SpotifyAppRemote.shared.setAccessToken(session.accessToken)
     }
     
     func sessionManager(manager: SPTSessionManager, didFailWith error: Error) {
         print("SPTSession didFailWith error")
-        _ = handleError(error)
+        _ = handleSessionManagerError(error)
     }
 }

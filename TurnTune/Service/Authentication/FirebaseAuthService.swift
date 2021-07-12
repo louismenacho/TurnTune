@@ -8,7 +8,7 @@
 import Foundation
 import FirebaseAuth
 
-class FirebaseAuthService: AuthenticationService {
+class FirebaseAuthService: AuthenticationServiceable {
     
     private(set) var auth = Auth.auth()
     
