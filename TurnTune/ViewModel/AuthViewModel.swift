@@ -14,7 +14,7 @@ class AuthViewModel {
     
     private(set) var roomManager: RoomManagerService?
 
-    func joinRoom(roomId: String, as displayName: String, completion: @escaping () -> Void) {
+    func joinRoom(roomID: String, as displayName: String, completion: @escaping () -> Void) {
         authentication.signIn(displayName: displayName) { [self] userResult in
             switch userResult {
             case let .failure(error):
@@ -23,21 +23,25 @@ class AuthViewModel {
                 
                 
             case let .success(user):
-                roomProvider.getExistingRoom(roomId: roomId) { roomResult in
-                    if case let .failure(error) = roomResult {
+                roomProvider.getExistingRoom(roomID: roomID) { roomResult in
+                    switch roomResult {
+                    case let .failure(error):
                         print("getExistingRoom: \(error)")
                         return
-                    }
-                    
-                    let roomManager = RoomManagerService(roomId: roomId)
-                    roomManager.addMember(Member(id: user.uid, displayName: user.displayName!)) { error in
-                        if let error = error {
-                            print("addMember: \(error)")
+                    case let .success(room):
+                        guard let roomManager = RoomManagerService(room: room) else {
+                            print("roomManager is nil")
                             return
                         }
-                        
-                        self.roomManager = roomManager
-                        completion()
+                        roomManager.addMember(Member(id: user.uid, displayName: user.displayName!)) { error in
+                            if let error = error {
+                                print("addMember: \(error)")
+                                return
+                            }
+                            
+                            self.roomManager = roomManager
+                            completion()
+                        }
                     }
                 }
             }
@@ -58,8 +62,10 @@ class AuthViewModel {
                         print("createNewRoom: \(error)")
                         return
                     case let .success(room):
-                        
-                        let roomManager = RoomManagerService(roomId: room.id!)
+                        guard let roomManager = RoomManagerService(room: room) else {
+                            print("roomManager is nil")
+                            return
+                        }
                         roomManager.addMember(Member(id: user.uid, displayName: user.displayName!)) { error in
                             if let error = error {
                                 print("addMember: \(error)")

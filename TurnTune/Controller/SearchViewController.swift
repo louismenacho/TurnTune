@@ -12,7 +12,6 @@ import FirebaseFirestoreSwift
 class SearchViewController: UIViewController {
 
     var searcherViewModel: SearcherViewModel!
-    var newRoomViewModel: NewRoomViewModel!
     
     @IBOutlet weak var tableview: UITableView!
     
@@ -55,7 +54,7 @@ extension SearchViewController: UITableViewDataSource {
 extension SearchViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedCell = tableview.cellForRow(at: indexPath) as! SearchResultsTableViewCell
-        newRoomViewModel.queueSong(selectedCell.song!)
+        searcherViewModel.queueSong(selectedCell.song!)
         tableview.deselectRow(at: indexPath, animated: true)
     }
 }

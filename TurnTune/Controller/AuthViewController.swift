@@ -18,7 +18,7 @@ class AuthViewController: UIViewController {
     @IBOutlet weak var nameTextField: UITextField!
     
     override func viewDidLoad() {
-        roomCodeTextField.text = "HWHC"
+        roomCodeTextField.text = "KEBF"
         super.viewDidLoad()
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
@@ -26,12 +26,12 @@ class AuthViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "RoomViewController" {
             let roomViewController = segue.destination as! RoomViewController
-            roomViewController.newRoomViewModel = NewRoomViewModel(roomManager: authViewModel.roomManager!)
+            roomViewController.roomViewModel = RoomViewModel(roomManager: authViewModel.roomManager!, musicService: SpotifyMusicService())
         }
     }
     
     @IBAction func joinButtonPressed(_ sender: UIButton) {
-        authViewModel.joinRoom(roomId: roomCodeTextField.text!, as: nameTextField.text!) { [self] in
+        authViewModel.joinRoom(roomID: roomCodeTextField.text!, as: nameTextField.text!) { [self] in
             performSegue(withIdentifier: "RoomViewController", sender: self)
         }
     }

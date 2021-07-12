@@ -9,7 +9,7 @@ import UIKit
 
 class SettingsTableViewController: UITableViewController {
     
-    var roomViewModel: RoomViewModel!
+    var roomViewModel: RoomViewModel?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,7 +44,7 @@ extension SettingsTableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let sectionCounts = [1, 1, roomViewModel.members.count]
+        let sectionCounts = [1, 1, roomViewModel?.memberList.count ?? 0]
         return sectionCounts[section]
     }
     
@@ -59,18 +59,18 @@ extension SettingsTableViewController {
             let cell = tableView.dequeueReusableCell(withIdentifier: "SettingTableViewCell", for: indexPath) as! SettingTableViewCell
             cell.label.text = "Queue Mode"
             cell.valueLabel.text = "Fair"
-            if roomViewModel.room?.hostId != roomViewModel.currentMember?.id {
+            if roomViewModel?.room.hostId != roomViewModel?.authentication.currentUser()?.uid {
                 cell.accessoryType = .none
                 cell.selectionStyle = .none
             }
             return cell
         case 2:
             let cell = tableView.dequeueReusableCell(withIdentifier: "SettingTableViewCell", for: indexPath) as! SettingTableViewCell
-            let hostId = roomViewModel.room?.hostId
-            let member = roomViewModel.members[indexPath.row]
-            cell.label.text = member.displayName
-            cell.valueLabel.text = hostId == member.id ? "Host" : ""
-            if hostId == member.id {
+            let hostId = roomViewModel?.room.hostId
+            let member = roomViewModel?.memberList[indexPath.row]
+            cell.label.text = member?.displayName
+            cell.valueLabel.text = hostId == member?.id ? "Host" : ""
+            if hostId == member?.id {
                 cell.accessoryType = .none
                 cell.selectionStyle = .none
             }
@@ -126,7 +126,7 @@ extension SettingsTableViewController {
             })
             
         case "Room Info":
-            if roomViewModel.room?.hostId != roomViewModel.currentMember?.id {
+            if roomViewModel?.room.hostId != roomViewModel?.authentication.currentUser()?.uid {
                 return
             }
             showAlert(title: sectionTitle, message: nil, actions: createAlertActions(titles: ["Fair"]) { alertAction  in
@@ -135,9 +135,9 @@ extension SettingsTableViewController {
             })
             
         case "Members":
-            let hostId = roomViewModel.room?.hostId
-            let member = roomViewModel.members[indexPath.row]
-            if hostId == member.id {
+            let hostId = roomViewModel?.room.hostId
+            let member = roomViewModel?.memberList[indexPath.row]
+            if hostId == member?.id {
                 return
             }
             let alertActions = [

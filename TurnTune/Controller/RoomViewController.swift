@@ -9,7 +9,6 @@ import UIKit
 
 class RoomViewController: UITableViewController {
     
-    var newRoomViewModel: NewRoomViewModel!
     var roomViewModel: RoomViewModel!
     
     override func viewDidLoad() {
@@ -20,13 +19,17 @@ class RoomViewController: UITableViewController {
 //        navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.searchController = prepareSearchViewController()
         
-        newRoomViewModel.roomChangeListener(completion: { room in
+        roomViewModel.roomChangeListener { room in
             self.updateRoom()
-        })
+        }
         
-        newRoomViewModel.queueChangeListener(completion: { queue in
+        roomViewModel.queueChangeListener { queue in
             self.updateQueue()
-        })
+        }
+        
+        roomViewModel.queueHistoryChangeListener { queueHistory in
+            print(queueHistory.map { $0.name })
+        }
         
 //        roomViewModel.delegate = self
     }
@@ -50,13 +53,12 @@ class RoomViewController: UITableViewController {
         guard let searchResultsViewController = storyboard?.instantiateViewController(identifier: "SearchViewController") as? SearchViewController else {
             fatalError("Could not instantiate SearchViewController")
         }
-        searchResultsViewController.searcherViewModel = SearcherViewModel()
-        searchResultsViewController.newRoomViewModel = newRoomViewModel
+        searchResultsViewController.searcherViewModel = SearcherViewModel(roomViewModel: roomViewModel)
         return searchResultsViewController
     }
     
     private func updateRoom() {
-        navigationItem.title = newRoomViewModel.room?.id
+        navigationItem.title = roomViewModel.room.id
         self.tableView.reloadSections(IndexSet(integersIn: 0...0), with: .automatic)
     }
     
@@ -120,27 +122,24 @@ extension RoomViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let sectionCount = [1, newRoomViewModel.queue.count]
+        let sectionCount = [1, roomViewModel.queue.count]
         return sectionCount[section]
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.section == 0 {
+        switch indexPath.section {
+        
+        case 0:
             let cell = tableView.dequeueReusableCell(withIdentifier: "CurrentSongTableViewCell", for: indexPath) as! CurrentSongTableViewCell
-            if let song = newRoomViewModel.room?.playingSong {
-                cell.song = song
-            } else {
-                cell.songLabel.text = "No song playing"
-                cell.artistLabel.text = ""
-            }
+            cell.song = roomViewModel.room.playerState.playingSong
             return cell
-        }
-        else if !newRoomViewModel.queue.isEmpty {
-            let song = newRoomViewModel.queue[indexPath.row]
+            
+        case 1:
             let cell = tableView.dequeueReusableCell(withIdentifier: "SongTableViewCell", for: indexPath) as! SongTableViewCell
-            cell.song = song
+            cell.song = roomViewModel.queue[indexPath.row]
             return cell
-        } else {
+            
+        default:
             return UITableViewCell()
         }
     }
@@ -154,7 +153,7 @@ extension RoomViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 1 {
             let selectedCell = tableView.cellForRow(at: indexPath) as! SongTableViewCell
-//            newRoomViewModel.play(selectedCell.song!)
+            roomViewModel.playSong([selectedCell.song!])
         }
         tableView.deselectRow(at: indexPath, animated: true)
     }

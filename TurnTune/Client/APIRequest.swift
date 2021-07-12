@@ -11,7 +11,7 @@ struct APIRequest {
     var baseURL: String
     var method: HTTPMethod = .get
     var path: String = ""
-    var params: [String: String] = [:]
+    var params: [String: Any] = [:]
     var header: [String: String] = [:]
     var body: [String: Any] = [:]
     var auth: HTTPAuthorization = .none
@@ -48,6 +48,7 @@ struct APIRequest {
     }
     
     private var requestBody: Data? {
+        print("request body: \(body)")
         switch header["Content-Type"] {
         case "application/x-www-form-urlencoded":
             var components = URLComponents()

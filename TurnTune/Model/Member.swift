@@ -14,3 +14,11 @@ struct Member: FireStoreObject {
     var displayName: String
     @ServerTimestamp var dateJoined: Timestamp?
 }
+
+protocol FirestoreDocument: Codable {
+    var documentID: String? { get set }
+}
+
+struct Object: FirestoreDocument {
+    @DocumentID var documentID: String?
+}

@@ -22,9 +22,29 @@ struct Song: FireStoreObject {
     
     // Spotify Identifiers
     var spotifyURI: String?
+    var spotifyID: String?
     
     init(spotifyTrack: SearchResponse.TrackItem) {
         spotifyURI = spotifyTrack.uri
+        spotifyID = spotifyTrack.id
+        name = spotifyTrack.name
+        artistName = spotifyTrack.artists.map { $0.name }.joined(separator: ", ")
+        artworkURL = spotifyTrack.album.images[0].url
+        durationInMillis = spotifyTrack.durationMS
+    }
+    
+    init(spotifyTrack: RecentlyPlayedResponse.Track) {
+        spotifyURI = spotifyTrack.uri
+        spotifyID = spotifyTrack.id
+        name = spotifyTrack.name
+        artistName = spotifyTrack.artists.map { $0.name }.joined(separator: ", ")
+        artworkURL = spotifyTrack.album.images[0].url
+        durationInMillis = spotifyTrack.durationMS
+    }
+    
+    init(spotifyTrack: RecommendationsResponse.Track) {
+        spotifyURI = spotifyTrack.uri
+        spotifyID = spotifyTrack.id
         name = spotifyTrack.name
         artistName = spotifyTrack.artists.map { $0.name }.joined(separator: ", ")
         artworkURL = spotifyTrack.album.images[0].url
@@ -36,6 +56,8 @@ struct Song: FireStoreObject {
         name = spotifyTrack.name
         artistName = spotifyTrack.artist.name
         artworkURL = spotifyTrack.imageIdentifier
+        artworkURL.removeFirst(14)
+        artworkURL = "https://i.scdn.co/image/"+artworkURL
         durationInMillis = Int(spotifyTrack.duration)
     }
 }

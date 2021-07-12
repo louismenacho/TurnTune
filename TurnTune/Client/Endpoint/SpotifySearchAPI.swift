@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum SpotifySearchAPI: APIEndpoint {
+enum SpotifySearchAPI: SpotifyAPIEndpoint {
     case search(query: String, type: String, limit: Int)
     
     var request: APIRequest {

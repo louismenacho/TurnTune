@@ -6,3 +6,7 @@
 //
 
 import Foundation
+
+class SpotifyAPIClient<Endpoint: SpotifyAPIEndpoint>: APIClient {
+    var auth: HTTPAuthorization = .none
+}

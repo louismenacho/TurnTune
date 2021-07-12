@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum SpotifyAccountsAPI: APIEndpoint {
+enum SpotifyAccountsAPI: SpotifyAPIEndpoint {
     case apiToken
     
     var request: APIRequest {
@@ -20,5 +20,7 @@ enum SpotifyAccountsAPI: APIEndpoint {
             apiRequest.header = ["Content-Type": "application/x-www-form-urlencoded"]
             apiRequest.body =   ["grant_type": "client_credentials"]
         }
+        
+        return apiRequest
     }
 }

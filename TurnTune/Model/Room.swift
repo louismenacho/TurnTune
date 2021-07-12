@@ -10,9 +10,9 @@ import Firebase
 import FirebaseFirestoreSwift
 
 struct Room: FireStoreObject {
-    @DocumentID var id: String?
+    @DocumentID var id: String? = ""
     var hostId: String
     var queueMode: String = "Fair"
-    var playingSong: Song?
+    var playerState = PlayerState()
     @ServerTimestamp var dateCreated: Timestamp?
 }

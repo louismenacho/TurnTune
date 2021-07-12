@@ -12,9 +12,9 @@ class CurrentSongTableViewCell: UITableViewCell {
     
     var song: Song? {
         didSet {
-            albumImageView.sd_setImage(with: URL(string: song!.artworkURL), placeholderImage: UIImage(systemName: "photo.fill"))
-            songLabel.text = song!.name
-            artistLabel.text = song!.artistName
+            albumImageView.sd_setImage(with: URL(string: song?.artworkURL ?? ""), placeholderImage: UIImage(systemName: "photo.fill"))
+            songLabel.text = song?.name ?? "No song playing"
+            artistLabel.text = song?.artistName ?? ""
         }
     }
     

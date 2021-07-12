@@ -9,19 +9,38 @@ import Foundation
 
 class SearcherViewModel {
     
+    private(set) var roomViewModel: RoomViewModel
+    
     private(set) var searchResult = [Song]()
-    private(set) var spotifyAPI = SpotifyAPI.shared
+    
+    lazy var authentication = roomViewModel.authentication
+    lazy var roomManager = roomViewModel.roomManager
+    lazy var queue = roomViewModel.queue
+    lazy var memberList = roomViewModel.memberList
+    
+    init(roomViewModel: RoomViewModel) {
+        self.roomViewModel = roomViewModel
+    }
     
     func search(query: String, completion: @escaping () -> Void) {
-        spotifyAPI.search(query: query) { [self] result in
+        roomViewModel.musicService.searchSong(query: query) { [self] (result: Result<[Song], Error>) in
             switch result {
             case let .failure(error):
                 print(error)
-            case let .success(searchResponse):
-                searchResult = searchResponse.tracks.items.compactMap { trackItem in
-                    trackItem == nil ? nil : Song(spotifyTrack: trackItem!)
-                }
+            case let .success(songSearchResult):
+                searchResult = songSearchResult
                 completion()
+            }
+        }
+    }
+    
+    func queueSong(_ song: Song) {
+        var newSong = song
+        newSong.orderGroup = queue.filter({ $0.addedBy?.id == authentication.currentUser()?.uid }).count
+        newSong.addedBy = memberList.first { $0.id == authentication.currentUser()?.uid }
+        roomManager.queueSong(newSong) { error in
+            if let error = error {
+                print(error)
             }
         }
     }

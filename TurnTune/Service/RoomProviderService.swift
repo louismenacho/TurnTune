@@ -11,8 +11,8 @@ class RoomProviderService {
     
     private var roomRepository = FirestoreRepository<Room>(collectionPath: "rooms")
     
-    func getExistingRoom(roomId: String, completion: @escaping (Result<Room, Error>) -> Void) {
-        roomRepository.get(id: roomId) { result in
+    func getExistingRoom(roomID: String, completion: @escaping (Result<Room, Error>) -> Void) {
+        roomRepository.get(id: roomID) { result in
             switch result {
             case let .failure(error):
                 completion(.failure(error))
@@ -22,9 +22,9 @@ class RoomProviderService {
         }
     }
     
-    func createNewRoom(host userId: String, completion: @escaping (Result<Room, Error>) -> Void) {
+    func createNewRoom(host userID: String, completion: @escaping (Result<Room, Error>) -> Void) {
         let newRoomCode = generateFourDigitRoomCode()
-        let newRoom = Room(id: newRoomCode, hostId: userId)
+        let newRoom = Room(id: newRoomCode, hostId: userID)
         roomRepository.create(newRoom) { error in
             if let error = error {
                 completion(.failure(error))

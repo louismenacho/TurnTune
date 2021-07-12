@@ -10,7 +10,11 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-
+    
+    var spotifyService: SpotifyMusicService? {
+        let roomViewController = window?.rootViewController?.children.first(where: { ($0 is RoomViewController) }) as? RoomViewController
+        return roomViewController?.roomViewModel.musicService as? SpotifyMusicService
+    }
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -33,15 +37,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let style = UIUserInterfaceStyle(rawValue: UserDefaultsRepository().appearance), let window = window {
             window.overrideUserInterfaceStyle = style
         }
-        
-        SpotifyAppRemote.shared.connect()
+        spotifyService?.appRemote.connect()
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
         // Called when the scene will move from an active state to an inactive state.
         // This may occur due to temporary interruptions (ex. an incoming phone call).
         print("sceneWillResignActive")
-        SpotifyAppRemote.shared.disconnect()
+        spotifyService?.appRemote.disconnect()
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
@@ -57,10 +60,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         print("scene openURLContexts URLCcontexts")
-        guard let url = URLContexts.first?.url else {
-            return
+        if let url = URLContexts.first?.url {
+            spotifyService?.sessionManager.handleOpenURL(url)
         }
-        SpotifySessionManager.shared.handleOpenURL(url)
     }
 
 }

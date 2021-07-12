@@ -7,12 +7,16 @@
 
 import Foundation
 
-class APIClient<Endpoint: APIEndpoint> {
-    
-    func request<Response: Decodable>(_ endpoint: Endpoint, auth: HTTPAuthorization = .none, completion: @escaping (Result<Response, Error>) -> Void) {
+protocol APIClient {
+    associatedtype Endpoint: APIEndpoint
+    var auth: HTTPAuthorization { get set }
+}
+
+extension APIClient {
+    func request<Response: Decodable>(_ endpoint: Endpoint, auth: HTTPAuthorization? = nil, completion: @escaping (Result<Response, Error>) -> Void) {
         var apiRequest = endpoint.request
+        apiRequest.auth = auth ?? self.auth
         
-        apiRequest.auth = auth
         URLSession.shared.dataTask(with: apiRequest.asURLRequest) { (data, response, error) in
             if let error = error {
                 completion(.failure(error))
@@ -23,20 +27,24 @@ class APIClient<Endpoint: APIEndpoint> {
                 completion(.failure(HTTPError.noResponse))
                 return
             }
-
+    
             guard 200...299 ~= response.statusCode else {
                 let statusCode = response.statusCode
                 let statusDescription = HTTPURLResponse.localizedString(forStatusCode: statusCode)
                 let httpError = HTTPError.status(code: statusCode, description: statusDescription)
-                self.debug(data: data)
+                debug(apiRequest.asURLRequest)
+                debug(data)
                 completion(.failure(httpError))
                 return
             }
             
             do {
-                self.debug(data: data)
-                let responseData = try JSONDecoder().decode(Response.self, from: data)
-                completion(.success(responseData))
+                if response.statusCode == 204 {
+                    completion(.success("" as! Response))
+                } else {
+                    let responseData = try JSONDecoder().decode(Response.self, from: data)
+                    completion(.success(responseData))
+                }
             } catch {
                 completion(.failure(error))
             }
@@ -44,7 +52,17 @@ class APIClient<Endpoint: APIEndpoint> {
         .resume()
     }
     
-    func debug(data: Data) {
+    func debug(_ request: URLRequest) {
+        print("APIClient request:")
+        print(request.httpMethod ?? "no http method")
+        print(request.url ?? "no URL")
+        print(request.allHTTPHeaderFields ?? "no Headers")
+        if let body = request.httpBody {
+            print(String(data: body, encoding: .utf8) ?? "stringify body data failed")
+        }
+    }
+    
+    func debug(_ data: Data) {
         if let json = try? JSONSerialization.jsonObject(with: data, options: .mutableContainers),
            let jsonData = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) {
             print(String(decoding: jsonData, as: UTF8.self))

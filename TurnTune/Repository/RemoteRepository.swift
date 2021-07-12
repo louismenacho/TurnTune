@@ -8,12 +8,11 @@
 import Foundation
 
 protocol RemoteRepository {
-    associatedtype ObjectId
     associatedtype Object
     associatedtype Query
     
     // read
-    func get(id: ObjectId, completion: @escaping (Result<Object, Error>) -> Void)
+    func get(id: String, completion: @escaping (Result<Object, Error>) -> Void)
     func list(_ query: Query?, completion: @escaping (Result<[Object], Error>) -> Void)
     
     // write

@@ -7,27 +7,31 @@
 
 import Foundation
 
-enum SpotifyPlayerAPI: APIEndpoint {
+enum SpotifyPlayerAPI: SpotifyAPIEndpoint {
     case currentlyPlayingTrack
-    case playTrack(uris: [String])
+    case recentlyPlayedTracks(limit: Int)
+    case startPlayback(uris: [String]? = nil, position: Int = 0)
     case pausePlayback
     case queueTrack(uri: String)
     
     var request: APIRequest {
-        var apiRequest = APIRequest(
-            baseURL: "https://api.spotify.com/v1/me/player"
-        )
+        var apiRequest = APIRequest(baseURL: "https://api.spotify.com/v1/me/player")
         
         switch self {
         case .currentlyPlayingTrack:
             apiRequest.method = .get
             apiRequest.path =   "/currently-playing"
             
-        case .playTrack(let uris):
+        case .recentlyPlayedTracks(let limit):
+            apiRequest.method = .get
+            apiRequest.path = "/recently-played"
+            apiRequest.params = ["limit": limit]
+            
+        case .startPlayback(let uris, let position):
             apiRequest.method = .put
             apiRequest.path =   "/play"
             apiRequest.header = ["Content-Type": "application/json"]
-            apiRequest.body =   ["uris": uris]
+            apiRequest.body =   uris == nil ? [:] : ["uris": uris!, "position_ms": position]
             
         case .pausePlayback:
             apiRequest.method = .put

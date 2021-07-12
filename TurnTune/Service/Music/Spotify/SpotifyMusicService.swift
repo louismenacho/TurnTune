@@ -7,9 +7,10 @@
 
 import Foundation
 
+
 class SpotifyMusicService: MusicServiceable {
     
-    var playingSongDidEnd: (() -> Void)?
+    weak var delegate: MusicServiceableDelegate?
     
     private(set) var sessionManager = SpotifySessionManagerService()
     private(set) var appRemote = SpotifyAppRemoteService()
@@ -21,14 +22,14 @@ class SpotifyMusicService: MusicServiceable {
         sessionManager.delegate = self
         sessionManager.initiateSession()
     }
-    
-    func play(song: Song? = nil, completion: @escaping (Error?) -> Void) {
-        webAPI.playTrack(uris: []) { error in
+        
+    func startPlayback(songs: [Song]? = nil, position: Int = 0, completion: @escaping (Error?) -> Void) {
+        webAPI.startPlayback(uris: songs?.compactMap { $0.spotifyURI }, position: position) { error in
             completion(error)
         }
     }
     
-    func pause(completion: @escaping (Error?) -> Void) {
+    func pausePlayback(completion: @escaping (Error?) -> Void) {
         webAPI.pausePlayback { error in
             completion(error)
         }
@@ -37,24 +38,39 @@ class SpotifyMusicService: MusicServiceable {
     func searchSong(query: String, completion: @escaping (Result<[Song], Error>) -> Void) {
         webAPI.search(query: query) { (result: Result<SearchResponse, Error>) in
             let songSearchResult = Result {
-                try result.get().tracks.items.compactMap { trackItem in
-                    trackItem == nil ? nil : Song(spotifyTrack: trackItem!)
+                try result.get().tracks.items.map { trackItem in
+                    Song(spotifyTrack: trackItem)
                 }
             }
             completion(songSearchResult)
         }
     }
     
-    func recentlyPlayedTracks() {
+    func recentlyPlayedTracks(completion: @escaping (Result<[Song], Error>) -> Void) {
         webAPI.recentlyPlayedTracks { (result: Result<RecentlyPlayedResponse, Error>) in
-            switch result {
-            case .failure:
-                print("recetlyPlayed error")
-            case .success(let response):
-                print(response.items?.forEach({ item in
-                    print(item.track?.name)
-                }))
+            let recentlyPlayedTracksResult = Result {
+                try result.get().items.map { item in
+                    Song(spotifyTrack: item.track)
+                }
             }
+            completion(recentlyPlayedTracksResult)
+        }
+    }
+    
+    func play(song: Song, asRadio flag: Bool = false, completion: @escaping (Error?) -> Void) {
+        appRemote.play(trackUri: song.spotifyURI ?? "No URI", asRadio: flag ) { error in
+            completion(error)
+        }
+    }
+    
+    func getSongRecommendations(from recentSongs: [Song], completion: @escaping (Result<[Song], Error>) -> Void) {
+        webAPI.recommendations(limit: 20, seedTrackIDs: recentSongs.compactMap { $0.id }) { (result: Result<RecommendationsResponse, Error>) in
+            let recommendationsResult = Result {
+                try result.get().tracks.map { track in
+                    Song(spotifyTrack: track)
+                }
+            }
+            completion(recommendationsResult)
         }
     }
 }
@@ -66,6 +82,17 @@ extension SpotifyMusicService: SpotifyAppRemoteServiceDelegate {
     }
         
     func spotifyAppRemoteService(playerStateDidChange playerState: SPTAppRemotePlayerState) {
+        if lastPlayerState == nil {
+            delegate?.musicServiceable(musicServiceable: self, didInitiateWith: PlayerState(spotifyPlayerState: playerState))
+        }
+        
+        if lastPlayerState?.track.uri != playerState.track.uri {
+            delegate?.musicServiceable(musicServiceable: self, playingSongDidChange: PlayerState(spotifyPlayerState: playerState))
+        }
+        
+        if playerState.isPaused && lastPlayerState?.isPaused == false, playerState.playbackPosition == 0 {
+            delegate?.musicServiceable(musicServiceable: self, playingSongDidFinish: PlayerState(spotifyPlayerState: playerState))
+        }
         
         lastPlayerState = playerState
     }
@@ -76,11 +103,11 @@ extension SpotifyMusicService: SpotifySessionManagerServiceDelegate {
     func spotifySessionManagerService(didInitiate session: SPTSession) {
         appRemote.setToken(session.accessToken)
         appRemote.connect()
-        
         webAPI.setPlayerToken(session.accessToken)
     }
     
     func spotifySessionManagerService(didRenew session: SPTSession) {
-        
+        appRemote.setToken(session.accessToken)
+        webAPI.setPlayerToken(session.accessToken)
     }
 }

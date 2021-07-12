@@ -21,7 +21,10 @@ class SpotifyAppRemoteService: NSObject {
             clientID: "695de2c68a184c69aaebdf6b2ed02260",
             redirectURL: URL(string: "TurnTune://spotify-login-callback")!
         )
-        let appRemote =  SPTAppRemote(configuration: config, logLevel: .debug)
+        config.tokenSwapURL = URL(string: "https://turntune-spotify-token-swap.herokuapp.com/api/token")!
+        config.tokenRefreshURL = URL(string: "https://turntune-spotify-token-swap.herokuapp.com/api/refresh_token")!
+        config.playURI = ""
+        let appRemote =  SPTAppRemote(configuration: config, logLevel: .none)
         appRemote.delegate = self
         return appRemote
     }()
@@ -39,6 +42,12 @@ class SpotifyAppRemoteService: NSObject {
     func disconnect() {
         if appRemote.isConnected {
             appRemote.disconnect()
+        }
+    }
+    
+    func play(trackUri: String, asRadio flag: Bool, completion: @escaping (Error?) -> Void) {
+        appRemote.playerAPI?.play(trackUri, asRadio: flag) { _, error in
+            completion(error)
         }
     }
     
@@ -107,14 +116,14 @@ extension SpotifyAppRemoteService: SPTAppRemotePlayerStateDelegate {
     }
     
     func debugPlayerState(playerState: SPTAppRemotePlayerState) {
-        print("contextTitle: \(playerState.contextTitle)")
-        print("contextURI: \(playerState.contextURI)")
-        print("isPaused: \(playerState.isPaused)")
-        print("playbackPosition: \(playerState.playbackPosition)")
-        print("playbackSpeed: \(playerState.playbackSpeed)")
-        print("uri: \(playerState.track.uri)")
-        print("track name: \(playerState.track.name)")
-        print("artist name: \(playerState.track.artist.name)")
-        print("albumb name: \(playerState.track.album.name)")
+        print("\tcontextTitle: \(playerState.contextTitle)")
+        print("\tcontextURI: \(playerState.contextURI)")
+        print("\tisPaused: \(playerState.isPaused)")
+        print("\tplaybackPosition: \(playerState.playbackPosition)")
+        print("\tplaybackSpeed: \(playerState.playbackSpeed)")
+        print("\turi: \(playerState.track.uri)")
+        print("\ttrack name: \(playerState.track.name)")
+        print("\tartist name: \(playerState.track.artist.name)")
+        print("\talbum name: \(playerState.track.album.name)")
     }
 }
