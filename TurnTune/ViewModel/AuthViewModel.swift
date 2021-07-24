@@ -9,75 +9,98 @@ import Foundation
 
 class AuthViewModel {
     
-    private var authentication = FirebaseAuthService()
-    private var roomProvider = RoomProviderService()
-    
-    private(set) var roomManager: RoomManagerService?
+    private(set) var authService = FirebaseAuthService()
+    private(set) var roomService = RoomService()
+    private(set) var memberService = MemberService()
 
     func joinRoom(roomID: String, as displayName: String, completion: @escaping () -> Void) {
-        authentication.signIn(displayName: displayName) { [self] userResult in
-            switch userResult {
-            case let .failure(error):
+        let group = DispatchGroup()
+        
+        group.enter()
+        authService.signIn { error in
+            if let error = error {
                 print("signIn: \(error)")
-                return
-                
-                
-            case let .success(user):
-                roomProvider.getExistingRoom(roomID: roomID) { roomResult in
-                    switch roomResult {
-                    case let .failure(error):
-                        print("getExistingRoom: \(error)")
-                        return
-                    case let .success(room):
-                        guard let roomManager = RoomManagerService(room: room) else {
-                            print("roomManager is nil")
-                            return
-                        }
-                        roomManager.addMember(Member(id: user.uid, displayName: user.displayName!)) { error in
-                            if let error = error {
-                                print("addMember: \(error)")
-                                return
-                            }
-                            
-                            self.roomManager = roomManager
-                            completion()
-                        }
-                    }
-                }
             }
+            group.leave()
         }
+        
+        group.enter()
+        authService.setDisplayName(displayName) { error in
+            if let error = error {
+                print("setDisplayName: \(error)")
+            }
+            group.leave()
+        }
+        
+        group.enter()
+        roomService.getRoom(roomID) { roomResult in
+            switch roomResult {
+            case .failure(let error):
+                print("getExistingRoom: \(error)")
+            case .success(let room):
+                self.roomService.setCurrentRoomID(room.roomID)
+            }
+            group.leave()
+        }
+        
+        group.enter()
+        memberService.addMember(authService.currentUser) { error in
+            if let error = error {
+                print("addMember: \(error)")
+            }
+            group.leave()
+        }
+        
+        completion()
     }
     
     func hostRoom(as displayName: String, completion: @escaping () -> Void) {
-        authentication.signIn(displayName: displayName) { [self] userResult in
-            switch userResult {
-            case let .failure(error):
+        let group = DispatchGroup()
+        
+        group.enter()
+        authService.signIn { error in
+            if let error = error {
                 print("signIn: \(error)")
-                return
-                
-            case let .success(user):
-                roomProvider.createNewRoom(host: user.uid) { roomResult in
-                    switch roomResult {
-                    case let .failure(error):
-                        print("createNewRoom: \(error)")
-                        return
-                    case let .success(room):
-                        guard let roomManager = RoomManagerService(room: room) else {
-                            print("roomManager is nil")
-                            return
-                        }
-                        roomManager.addMember(Member(id: user.uid, displayName: user.displayName!)) { error in
-                            if let error = error {
-                                print("addMember: \(error)")
-                            }
-                            
-                            self.roomManager = roomManager
-                            completion()
-                        }
-                    }
-                }
             }
+            group.leave()
         }
+        
+        group.enter()
+        authService.setDisplayName(displayName) { error in
+            if let error = error {
+                print("setDisplayName: \(error)")
+            }
+            group.leave()
+        }
+        
+        group.enter()
+        roomService.createRoom(host: authService.currentUser) { roomResult in
+            switch roomResult {
+            case .failure(let error):
+                print("createRoom: \(error)")
+            case .success(let room):
+                self.roomService.setCurrentRoomID(room.roomID)
+            }
+            group.leave()
+        }
+        
+        group.enter()
+        memberService.addMember(authService.currentUser) { error in
+            if let error = error {
+                print("addMember: \(error)")
+            }
+            group.leave()
+        }
+        
+        completion()
+    }
+    
+    private func isNameValid(name: String) -> Bool {
+        if name.isEmpty || name.count > 12 {
+            print("Invalid name")
+            return false
+        }
+        return true
     }
     
 }

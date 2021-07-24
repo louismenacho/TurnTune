@@ -9,55 +9,67 @@ import Foundation
 import Firebase
 import FirebaseFirestoreSwift
 
-struct Song: FireStoreObject {
-    @DocumentID var id: String?
-    var name: String
-    var artistName: String
+
+struct Song {
+    
+    typealias MilliSeconds = Int
+    
+    var name: String                
+    var artist: String
+    var album: String
     var artworkURL: String
-    var durationInMillis: Int
+    var duration: MilliSeconds
+    
+    // MARK: - Queueing Protocol
+    var orderGroup: Int = 0
     var didPlay: Bool = false
-    var orderGroup: Int?
-    var addedBy: Member?
+    var addedBy: Member = Member()
+    
+    // MARK: - FirestoreDocument Protocol
+    @DocumentID var documentID: String?
     @ServerTimestamp var dateAdded: Timestamp?
     
-    // Spotify Identifiers
-    var spotifyURI: String?
-    var spotifyID: String?
+    // MARK: - SpotifyIdentifiable Protocol
+    var spotifyID: String = ""
+    var spotifyURI: String = ""
     
-    init(spotifyTrack: SearchResponse.TrackItem) {
+    init() {
+        name = "No song playing"
+        artist = ""
+        album = ""
+        artworkURL = ""
+        duration = 0
+    }
+}
+
+extension Song: Queueing {
+
+}
+
+extension Song: FirestoreDocument {
+    
+}
+
+extension Song: SpotifyIdentifiable {
+    
+    init(from spotifyTrack: Track) {
         spotifyURI = spotifyTrack.uri
         spotifyID = spotifyTrack.id
         name = spotifyTrack.name
-        artistName = spotifyTrack.artists.map { $0.name }.joined(separator: ", ")
+        artist = spotifyTrack.artists.map { $0.name }.joined(separator: ", ")
+        album = spotifyTrack.album.name
         artworkURL = spotifyTrack.album.images[0].url
-        durationInMillis = spotifyTrack.durationMS
+        duration = spotifyTrack.durationMS
     }
     
-    init(spotifyTrack: RecentlyPlayedResponse.Track) {
+    init(from spotifyTrack: SPTAppRemoteTrack) {
         spotifyURI = spotifyTrack.uri
-        spotifyID = spotifyTrack.id
+        spotifyID = ""
         name = spotifyTrack.name
-        artistName = spotifyTrack.artists.map { $0.name }.joined(separator: ", ")
-        artworkURL = spotifyTrack.album.images[0].url
-        durationInMillis = spotifyTrack.durationMS
+        artist = spotifyTrack.artist.name
+        album = spotifyTrack.album.name
+        artworkURL = "https://i.scdn.co/image/"+spotifyTrack.imageIdentifier.dropFirst(14)
+        duration = Int(spotifyTrack.duration)
     }
-    
-    init(spotifyTrack: RecommendationsResponse.Track) {
-        spotifyURI = spotifyTrack.uri
-        spotifyID = spotifyTrack.id
-        name = spotifyTrack.name
-        artistName = spotifyTrack.artists.map { $0.name }.joined(separator: ", ")
-        artworkURL = spotifyTrack.album.images[0].url
-        durationInMillis = spotifyTrack.durationMS
-    }
-    
-    init(spotifyTrack: SPTAppRemoteTrack) {
-        spotifyURI = spotifyTrack.uri
-        name = spotifyTrack.name
-        artistName = spotifyTrack.artist.name
-        artworkURL = spotifyTrack.imageIdentifier
-        artworkURL.removeFirst(14)
-        artworkURL = "https://i.scdn.co/image/"+artworkURL
-        durationInMillis = Int(spotifyTrack.duration)
-    }
+
 }

@@ -13,7 +13,7 @@ class SearchResultsTableViewCell: UITableViewCell {
     var song: Song? {
         didSet {
             songLabel.text = song!.name
-            artistLabel.text = song!.artistName
+            artistLabel.text = song!.artist
             albumImageView.sd_setImage(with: URL(string: song!.artworkURL), placeholderImage: UIImage(systemName: "photo.fill"))
         }
     }

@@ -11,9 +11,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
     
-    var spotifyService: SpotifyMusicService? {
-        let roomViewController = window?.rootViewController?.children.first(where: { ($0 is RoomViewController) }) as? RoomViewController
-        return roomViewController?.roomViewModel.musicService as? SpotifyMusicService
+    var spotifyMusicService: SpotifyMusicPlayerService? {
+        let playerViewController = window?.rootViewController?.children.first(where: { ($0 is PlayerViewController) }) as? PlayerViewController
+        return playerViewController?.playerViewModel.musicPlayerService as? SpotifyMusicPlayerService
     }
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -37,14 +37,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let style = UIUserInterfaceStyle(rawValue: UserDefaultsRepository().appearance), let window = window {
             window.overrideUserInterfaceStyle = style
         }
-        spotifyService?.appRemote.connect()
+        spotifyMusicService?.appRemoteService.connect()
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
         // Called when the scene will move from an active state to an inactive state.
         // This may occur due to temporary interruptions (ex. an incoming phone call).
         print("sceneWillResignActive")
-        spotifyService?.appRemote.disconnect()
+        spotifyMusicService?.appRemoteService.disconnect()
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
@@ -61,7 +61,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         print("scene openURLContexts URLCcontexts")
         if let url = URLContexts.first?.url {
-            spotifyService?.sessionManager.handleOpenURL(url)
+            spotifyMusicService?.appRemoteService.sessionManager.handleOpenURL(url)
         }
     }
 

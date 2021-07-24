@@ -114,10 +114,10 @@
             </objects>
             <point key="canvasLocation" x="1716" y="670"/>
         </scene>
-        <!--Room View Controller-->
+        <!--Player View Controller-->
         <scene sceneID="ydS-ji-ZSr">
             <objects>
-                <tableViewController id="JpJ-Ea-dvk" customClass="RoomViewController" customModule="TurnTune" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="JpJ-Ea-dvk" customClass="PlayerViewController" customModule="TurnTune" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="Hb6-HC-3Df">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -250,7 +250,7 @@
                     <navigationItem key="navigationItem" id="60x-DF-sfh">
                         <barButtonItem key="rightBarButtonItem" title="Item" image="gearshape.fill" catalog="system" id="QVT-aT-3F4">
                             <connections>
-                                <action selector="settingsButtonPressed:" destination="JpJ-Ea-dvk" id="3dv-iC-2GI"/>
+                                <action selector="settingsButtonPressed:" destination="JpJ-Ea-dvk" id="dvd-AW-rZb"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -438,7 +438,7 @@
                     <connections>
                         <outlet property="nameTextField" destination="5Ck-0Q-jYu" id="tKx-m5-tmY"/>
                         <outlet property="roomCodeTextField" destination="IGV-r3-OhW" id="VMU-TL-x0B"/>
-                        <segue destination="JpJ-Ea-dvk" kind="show" identifier="RoomViewController" id="mhe-j2-gcs"/>
+                        <segue destination="JpJ-Ea-dvk" kind="show" identifier="PlayerViewController" id="mhe-j2-gcs"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Myc-Sa-j0j" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

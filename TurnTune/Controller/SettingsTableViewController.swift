@@ -10,6 +10,7 @@ import UIKit
 class SettingsTableViewController: UITableViewController {
     
     var roomViewModel: RoomViewModel?
+    var settingsViewModel = SettingsViewModel()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,7 +45,7 @@ extension SettingsTableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let sectionCounts = [1, 1, roomViewModel?.memberList.count ?? 0]
+        let sectionCounts = [1, 1, settingsViewModel.memberList.count]
         return sectionCounts[section]
     }
     
@@ -59,18 +60,18 @@ extension SettingsTableViewController {
             let cell = tableView.dequeueReusableCell(withIdentifier: "SettingTableViewCell", for: indexPath) as! SettingTableViewCell
             cell.label.text = "Queue Mode"
             cell.valueLabel.text = "Fair"
-            if roomViewModel?.room.hostId != roomViewModel?.authentication.currentUser()?.uid {
+            if settingsViewModel.room.host.userID != settingsViewModel.authService.currentUser.userID {
                 cell.accessoryType = .none
                 cell.selectionStyle = .none
             }
             return cell
         case 2:
             let cell = tableView.dequeueReusableCell(withIdentifier: "SettingTableViewCell", for: indexPath) as! SettingTableViewCell
-            let hostId = roomViewModel?.room.hostId
-            let member = roomViewModel?.memberList[indexPath.row]
-            cell.label.text = member?.displayName
-            cell.valueLabel.text = hostId == member?.id ? "Host" : ""
-            if hostId == member?.id {
+            let hostId = settingsViewModel.room.host.userID
+            let member = settingsViewModel.memberList[indexPath.row]
+            cell.label.text = member.displayName
+            cell.valueLabel.text = hostId == member.userID ? "Host" : ""
+            if hostId == member.userID {
                 cell.accessoryType = .none
                 cell.selectionStyle = .none
             }
@@ -93,8 +94,6 @@ extension SettingsTableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let sectionTitle = ["User Setting", "Room Info", "Members"][indexPath.section]
-        
-        
         
         switch sectionTitle {
                 
@@ -126,7 +125,7 @@ extension SettingsTableViewController {
             })
             
         case "Room Info":
-            if roomViewModel?.room.hostId != roomViewModel?.authentication.currentUser()?.uid {
+            if settingsViewModel.room.host.userID != settingsViewModel.authService.currentUser.userID {
                 return
             }
             showAlert(title: sectionTitle, message: nil, actions: createAlertActions(titles: ["Fair"]) { alertAction  in
@@ -135,9 +134,9 @@ extension SettingsTableViewController {
             })
             
         case "Members":
-            let hostId = roomViewModel?.room.hostId
-            let member = roomViewModel?.memberList[indexPath.row]
-            if hostId == member?.id {
+            let hostId = settingsViewModel.room.host.userID
+            let member = settingsViewModel.memberList[indexPath.row]
+            if hostId == member.userID {
                 return
             }
             let alertActions = [

@@ -8,9 +8,11 @@
 import Foundation
 
 protocol AuthenticationServiceable {
-    associatedtype User
     
-    func signIn(displayName: String, completion: @escaping (Result<User, Error>) -> Void)
+    var isSignedIn: Bool { get }
+    var currentUser: Member { get }
+    
+    func signIn(completion: @escaping (Error?) -> Void)
     func setDisplayName(_ displayName: String, completion: @escaping (Error?) -> Void)
     func signOut(completion: @escaping (Error?) -> Void)
 }

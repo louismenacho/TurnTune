@@ -7,16 +7,30 @@
 
 import Foundation
 
-struct PlayerState: Codable {
-    var isPaused: Bool = true
-    var playbackPosition: Int = 0
-    var playingSong: Song?
+struct PlayerState {
+    var currentSong: Song
+    var position: Int
+    var isPaused: Bool
+    var isRadio: Bool
     
-    init() {}
+    // MARK: - FirestoreDocument Protocol
+    var documentID: String?
     
-    init(spotifyPlayerState: SPTAppRemotePlayerState) {
+    init() {
+        currentSong = Song()
+        position = 0
+        isPaused = true
+        isRadio = true
+    }
+}
+
+extension PlayerState: FirestoreDocument {}
+
+extension PlayerState {
+    init(from spotifyPlayerState: SPTAppRemotePlayerState) {
+        currentSong = Song(from: spotifyPlayerState.track)
+        position = spotifyPlayerState.playbackPosition
         isPaused = spotifyPlayerState.isPaused
-        playbackPosition = spotifyPlayerState.playbackPosition
-        playingSong = Song(spotifyTrack: spotifyPlayerState.track)
+        isRadio = spotifyPlayerState.contextTitle.isEmpty ? false : true
     }
 }

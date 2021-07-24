@@ -18,37 +18,26 @@ class AuthViewController: UIViewController {
     @IBOutlet weak var nameTextField: UITextField!
     
     override func viewDidLoad() {
-        roomCodeTextField.text = "KEBF"
         super.viewDidLoad()
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "RoomViewController" {
-            let roomViewController = segue.destination as! RoomViewController
-            roomViewController.roomViewModel = RoomViewModel(roomManager: authViewModel.roomManager!, musicService: SpotifyMusicService())
+        if segue.identifier == "PlayerViewController" {
+            let playerViewController = segue.destination as! PlayerViewController
+            playerViewController.navigationItem.title = authViewModel.roomService.currentRoomID
         }
     }
     
     @IBAction func joinButtonPressed(_ sender: UIButton) {
         authViewModel.joinRoom(roomID: roomCodeTextField.text!, as: nameTextField.text!) { [self] in
-            performSegue(withIdentifier: "RoomViewController", sender: self)
+            performSegue(withIdentifier: "PlayerViewController", sender: self)
         }
     }
     
     @IBAction func hostButtonPressed(_ sender: UIButton) {
-        authViewModel.hostRoom(as: roomCodeTextField.text!) { [self] in
-            performSegue(withIdentifier: "RoomViewController", sender: self)
+        authViewModel.hostRoom(as: nameTextField.text!) { [self] in
+            performSegue(withIdentifier: "PlayerViewController", sender: self)
         }
-    }
-}
-
-extension AuthViewController: SPTSessionManagerDelegate {
-    func sessionManager(manager: SPTSessionManager, didInitiate session: SPTSession) {
-        print("did initiate")
-    }
-    
-    func sessionManager(manager: SPTSessionManager, didFailWith error: Error) {
-        print(error)
     }
 }

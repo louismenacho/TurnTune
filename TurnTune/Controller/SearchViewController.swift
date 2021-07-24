@@ -9,9 +9,15 @@ import UIKit
 import Firebase
 import FirebaseFirestoreSwift
 
-class SearchViewController: UIViewController {
+protocol SearchViewControllerDelegate: AnyObject {
+    func searchViewController(searchViewController: SearchViewController, didSelectSong song: Song)
+}
 
-    var searcherViewModel: SearcherViewModel!
+class SearchViewController: UIViewController {
+    
+    weak var delegate: SearchViewControllerDelegate?
+
+    var searcherViewModel = SearcherViewModel(musicBrowserService: SpotifyMusicBrowser())
     
     @IBOutlet weak var tableview: UITableView!
     
@@ -54,7 +60,7 @@ extension SearchViewController: UITableViewDataSource {
 extension SearchViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedCell = tableview.cellForRow(at: indexPath) as! SearchResultsTableViewCell
-        searcherViewModel.queueSong(selectedCell.song!)
+        delegate?.searchViewController(searchViewController: self, didSelectSong: selectedCell.song!)
         tableview.deselectRow(at: indexPath, animated: true)
     }
 }

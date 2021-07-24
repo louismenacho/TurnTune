@@ -9,16 +9,24 @@ import Foundation
 import Firebase
 import FirebaseFirestoreSwift
 
-struct Member: FireStoreObject {
-    @DocumentID var id: String?
+struct Member {
+    var userID: String
     var displayName: String
-    @ServerTimestamp var dateJoined: Timestamp?
-}
-
-protocol FirestoreDocument: Codable {
-    var documentID: String? { get set }
-}
-
-struct Object: FirestoreDocument {
+    
+    // MARK: - FirestoreDocument Protocol
     @DocumentID var documentID: String?
+    @ServerTimestamp var dateJoined: Timestamp?
+    
+    init() {
+        userID = ""
+        displayName = ""
+    }
+}
+
+extension Member: FirestoreDocument {
+    init(userID: String, displayName: String) {
+        self.userID = userID
+        self.displayName = displayName
+        self.documentID = userID
+    }
 }

@@ -10,23 +10,27 @@ import FirebaseAuth
 
 class FirebaseAuthService: AuthenticationServiceable {
     
-    private(set) var auth = Auth.auth()
+    private(set) var auth: Auth = {
+        Auth.auth()
+    }()
     
-    func signIn(displayName: String, completion: @escaping (Result<User, Error>) -> Void) {
-        auth.signInAnonymously { [self] (authDataResult, error) in
-            if let error = error {
-                completion(.failure(error))
-            }
-            
+    var isSignedIn: Bool {
+        auth.currentUser != nil
+    }
+    
+    var currentUser: Member {
+        Member(
+            userID: UserDefaultsRepository().userID,
+            displayName: UserDefaultsRepository().displayName
+        )
+    }
+        
+    func signIn(completion: @escaping (Error?) -> Void) {
+        auth.signInAnonymously { authDataResult, error in
             if let authData = authDataResult {
-                setDisplayName(displayName) { error in
-                    if let error = error {
-                        completion(.failure(error))
-                    } else {
-                        completion(.success(authData.user))
-                    }
-                }
+                UserDefaultsRepository().userID = authData.user.uid
             }
+            completion(error)
         }
     }
     
@@ -34,6 +38,9 @@ class FirebaseAuthService: AuthenticationServiceable {
         let changeRequest = auth.currentUser?.createProfileChangeRequest()
         changeRequest?.displayName = displayName
         changeRequest?.commitChanges { error in
+            if error == nil {
+                UserDefaultsRepository().displayName = displayName
+            }
             completion(error)
         }
     }
@@ -51,21 +58,5 @@ class FirebaseAuthService: AuthenticationServiceable {
             completion(.success(auth))
         }
     }
-    
-    func isSignedIn() -> Bool {
-        auth.currentUser != nil
-    }
-    
-    func currentUser() -> User? {
-        auth.currentUser
-    }
-    
-    private func isNameValid(name: String) -> Bool {
-        if name.isEmpty || name.count > 12 {
-            print("Invalid name")
-            return false
-        }
-        return true
-    }
-    
+
 }
