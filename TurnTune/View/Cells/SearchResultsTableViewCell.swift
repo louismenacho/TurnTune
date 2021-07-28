@@ -10,11 +10,11 @@ import SDWebImage
 
 class SearchResultsTableViewCell: UITableViewCell {
     
-    var song: Song? {
+    var song: Song = Song() {
         didSet {
-            songLabel.text = song!.name
-            artistLabel.text = song!.artist
-            albumImageView.sd_setImage(with: URL(string: song!.artworkURL), placeholderImage: UIImage(systemName: "photo.fill"))
+            albumImageView.sd_setImage(with: URL(string: song.artworkURL), placeholderImage: UIImage(systemName: "photo.fill"))
+            songLabel.text = song.name
+            artistLabel.text = song.artist
         }
     }
     

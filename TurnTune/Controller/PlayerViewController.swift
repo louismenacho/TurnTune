@@ -54,8 +54,8 @@ extension PlayerViewController: UISearchControllerDelegate {
 
 // MARK: - SearchViewControllerDelegate
 extension PlayerViewController: SearchViewControllerDelegate {
-    func searchViewController(searchViewController: SearchViewController, didSelectSong song: Song) {
-        playerViewModel.addToQueue(song)
+    func searchViewController(searchViewController: SearchViewController, didSelectCell cell: SearchResultsTableViewCell) {
+        playerViewModel.addToQueue(cell.song)
     }
 }
 
@@ -76,8 +76,8 @@ extension PlayerViewController {
         switch indexPath.section {
 
         case 0:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "CurrentSongTableViewCell", for: indexPath) as! CurrentSongTableViewCell
-            cell.song = playerViewModel.playerState.currentSong
+            let cell = tableView.dequeueReusableCell(withIdentifier: "PlayerStateTableViewCell", for: indexPath) as! PlayerStateTableViewCell
+            cell.playerState = playerViewModel.playerState
             return cell
 
         case 1:

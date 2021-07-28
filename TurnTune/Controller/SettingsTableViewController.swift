@@ -9,7 +9,6 @@ import UIKit
 
 class SettingsTableViewController: UITableViewController {
     
-    var roomViewModel: RoomViewModel?
     var settingsViewModel = SettingsViewModel()
 
     override func viewDidLoad() {

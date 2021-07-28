@@ -6,11 +6,9 @@
 //
 
 import UIKit
-import Firebase
-import FirebaseFirestoreSwift
 
 protocol SearchViewControllerDelegate: AnyObject {
-    func searchViewController(searchViewController: SearchViewController, didSelectSong song: Song)
+    func searchViewController(searchViewController: SearchViewController, didSelectCell cell: SearchResultsTableViewCell)
 }
 
 class SearchViewController: UIViewController {
@@ -60,7 +58,7 @@ extension SearchViewController: UITableViewDataSource {
 extension SearchViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedCell = tableview.cellForRow(at: indexPath) as! SearchResultsTableViewCell
-        delegate?.searchViewController(searchViewController: self, didSelectSong: selectedCell.song!)
+        delegate?.searchViewController(searchViewController: self, didSelectCell: selectedCell)
         tableview.deselectRow(at: indexPath, animated: true)
     }
 }

@@ -72,7 +72,7 @@ class RoomService {
         }
     }
     
-    func setCurrentRoomID(_ roomID: String) {
+    func saveRoomID(_ roomID: String) {
         userDefaultsRepository.roomID = roomID
     }
     
