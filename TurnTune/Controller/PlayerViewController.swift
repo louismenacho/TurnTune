@@ -13,11 +13,25 @@ class PlayerViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationController!.navigationBar.standardAppearance.shadowColor = .clear
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-//        navigationItem.hidesBackButton = true
-//        navigationItem.hidesSearchBarWhenScrolling = false
+        navigationController!.navigationBar.standardAppearance.shadowColor = .clear
+        navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.searchController = prepareSearchViewController()
+        
+        playerViewModel.playerStateChangeListener { playerState in
+            print("playerStateDidChange")
+            self.tableView.reloadSections([0], with: .automatic)
+        }
+        
+        playerViewModel.queueChangeListener { queue in
+            print("queueDidChange")
+            self.tableView.reloadSections([1], with: .automatic)
+        }
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        navigationItem.hidesSearchBarWhenScrolling = true
     }
     
     private func prepareSearchViewController() -> UISearchController {
@@ -37,7 +51,11 @@ class PlayerViewController: UITableViewController {
         searchResultsViewController.delegate = self
         return searchResultsViewController
     }
-
+    
+    @IBAction func playButtonPressed(_ sender: Any) {
+        playerViewModel.resumeQueue()
+    }
+    
     @IBAction func settingsButtonPressed(_ sender: UIBarButtonItem) {
         performSegue(withIdentifier: "SettingsTableViewController", sender: self)
     }
@@ -87,6 +105,24 @@ extension PlayerViewController {
 
         default:
             return UITableViewCell()
+        }
+    }
+}
+
+// MARK: - UITableViewDelegate
+extension PlayerViewController {
+
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let titles = ["NOW PLAYING", "YOUR QUEUE"]
+        return titles[section]
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if indexPath.section == 0 {
+            return tableView.frame.width * (124.5/tableView.frame.width)
+        }
+        else {
+            return tableView.frame.width * (82/tableView.frame.width)
         }
     }
 }

@@ -37,31 +37,12 @@ class SpotifyMusicPlayerService: MusicPlayerServiceable {
             completion(error)
         }
     }
-    
-//    func playNextSong(completion: @escaping (Error?) -> Void) {
-//        if let nextSong = queue.first {
-//            startPlayback(songs: [nextSong]) { error in
-//                completion(error)
-//            }
-//            return
-//        }
-//
-//        if !history.isEmpty {
-//            let recentSongs = Array(history.prefix(5))
-//            musicBrowser.getSongRecommendations(from: recentSongs) { [self] recommendedSongs in
-//                startPlayback(songs: recentSongs) { error in
-//                    completion(error)
-//                }
-//            }
-//            return
-//        }
-//    }
 }
 
 extension SpotifyMusicPlayerService: SpotifyAppRemoteServiceDelegate {
     
     func spotifyAppRemoteService(didAuthorize newSession: SPTSession) {
-        print("spotifyAppRemoteService didAuthorize")
+//        print("spotifyAppRemoteService didAuthorize")
         webService.setPlayerToken(newSession.accessToken)
     }
     
@@ -70,22 +51,25 @@ extension SpotifyMusicPlayerService: SpotifyAppRemoteServiceDelegate {
         appRemoteService.subscribe()
     }
         
-    func spotifyAppRemoteService(playerStateDidChange playerState: SPTAppRemotePlayerState) {
-        print("spotifyAppRemoteService playerStateDidChange")
-        
-        guard let currentPlayerState = self.currentPlayerState else {
-            delegate?.musicPlayerServiceable(playbackDidStart: PlayerState(from: playerState))
+    func spotifyAppRemoteService(playerStateDidChange newPlayerState: SPTAppRemotePlayerState) {
+        guard let oldPlayerState = currentPlayerState else {
+            currentPlayerState = newPlayerState
+            delegate?.musicPlayerServiceable(playbackDidStart: PlayerState(from: newPlayerState))
             return
         }
-
-        if currentPlayerState.track.uri != playerState.track.uri {
-            delegate?.musicPlayerServiceable(playbackDidChange: PlayerState(from: playerState))
+        
+        if oldPlayerState.isPaused && !newPlayerState.isPaused {
+            delegate?.musicPlayerServiceable(playbackDidStart: PlayerState(from: newPlayerState))
         }
 
-        if !currentPlayerState.isPaused && playerState.isPaused && playerState.playbackPosition == 0 {
-            delegate?.musicPlayerServiceable(playbackDidFinish: PlayerState(from: playerState))
+        if oldPlayerState.track.uri != newPlayerState.track.uri || oldPlayerState.contextURI != newPlayerState.contextURI {
+            delegate?.musicPlayerServiceable(playbackDidChange: PlayerState(from: newPlayerState))
+        }
+
+        if !oldPlayerState.isPaused && newPlayerState.isPaused && newPlayerState.playbackPosition == 0 {
+            delegate?.musicPlayerServiceable(playbackDidFinish: PlayerState())
         }
         
-        self.currentPlayerState = playerState
+        currentPlayerState = newPlayerState
     }
 }

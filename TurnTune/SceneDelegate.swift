@@ -33,7 +33,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidBecomeActive(_ scene: UIScene) {
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
-        print("sceneDidBecomeActive")
+//        print("sceneDidBecomeActive")
         if let style = UIUserInterfaceStyle(rawValue: UserDefaultsRepository().appearance), let window = window {
             window.overrideUserInterfaceStyle = style
         }
@@ -43,7 +43,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneWillResignActive(_ scene: UIScene) {
         // Called when the scene will move from an active state to an inactive state.
         // This may occur due to temporary interruptions (ex. an incoming phone call).
-        print("sceneWillResignActive")
+//        print("sceneWillResignActive")
         spotifyMusicService?.appRemoteService.disconnect()
     }
 
@@ -59,7 +59,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-        print("scene openURLContexts URLCcontexts")
+//        print("scene openURLContexts URLCcontexts")
         if let url = URLContexts.first?.url {
             spotifyMusicService?.appRemoteService.sessionManager.handleOpenURL(url)
         }

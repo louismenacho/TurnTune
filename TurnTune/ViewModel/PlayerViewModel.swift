@@ -15,6 +15,7 @@ class PlayerViewModel {
     private(set) var queueService = QueueService()
     
     var playerState = PlayerState()
+    var lastStateBeforeRadio: PlayerState?
     var queue = [Song]()
     var history = [Song]()
     
@@ -29,7 +30,7 @@ class PlayerViewModel {
             case let .failure(error):
                 print(error)
             case let .success(playerState):
-                completion(playerState)
+                self.playerState = playerState
             }
         }
     }
@@ -40,7 +41,12 @@ class PlayerViewModel {
             case let .failure(error):
                 print(error)
             case let .success(playerState):
-                completion(playerState)
+                if self.playerState.currentSong.spotifyURI != playerState.currentSong.spotifyURI {
+                    self.playerState = playerState
+                    completion(playerState)
+                    return
+                }
+                self.playerState = playerState
             }
         }
     }
@@ -51,6 +57,7 @@ class PlayerViewModel {
             case let .failure(error):
                 print(error)
             case let .success(queue):
+                self.queue = queue
                 completion(queue)
             }
         }
@@ -62,6 +69,7 @@ class PlayerViewModel {
             case let .failure(error):
                 print(error)
             case let .success(queue):
+                self.queue = queue
                 completion(queue)
             }
         }
@@ -102,6 +110,14 @@ class PlayerViewModel {
         }
     }
     
+    func removeFromQueue(_ song: Song) {
+        queueService.removeSong(song) { error in
+            if let error = error {
+                print(error)
+            }
+        }
+    }
+    
     func playSong(_ song: [Song]? = nil, position: Int = 0, completion: (() -> Void)? = nil ) {
         musicPlayerService.startPlayback(songs: song, position: position) { error in
             if let error = error {
@@ -109,6 +125,20 @@ class PlayerViewModel {
             } else {
                 print("playing \(song?.compactMap { $0.name } ?? [])")
                 completion?()
+            }
+        }
+    }
+    
+    func resumeQueue(completion: (() -> Void)? = nil) {
+        if playerState.isRadio {
+            playNextSong()
+        }
+    }
+    
+    func playNextSong() {
+        if let nextSong = queue.first {
+            playSong([nextSong]) {
+                self.removeFromQueue(nextSong)
             }
         }
     }
@@ -129,13 +159,28 @@ class PlayerViewModel {
 extension PlayerViewModel: MusicPlayerServiceableDelegate  {
     func musicPlayerServiceable(playbackDidStart playerState: PlayerState) {
         print("playbackDidStart")
-    }
-    
-    func musicPlayerServiceable(playbackDidFinish playerState: PlayerState) {
-        print("playbackDidFinish")
+        playerStateService.updatePlayerState(playerState) { _ in }
     }
     
     func musicPlayerServiceable(playbackDidChange playerState: PlayerState) {
         print("playbackDidChange")
+        
+        if !self.playerState.isRadio && playerState.isRadio {
+            print("playing from other source")
+        }
+        if self.playerState.isRadio && !playerState.isRadio {
+            print("resuming queue")
+        }
+        
+        playerStateService.updatePlayerState(playerState) { _ in }
+    }
+    
+    func musicPlayerServiceable(playbackDidFinish playerState: PlayerState) {
+        print("playbackDidFinish")
+        if queue.isEmpty {
+            playerStateService.updatePlayerState(playerState) { _ in }
+        } else {
+            playNextSong()
+        }
     }
 }

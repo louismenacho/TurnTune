@@ -118,7 +118,7 @@
         <scene sceneID="ydS-ji-ZSr">
             <objects>
                 <tableViewController id="JpJ-Ea-dvk" customClass="PlayerViewController" customModule="TurnTune" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="Hb6-HC-3Df">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="none" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="Hb6-HC-3Df">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -248,11 +248,18 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="60x-DF-sfh">
-                        <barButtonItem key="rightBarButtonItem" title="Item" image="gearshape.fill" catalog="system" id="QVT-aT-3F4">
-                            <connections>
-                                <action selector="settingsButtonPressed:" destination="JpJ-Ea-dvk" id="dvd-AW-rZb"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem title="Item" image="gearshape.fill" catalog="system" id="QVT-aT-3F4">
+                                <connections>
+                                    <action selector="settingsButtonPressed:" destination="JpJ-Ea-dvk" id="dvd-AW-rZb"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem systemItem="play" id="fc1-2h-dlU">
+                                <connections>
+                                    <action selector="playButtonPressed:" destination="JpJ-Ea-dvk" id="Rnw-aQ-pgb"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
                     <connections>
                         <segue destination="DQj-Fu-0uZ" kind="show" identifier="SettingsTableViewController" id="0n4-Wh-ct4"/>

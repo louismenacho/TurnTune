@@ -25,7 +25,7 @@ class AuthViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "PlayerViewController" {
             let playerViewController = segue.destination as! PlayerViewController
-            playerViewController.navigationItem.title = authViewModel.roomService.currentRoomID
+            playerViewController.navigationItem.title = RoomService().currentRoomID
         }
     }
     

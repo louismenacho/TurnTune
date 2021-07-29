@@ -8,10 +8,6 @@
 import Foundation
 
 class AuthViewModel {
-    
-    private(set) var authService = FirebaseAuthService()
-    private(set) var roomService = RoomService()
-    private(set) var memberService = MemberService()
 
     func joinRoom(roomID: String, as displayName: String, completion: @escaping () -> Void) {
         

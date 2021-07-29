@@ -10,7 +10,7 @@ import Foundation
 protocol SpotifyAppRemoteServiceDelegate: AnyObject {
     func spotifyAppRemoteService(didAuthorize newSession: SPTSession)
     func spotifyAppRemoteService(didEstablishConnection appRemote: SPTAppRemote)
-    func spotifyAppRemoteService(playerStateDidChange playerState: SPTAppRemotePlayerState)
+    func spotifyAppRemoteService(playerStateDidChange newPlayerState: SPTAppRemotePlayerState)
 }
 
 class SpotifyAppRemoteService: NSObject {
@@ -147,6 +147,6 @@ extension SpotifyAppRemoteService: SPTAppRemotePlayerStateDelegate {
         print("\turi: \(playerState.track.uri)")
         print("\ttrack name: \(playerState.track.name)")
         print("\tartist name: \(playerState.track.artist.name)")
-        print("\talbum name: \(playerState.track.album.name)")
+        print("\talbum name: \(playerState.track.album.name)\n")
     }
 }
