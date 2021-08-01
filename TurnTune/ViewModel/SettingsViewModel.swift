@@ -17,8 +17,6 @@ class SettingsViewModel {
     private(set) var memberList = [Member]()
     
     func loadCurrentRoom() {
-        let group = DispatchGroup()
-        group.enter()
         roomService.getCurrentRoom { roomResult in
             switch roomResult {
             case .failure(let error):
@@ -26,7 +24,6 @@ class SettingsViewModel {
             case .success(let room):
                 self.room = room
             }
-            group.leave()
         }
     }
     

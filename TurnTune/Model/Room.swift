@@ -19,7 +19,7 @@ struct Room {
     
     init() {
         roomID = ""
-        host = Member(userID: "", displayName: "")
+        host = Member()
     }
 }
 

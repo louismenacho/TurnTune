@@ -9,9 +9,9 @@ import Foundation
 
 class PlayerViewModel {
     
+    private(set) var authService = FirebaseAuthService()
     private(set) var musicPlayerService: MusicPlayerServiceable
     private(set) var playerStateService = MusicPlayerStateService()
-    private(set) var authService = FirebaseAuthService()
     private(set) var queueService = QueueService()
     
     var playerState = PlayerState()
@@ -118,7 +118,7 @@ class PlayerViewModel {
         }
     }
     
-    func playSong(_ song: [Song]? = nil, position: Int = 0, completion: (() -> Void)? = nil ) {
+    func play(_ song: [Song]? = nil, position: Int = 0, completion: (() -> Void)? = nil ) {
         musicPlayerService.startPlayback(songs: song, position: position) { error in
             if let error = error {
                 print(error)
@@ -137,7 +137,7 @@ class PlayerViewModel {
     
     func playNextSong() {
         if let nextSong = queue.first {
-            playSong([nextSong]) {
+            play([nextSong]) {
                 self.removeFromQueue(nextSong)
             }
         }

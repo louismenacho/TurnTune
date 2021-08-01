@@ -10,9 +10,13 @@ import UIKit
 class PlayerViewController: UITableViewController {
     
     var playerViewModel = PlayerViewModel(musicPlayerService: SpotifyMusicPlayerService())
-
+    
+    @IBOutlet weak var playerStateView: PlayerStateView!
+    private var savedPlayerStateView: PlayerStateView?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         navigationController!.navigationBar.standardAppearance.shadowColor = .clear
         navigationItem.hidesSearchBarWhenScrolling = false
@@ -20,12 +24,12 @@ class PlayerViewController: UITableViewController {
         
         playerViewModel.playerStateChangeListener { playerState in
             print("playerStateDidChange")
-            self.tableView.reloadSections([0], with: .automatic)
+            self.playerStateView.playerState = playerState
         }
         
         playerViewModel.queueChangeListener { queue in
             print("queueDidChange")
-            self.tableView.reloadSections([1], with: .automatic)
+            self.tableView.reloadSections([0], with: .automatic)
         }
     }
 
@@ -53,7 +57,18 @@ class PlayerViewController: UITableViewController {
     }
     
     @IBAction func playButtonPressed(_ sender: Any) {
-        playerViewModel.resumeQueue()
+        playerViewModel.play()
+//        if tableView.tableHeaderView == nil {
+//            playerStateView = savedPlayerStateView
+//            tableView.tableHeaderView = playerStateView
+//        } else {
+//            savedPlayerStateView = playerStateView
+//            tableView.tableHeaderView = nil
+//        }
+    }
+    
+    @IBAction func playNextSongButton(_ sender: Any) {
+        playerViewModel.playNextSong()
     }
     
     @IBAction func settingsButtonPressed(_ sender: UIBarButtonItem) {
@@ -82,47 +97,36 @@ extension PlayerViewController: SearchViewControllerDelegate {
 extension PlayerViewController {
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let sectionCount = [1, playerViewModel.queue.count]
-        return sectionCount[section]
+        return playerViewModel.queue.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        switch indexPath.section {
-
-        case 0:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "PlayerStateTableViewCell", for: indexPath) as! PlayerStateTableViewCell
-            cell.playerState = playerViewModel.playerState
-            return cell
-
-        case 1:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "SongTableViewCell", for: indexPath) as! SongTableViewCell
-            cell.song = playerViewModel.queue[indexPath.row]
-            return cell
-
-        default:
-            return UITableViewCell()
-        }
+        let cell = tableView.dequeueReusableCell(withIdentifier: "SongTableViewCell", for: indexPath) as! SongTableViewCell
+        cell.song = playerViewModel.queue[indexPath.row]
+        return cell
     }
 }
+
 
 // MARK: - UITableViewDelegate
 extension PlayerViewController {
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let titles = ["NOW PLAYING", "YOUR QUEUE"]
-        return titles[section]
+        return "QUEUE"
+    }
+    
+    override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        guard let sectionHeaderView = view as? UITableViewHeaderFooterView else { return }
+        sectionHeaderView.textLabel?.font = UIFont.systemFont(ofSize: 12)
+        sectionHeaderView.textLabel?.textColor = .label
+        print(sectionHeaderView.frame)
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 0 {
-            return tableView.frame.width * (124.5/tableView.frame.width)
-        }
-        else {
-            return tableView.frame.width * (82/tableView.frame.width)
-        }
+        return tableView.frame.width * (82/tableView.frame.width)
     }
 }

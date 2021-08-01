@@ -22,7 +22,6 @@ class SearchViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableview.dataSource = self
-        tableview.delegate = self
     }
 }
 
@@ -48,17 +47,17 @@ extension SearchViewController: UITableViewDataSource {
         if indexPath.row >= searcherViewModel.searchResult.count {
             return UITableViewCell()
         }
-        let song = searcherViewModel.searchResult[indexPath.row]
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: "SearchResultsTableViewCell", for: indexPath) as! SearchResultsTableViewCell
-        cell.song = song
+        cell.delegate = self
+        
+        cell.song = searcherViewModel.searchResult[indexPath.row]
         return cell
     }
 }
 
-extension SearchViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let selectedCell = tableview.cellForRow(at: indexPath) as! SearchResultsTableViewCell
-        delegate?.searchViewController(searchViewController: self, didSelectCell: selectedCell)
-        tableview.deselectRow(at: indexPath, animated: true)
+extension SearchViewController: SearchResultsTableViewCellDelegate {
+    func searchResultsTableViewCell(addButtonPressedFor cell: SearchResultsTableViewCell) {
+        delegate?.searchViewController(searchViewController: self, didSelectCell: cell)
     }
 }

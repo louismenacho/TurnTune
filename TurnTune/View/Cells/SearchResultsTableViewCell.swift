@@ -8,7 +8,13 @@
 import UIKit
 import SDWebImage
 
+protocol SearchResultsTableViewCellDelegate: AnyObject {
+    func searchResultsTableViewCell(addButtonPressedFor cell: SearchResultsTableViewCell)
+}
+
 class SearchResultsTableViewCell: UITableViewCell {
+    
+    weak var delegate: SearchResultsTableViewCellDelegate?
     
     var song: Song = Song() {
         didSet {
@@ -26,5 +32,9 @@ class SearchResultsTableViewCell: UITableViewCell {
         albumImageView.image = UIImage(systemName: "photo.fill")
         songLabel.text = "Beat it"
         artistLabel.text = "Michael Jackson"
+    }
+    
+    @IBAction func addButtonPressed(_ sender: UIButton) {
+        delegate?.searchResultsTableViewCell(addButtonPressedFor: self)
     }
 }
