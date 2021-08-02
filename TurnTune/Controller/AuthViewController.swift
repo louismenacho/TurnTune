@@ -21,7 +21,7 @@ class AuthViewController: UIViewController {
         super.viewDidLoad()
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         
-        roomCodeTextField.text = "GWGD"
+        roomCodeTextField.text = "RAAF"
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

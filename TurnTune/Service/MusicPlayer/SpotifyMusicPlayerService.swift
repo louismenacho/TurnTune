@@ -61,6 +61,10 @@ extension SpotifyMusicPlayerService: SpotifyAppRemoteServiceDelegate {
         if oldPlayerState.isPaused && !newPlayerState.isPaused {
             delegate?.musicPlayerServiceable(playbackDidStart: PlayerState(from: newPlayerState))
         }
+        
+        if !oldPlayerState.isPaused && newPlayerState.isPaused {
+            delegate?.musicPlayerServiceable(playbackDidPause: PlayerState(from: newPlayerState))
+        }
 
         if oldPlayerState.track.uri != newPlayerState.track.uri || oldPlayerState.contextURI != newPlayerState.contextURI {
             delegate?.musicPlayerServiceable(playbackDidChange: PlayerState(from: newPlayerState))

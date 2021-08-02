@@ -11,8 +11,9 @@ class PlayerViewController: UITableViewController {
     
     var playerViewModel = PlayerViewModel(musicPlayerService: SpotifyMusicPlayerService())
     
+    var playbackView: PlaybackView?
+    
     @IBOutlet weak var playerStateView: PlayerStateView!
-    private var savedPlayerStateView: PlayerStateView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,9 +23,17 @@ class PlayerViewController: UITableViewController {
         navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.searchController = prepareSearchViewController()
         
+        let navigationBar = navigationController!.navigationBar
+        let playbackView = PlaybackView(frame: CGRect(x: 0, y: view.frame.height-navigationBar.frame.height-105, width: view.frame.width, height: 105))
+        playbackView.delegate = self
+        playbackView.autoresizingMask = .flexibleWidth
+        navigationBar.addSubview(playbackView)
+        self.playbackView = playbackView
+            
         playerViewModel.playerStateChangeListener { playerState in
             print("playerStateDidChange")
             self.playerStateView.playerState = playerState
+            self.playbackView!.playerState = playerState
         }
         
         playerViewModel.queueChangeListener { queue in
@@ -58,13 +67,6 @@ class PlayerViewController: UITableViewController {
     
     @IBAction func playButtonPressed(_ sender: Any) {
         playerViewModel.play()
-//        if tableView.tableHeaderView == nil {
-//            playerStateView = savedPlayerStateView
-//            tableView.tableHeaderView = playerStateView
-//        } else {
-//            savedPlayerStateView = playerStateView
-//            tableView.tableHeaderView = nil
-//        }
     }
     
     @IBAction func playNextSongButton(_ sender: Any) {
@@ -123,10 +125,21 @@ extension PlayerViewController {
         guard let sectionHeaderView = view as? UITableViewHeaderFooterView else { return }
         sectionHeaderView.textLabel?.font = UIFont.systemFont(ofSize: 12)
         sectionHeaderView.textLabel?.textColor = .label
-        print(sectionHeaderView.frame)
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return tableView.frame.width * (82/tableView.frame.width)
+    }
+}
+
+
+// MARK: - UITableViewDelegate
+extension PlayerViewController: PlaybackViewDelegate {
+    func playbackView(playButtonPressedFor playbackView: PlaybackView) {
+        playerViewModel.play()
+    }
+    
+    func playbackView(pauseButtonPressedFor playbackView: PlaybackView) {
+        playerViewModel.pause()
     }
 }

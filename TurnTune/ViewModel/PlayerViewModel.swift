@@ -41,11 +41,11 @@ class PlayerViewModel {
             case let .failure(error):
                 print(error)
             case let .success(playerState):
-                if self.playerState.currentSong.spotifyURI != playerState.currentSong.spotifyURI {
+//                if self.playerState.currentSong.spotifyURI != playerState.currentSong.spotifyURI {
                     self.playerState = playerState
                     completion(playerState)
-                    return
-                }
+//                    return
+//                }
                 self.playerState = playerState
             }
         }
@@ -159,6 +159,11 @@ class PlayerViewModel {
 extension PlayerViewModel: MusicPlayerServiceableDelegate  {
     func musicPlayerServiceable(playbackDidStart playerState: PlayerState) {
         print("playbackDidStart")
+        playerStateService.updatePlayerState(playerState) { _ in }
+    }
+    
+    func musicPlayerServiceable(playbackDidPause playerState: PlayerState) {
+        print("playbackDidPause")
         playerStateService.updatePlayerState(playerState) { _ in }
     }
     

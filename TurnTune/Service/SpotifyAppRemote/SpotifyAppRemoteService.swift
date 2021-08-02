@@ -135,7 +135,7 @@ extension SpotifyAppRemoteService: SPTAppRemotePlayerStateDelegate {
     
     func playerStateDidChange(_ playerState: SPTAppRemotePlayerState) {
         delegate?.spotifyAppRemoteService(playerStateDidChange: playerState)
-        debugPlayerState(playerState: playerState)
+//        debugPlayerState(playerState: playerState)
     }
     
     func debugPlayerState(playerState: SPTAppRemotePlayerState) {

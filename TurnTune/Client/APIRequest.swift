@@ -48,7 +48,7 @@ struct APIRequest {
     }
     
     private var requestBody: Data? {
-        print("request body: \(body)")
+//        print("request body: \(body)")
         switch header["Content-Type"] {
         case "application/x-www-form-urlencoded":
             var components = URLComponents()

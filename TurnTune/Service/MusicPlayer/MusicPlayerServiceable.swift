@@ -9,6 +9,7 @@ import Foundation
 
 protocol MusicPlayerServiceableDelegate: AnyObject {
     func musicPlayerServiceable(playbackDidStart playerState: PlayerState)
+    func musicPlayerServiceable(playbackDidPause playerState: PlayerState)
     func musicPlayerServiceable(playbackDidFinish playerState: PlayerState)
     func musicPlayerServiceable(playbackDidChange playerState: PlayerState)
 }

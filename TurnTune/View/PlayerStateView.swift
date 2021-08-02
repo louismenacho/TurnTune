@@ -20,11 +20,13 @@ class PlayerStateView: UIView {
         }
     }
     
+    @IBOutlet weak var logoImageView: UIImageView!
     @IBOutlet weak var albumImageView: UIImageView!
     @IBOutlet weak var songLabel: UILabel!
     @IBOutlet weak var artistLabel: UILabel!
     
     override func awakeFromNib() {
+//        logoImageView.image = UIImage(systemName: "photo.fill")
         albumImageView.image = UIImage(systemName: "photo.fill")
         songLabel.text = "Beat it"
         artistLabel.text = "Michael Jackson"
