@@ -13,7 +13,7 @@ class PlayerViewController: UITableViewController {
     
     var playbackView: PlaybackView?
     
-    @IBOutlet weak var playerStateView: PlayerStateView!
+    @IBOutlet weak var playerStateView: PlaybackView!
     
     override func viewDidLoad() {
         super.viewDidLoad()

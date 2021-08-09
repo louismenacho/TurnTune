@@ -59,4 +59,7 @@ class PlaybackView: UIView {
         }
     }
     
+    @IBAction func viewTapped(_ sender: UITapGestureRecognizer) {
+        
+    }
 }
