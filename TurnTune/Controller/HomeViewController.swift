@@ -1,5 +1,5 @@
 //
-//  AuthViewController.swift
+//  HomeViewController.swift
 //  TurnTune
 //
 //  Created by Louis Menacho on 6/18/20.
@@ -10,38 +10,47 @@ import UIKit
 import FirebaseAuth
 import FirebaseFirestore
 
-class AuthViewController: UIViewController {
+class HomeViewController: UIViewController {
     
-    var authViewModel = AuthViewModel()
-    @IBOutlet weak var roomIDField: CodeEntryView!
-    @IBOutlet weak var tableView: UITableView!
+    var authViewModel = HomeViewModel()
+    
+    @IBOutlet weak var displayNameTextField: InputTextField!
+    @IBOutlet weak var roomIDTextField: InputTextField!
+    @IBOutlet weak var stackViewContainerCenterXConstraint: NSLayoutConstraint!
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        stackViewContainerCenterXConstraint.constant = view.frame.width/2
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.tableHeaderView = UIView()
-        tableView.tableFooterView = UIView()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "PlayerViewController" {
-//            let playerViewController = segue.destination as! PlayerViewController
-//            playerViewController.navigationItem.title = RoomService().currentRoomID
+        
+    }
+    
+    @IBAction func segmentedControlSwitched(_ sender: HeaderSegmentedControl) {
+        UIView.animate(withDuration: 0.35) { [self] in
+            if sender.selectedSegmentIndex == 0 {
+                stackViewContainerCenterXConstraint.constant = view.frame.width/2
+            }
+            if sender.selectedSegmentIndex == 1 {
+                stackViewContainerCenterXConstraint.constant = -view.frame.width/2
+            }
+            view.layoutIfNeeded()
         }
     }
     
-    @IBAction func joinButtonPressed(_ sender: UIButton) {
-//        authViewModel.joinRoom(roomID: roomIDField.roomID, as: "") { [self] in
-//            performSegue(withIdentifier: "PlayerViewController", sender: self)
-//        }
+    @IBAction func joinButtonPressed(_ sender: MusicServiceButton) {
+        print("joinButtonPressed")
     }
     
+    @IBAction func connectSpotifyButtonPressed(_ sender: MusicServiceButton) {
+        print("connectSpotifyButtonPressed")
+    }
 }
 
-extension AuthViewController: UITableViewDataSource {
+extension HomeViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
@@ -53,7 +62,7 @@ extension AuthViewController: UITableViewDataSource {
     }
 }
 
-extension AuthViewController: UITableViewDelegate {
+extension HomeViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 1
