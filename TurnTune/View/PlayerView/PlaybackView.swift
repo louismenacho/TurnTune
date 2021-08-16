@@ -22,8 +22,8 @@ class PlaybackView: UIView {
             songLabel.text = playerState.currentSong.name
             artistLabel.text = playerState.currentSong.artist
             
-            let backgroundImageName = playerState.isPaused ? "play.circle.fill" : "pause.circle.fill"
-            playPauseButton.setBackgroundImage(UIImage(systemName: backgroundImageName), for: .normal)
+            let imageName = playerState.isPaused ? "play.circle" : "pause.circle"
+            playPauseButton.setImage(UIImage(systemName: imageName), for: .normal)
         }
     }
     
@@ -36,7 +36,7 @@ class PlaybackView: UIView {
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        fatalError("init(coder:) has not been implemented")
+//        fatalError("init(coder:) has not been implemented")
     }
     
     override init(frame: CGRect) {
@@ -51,10 +51,10 @@ class PlaybackView: UIView {
     }
 
     @IBAction func playPauseButtonPressed(_ sender: UIButton) {
-        if sender.backgroundImage(for: .normal) == UIImage(systemName: "play.circle.fill") {
+        if sender.image(for: .normal) == UIImage(systemName: "play.circle") {
             delegate?.playbackView(playButtonPressedFor: self)
         }
-        if sender.backgroundImage(for: .normal) == UIImage(systemName: "pause.circle.fill") {
+        if sender.image(for: .normal) == UIImage(systemName: "pause.circle") {
             delegate?.playbackView(pauseButtonPressedFor: self)
         }
     }

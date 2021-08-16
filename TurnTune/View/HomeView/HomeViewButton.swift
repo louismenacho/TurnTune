@@ -1,5 +1,5 @@
 //
-//  MusicServiceButton.swift
+//  HomeViewButton.swift
 //  TurnTune
 //
 //  Created by Louis Menacho on 8/9/21.
@@ -8,7 +8,7 @@
 import UIKit
 
 @IBDesignable
-class MusicServiceButton: UIButton {
+class HomeViewButton: UIButton {
     
     var darkenLayer = CALayer()
     var customImageView = UIImageView()
@@ -38,17 +38,9 @@ class MusicServiceButton: UIButton {
         customInit()
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        darkenLayer.frame = bounds
-    }
-    
     func customInit() {
-        let imageSize = CGSize(width: frame.height/2, height: frame.height/2)
-        let imageOrigin = CGPoint(x: titleLabel!.frame.minX - imageSize.width/4, y: frame.height/4)
-        
-        customImageView.frame = CGRect(origin: imageOrigin, size: imageSize)
-        customImageView.layer.cornerRadius = customImageView.frame.height/2
+        customImageView.frame.size = CGSize(width: frame.height/2, height: frame.height/2)
+        customImageView.layer.cornerRadius = frame.height/2
         customImageView.contentMode = .scaleAspectFit
         addSubview(customImageView)
         
@@ -58,11 +50,18 @@ class MusicServiceButton: UIButton {
         layer.addSublayer(darkenLayer)
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        let imageSize = customImageView.frame.size
+        let imageOrigin = CGPoint(x: titleLabel!.frame.minX - imageSize.width*1.5, y: imageSize.height/2)
+        customImageView.frame = CGRect(origin: imageOrigin, size: imageSize)
+        darkenLayer.frame = bounds
+    }
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         darkenLayer.opacity = 0.3
         titleLabel?.alpha = 0.7
-        
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {

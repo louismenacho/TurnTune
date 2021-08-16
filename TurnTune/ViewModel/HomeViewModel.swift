@@ -43,7 +43,6 @@ class HomeViewModel {
                     }
                 }
             }
-            
         }
     }
     
@@ -82,6 +81,10 @@ class HomeViewModel {
                 }
             }
         }
+    }
+    
+    func connectSpotify(completion: @escaping () -> Void) {
+        SpotifyMusicPlayerService()
     }
     
     private func isNameValid(name: String) -> Bool {

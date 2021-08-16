@@ -1,5 +1,5 @@
 //
-//  InputTextField.swift
+//  HomeViewTextField.swift
 //  TurnTune
 //
 //  Created by Louis Menacho on 8/10/21.
@@ -8,7 +8,7 @@
 import UIKit
 
 @IBDesignable
-class InputTextField: UITextField {
+class HomeViewTextField: UITextField {
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -27,5 +27,5 @@ class InputTextField: UITextField {
     override func editingRect(forBounds bounds: CGRect) -> CGRect {
         return bounds.inset(by: .init(top: 0, left: 20, bottom: 0, right: 0))
     }
-
 }
+

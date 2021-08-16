@@ -7,44 +7,43 @@
 
 import UIKit
 
-class PlayerViewController: UITableViewController {
+class PlayerViewController: UIViewController {
     
     var playerViewModel = PlayerViewModel(musicPlayerService: SpotifyMusicPlayerService())
     
-    var playbackView: PlaybackView?
+//    var playbackView: PlaybackView?
     
-    @IBOutlet weak var playerStateView: PlaybackView!
+    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var playbackView: PlaybackView!
+    @IBOutlet weak var miniPlaybackView: PlaybackView!
+    @IBOutlet weak var miniPaybackViewBottomConstraint: NSLayoutConstraint!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        navigationController?.navigationBar.prefersLargeTitles = false
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         navigationController!.navigationBar.standardAppearance.shadowColor = .clear
         navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.searchController = prepareSearchViewController()
         
-        let navigationBar = navigationController!.navigationBar
-        let playbackView = PlaybackView(frame: CGRect(x: 0, y: view.frame.height-navigationBar.frame.height-105, width: view.frame.width, height: 105))
-        playbackView.delegate = self
-        playbackView.autoresizingMask = .flexibleWidth
-        navigationBar.addSubview(playbackView)
-        self.playbackView = playbackView
+        tableView.dataSource = self
+        tableView.delegate = self
+        
+        
+        miniPaybackViewBottomConstraint.constant = -114
             
         playerViewModel.playerStateChangeListener { playerState in
             print("playerStateDidChange")
-            self.playerStateView.playerState = playerState
-            self.playbackView!.playerState = playerState
+            self.playbackView.playerState = playerState
+            self.miniPlaybackView.playerState = playerState
         }
         
         playerViewModel.queueChangeListener { queue in
             print("queueDidChange")
             self.tableView.reloadSections([0], with: .automatic)
         }
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        navigationItem.hidesSearchBarWhenScrolling = true
     }
     
     private func prepareSearchViewController() -> UISearchController {
@@ -73,8 +72,19 @@ class PlayerViewController: UITableViewController {
         playerViewModel.playNextSong()
     }
     
+    @IBAction func playerDetailsButtonPressed(_ sender: UIButton) {
+        performSegue(withIdentifier: "PlayerDetailViewController", sender: self)
+    }
+    
     @IBAction func settingsButtonPressed(_ sender: UIBarButtonItem) {
         performSegue(withIdentifier: "SettingsTableViewController", sender: self)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "PlayerDetailViewController" {
+            let playerDetailViewController = segue.destination as! PlayerDetailViewController
+            playerDetailViewController.playerState = playbackView.playerState
+        }
     }
 }
 
@@ -96,17 +106,17 @@ extension PlayerViewController: SearchViewControllerDelegate {
 
 
 // MARK: - UITableViewDataSource
-extension PlayerViewController {
+extension PlayerViewController: UITableViewDataSource {
 
-    override func numberOfSections(in tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return playerViewModel.queue.count
     }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SongTableViewCell", for: indexPath) as! SongTableViewCell
         cell.song = playerViewModel.queue[indexPath.row]
         return cell
@@ -115,20 +125,39 @@ extension PlayerViewController {
 
 
 // MARK: - UITableViewDelegate
-extension PlayerViewController {
+extension PlayerViewController: UITableViewDelegate {
 
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return "QUEUE"
     }
     
-    override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         guard let sectionHeaderView = view as? UITableViewHeaderFooterView else { return }
         sectionHeaderView.textLabel?.font = UIFont.systemFont(ofSize: 12)
         sectionHeaderView.textLabel?.textColor = .label
     }
     
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return tableView.frame.width * (82/tableView.frame.width)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 114
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.y <= 114 {
+            UIView.animate(withDuration: 0.3) { [self] in
+                miniPaybackViewBottomConstraint.constant = -114
+                view.layoutIfNeeded()
+            }
+        }
+        if scrollView.contentOffset.y > 114 {
+            UIView.animate(withDuration: 0.3) { [self] in
+                miniPaybackViewBottomConstraint.constant = 0
+                view.layoutIfNeeded()
+            }
+        }
     }
 }
 

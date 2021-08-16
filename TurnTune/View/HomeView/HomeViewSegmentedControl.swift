@@ -1,5 +1,5 @@
 //
-//  HeaderSegmentedControl.swift
+//  HomeViewSegmentedControl.swift
 //  TurnTune
 //
 //  Created by Louis Menacho on 8/10/21.
@@ -8,7 +8,7 @@
 import UIKit
 
 @IBDesignable
-class HeaderSegmentedControl: UISegmentedControl {
+class HomeViewSegmentedControl: UISegmentedControl {
 
     override func layoutSubviews() {
         super.layoutSubviews()
