@@ -21,6 +21,25 @@ class RoomService {
         userDefaultsRepository.roomID
     }
     
+    func createRoom(host user: Member, completion: @escaping (Result<Room, Error>) -> Void) {
+        let newRoomCode = generateFourDigitRoomCode()
+        let newRoom = Room(newRoomCode, host: user)
+        roomRepository.create(newRoom) { error in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                completion(.success(newRoom))
+            }
+        }
+    }
+    
+    func updateRoom(_ room: Room, completion: @escaping (Error?) -> Void) {
+        roomRepository.update(room) { error in
+            completion(error)
+        }
+    }
+
+    
     func getRoom(_ roomID: String, completion: @escaping (Result<Room, Error>) -> Void) {
         roomRepository.get(id: roomID) { result in
             switch result {
@@ -40,24 +59,6 @@ class RoomService {
             case let .success(room):
                 completion(.success(room))
             }
-        }
-    }
-    
-    func createRoom(host user: Member, completion: @escaping (Result<Room, Error>) -> Void) {
-        let newRoomCode = generateFourDigitRoomCode()
-        let newRoom = Room(newRoomCode, host: user)
-        roomRepository.create(newRoom) { error in
-            if let error = error {
-                completion(.failure(error))
-            } else {
-                completion(.success(newRoom))
-            }
-        }
-    }
-    
-    func updateRoom(_ room: Room, completion: @escaping (Error?) -> Void) {
-        roomRepository.update(room) { error in
-            completion(error)
         }
     }
     

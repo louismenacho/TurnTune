@@ -23,8 +23,14 @@ class MemberService {
         }
     }
     
+    func removeMember(_ member: Member, completion: @escaping (Error?) -> Void) {
+        memberRepository.delete(member) { error in
+            completion(error)
+        }
+    }
+    
     func listMembers(completion: @escaping (Result<[Member], Error>) -> Void) {
-        memberRepository.list(memberRepository.collectionReference.order(by: "dateJoined")) { result in
+        memberRepository.list(memberRepository.collectionReference.order(by: "dateJoined", descending: true)) { result in
             switch result {
             case let .failure(error):
                 completion(.failure(error))
@@ -35,7 +41,7 @@ class MemberService {
     }
     
     func membersChangeListener(completion: @escaping (Result<[Member], Error>) -> Void) {
-        memberRepository.addListener(memberRepository.collectionReference.order(by: "dateJoined")) { result in
+        memberRepository.addListener(memberRepository.collectionReference.order(by: "dateJoined", descending: true)) { result in
             switch result {
             case let .failure(error):
                 completion(.failure(error))

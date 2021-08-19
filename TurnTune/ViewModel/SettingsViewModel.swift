@@ -7,6 +7,11 @@
 
 import Foundation
 
+enum QueueType: String, CaseIterable {
+    case fair
+    case ordered
+}
+
 class SettingsViewModel {
     
     private(set) var authService = FirebaseAuthService()
@@ -15,6 +20,14 @@ class SettingsViewModel {
     
     private(set) var room = Room()
     private(set) var memberList = [Member]()
+    
+    var queueTypes: [QueueType] {
+        QueueType.allCases
+    }
+    
+    var currentQueueType: QueueType {
+        QueueType(rawValue: room.queueType) ?? .fair
+    }
     
     func loadCurrentRoom() {
         roomService.getCurrentRoom { roomResult in
@@ -67,8 +80,22 @@ class SettingsViewModel {
             case let .failure(error):
                 print(error)
             case let .success(memberList):
+                self.memberList = memberList
                 completion(memberList)
             }
         }
+    }
+    
+    func removeMember(_ member: Member, completion: (() -> Void)? = nil) {
+        memberService.removeMember(member) { error in
+            if let error = error {
+                print(error)
+            }
+        }
+    }
+    
+    
+    func isHost(_ member: Member) -> Bool {
+        return member.userID == room.host.userID
     }
 }

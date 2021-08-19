@@ -12,6 +12,7 @@ import FirebaseFirestoreSwift
 struct Room {
     var roomID: String
     var host: Member
+    var queueType: String
     
     // MARK: - FirestoreDocument Protocol
     @DocumentID var documentID: String?
@@ -20,6 +21,7 @@ struct Room {
     init() {
         roomID = ""
         host = Member()
+        queueType = "fair"
     }
 }
 
@@ -28,5 +30,6 @@ extension Room: FirestoreDocument {
         self.roomID = roomID
         self.host = host
         self.documentID = roomID
+        self.queueType = "fair"
     }
 }

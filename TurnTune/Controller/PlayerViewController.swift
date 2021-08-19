@@ -23,7 +23,6 @@ class PlayerViewController: UIViewController {
         super.viewDidLoad()
         
         navigationController?.navigationBar.prefersLargeTitles = false
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         navigationController!.navigationBar.standardAppearance.shadowColor = .clear
         navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.searchController = prepareSearchViewController()
@@ -31,7 +30,7 @@ class PlayerViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         
-        
+        playbackView.frame.size = CGSize(width: playbackView.frame.width, height: view.frame.width/3+40)
         miniPaybackViewBottomConstraint.constant = -114
             
         playerViewModel.playerStateChangeListener { playerState in
@@ -64,20 +63,16 @@ class PlayerViewController: UIViewController {
         return searchResultsViewController
     }
     
-    @IBAction func playButtonPressed(_ sender: Any) {
-        playerViewModel.play()
-    }
-    
     @IBAction func playNextSongButton(_ sender: Any) {
         playerViewModel.playNextSong()
     }
     
-    @IBAction func playerDetailsButtonPressed(_ sender: UIButton) {
-        performSegue(withIdentifier: "PlayerDetailViewController", sender: self)
+    @IBAction func settingsButtonPressed(_ sender: UIBarButtonItem) {
+        performSegue(withIdentifier: "SettingsViewController", sender: self)
     }
     
-    @IBAction func settingsButtonPressed(_ sender: UIBarButtonItem) {
-        performSegue(withIdentifier: "SettingsTableViewController", sender: self)
+    @IBAction func albumImageTapped(_ sender: UITapGestureRecognizer) {
+        performSegue(withIdentifier: "PlayerDetailViewController", sender: self)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -131,11 +126,11 @@ extension PlayerViewController: UITableViewDelegate {
         return "QUEUE"
     }
     
-    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-        guard let sectionHeaderView = view as? UITableViewHeaderFooterView else { return }
-        sectionHeaderView.textLabel?.font = UIFont.systemFont(ofSize: 12)
-        sectionHeaderView.textLabel?.textColor = .label
-    }
+//    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+//        guard let sectionHeaderView = view as? UITableViewHeaderFooterView else { return }
+//        sectionHeaderView.textLabel?.font = UIFont.systemFont(ofSize: 12)
+//        sectionHeaderView.textLabel?.textColor = .label
+//    }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return tableView.frame.width * (82/tableView.frame.width)

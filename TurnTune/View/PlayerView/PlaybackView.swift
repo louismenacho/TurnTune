@@ -27,28 +27,12 @@ class PlaybackView: UIView {
         }
     }
     
-    @IBOutlet var contentView: UIView!
     @IBOutlet weak var logoImageView: UIImageView!
     @IBOutlet weak var albumImageView: UIImageView!
     @IBOutlet weak var songLabel: UILabel!
     @IBOutlet weak var artistLabel: UILabel!
     @IBOutlet weak var playPauseButton: UIButton!
     
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-//        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        customInit()
-    }
-    
-    func customInit() {
-        Bundle.main.loadNibNamed("PlaybackView", owner: self, options: .none)
-        contentView.frame = self.bounds
-        addSubview(contentView)
-    }
 
     @IBAction func playPauseButtonPressed(_ sender: UIButton) {
         if sender.image(for: .normal) == UIImage(systemName: "play.circle") {
