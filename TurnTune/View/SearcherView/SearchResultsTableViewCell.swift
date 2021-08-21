@@ -35,6 +35,10 @@ class SearchResultsTableViewCell: UITableViewCell {
     }
     
     @IBAction func addButtonPressed(_ sender: UIButton) {
+        let generator = UIImpactFeedbackGenerator(style: .heavy)
+        generator.impactOccurred()
+        sender.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
+        sender.isUserInteractionEnabled = false
         delegate?.searchResultsTableViewCell(addButtonPressedFor: self)
     }
 }
