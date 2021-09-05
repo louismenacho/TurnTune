@@ -6,7 +6,9 @@
 //
 
 import Foundation
+import FirebaseFirestore
 
 protocol FirestoreDocument: Codable {
     var documentID: String? { get set }
+    var dateAdded: Timestamp? { get set }
 }

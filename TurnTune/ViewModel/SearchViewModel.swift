@@ -1,5 +1,5 @@
 //
-//  SearcherViewModel.swift
+//  SearchViewModel.swift
 //  TurnTune
 //
 //  Created by Louis Menacho on 1/28/21.
@@ -7,13 +7,13 @@
 
 import Foundation
 
-class SearcherViewModel {
+class SearchViewModel {
     
-    private(set) var musicBrowserService: MusicBrowserServiceable
+    private(set) var musicBrowserService: SpotifyMusicBrowserService
     
     private(set) var searchResult = [Song]()
     
-    init(musicBrowserService: MusicBrowserServiceable) {
+    init(musicBrowserService: SpotifyMusicBrowserService) {
         self.musicBrowserService = musicBrowserService
     }
     

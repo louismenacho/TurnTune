@@ -105,7 +105,7 @@ extension SettingsViewController: UITableViewDelegate {
     func didSelectCheckmarkCell(at indexPath: IndexPath) {
         let selectedCheckmarkCell = checkmarkCell(for: indexPath)
         var room = settingsViewModel.room
-        room.queueType = selectedCheckmarkCell.queueType.rawValue
+        room.queueMode = selectedCheckmarkCell.queueType.rawValue
         settingsViewModel.updateRoom(room)
     }
     

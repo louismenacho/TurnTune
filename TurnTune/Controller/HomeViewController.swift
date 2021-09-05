@@ -9,6 +9,7 @@
 import UIKit
 import FirebaseAuth
 import FirebaseFirestore
+import NVActivityIndicatorView
 
 class HomeViewController: UIViewController {
     
@@ -25,7 +26,7 @@ class HomeViewController: UIViewController {
         displayNameTextField.delegate = self
         roomIDTextField.delegate = self
         displayNameTextField.text = "Louis"
-        roomIDTextField.text = "RAAF"
+        roomIDTextField.text = "WNWG"
         stackViewContainerCenterXConstraint.constant = view.frame.width/2
         NotificationCenter.default.addObserver(self,
             selector: #selector(self.keyboardWillShow(_:)),
@@ -42,7 +43,9 @@ class HomeViewController: UIViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "QueueViewController" {
-            
+            let queueViewController = segue.destination as! PlayerViewController
+            queueViewController.searchViewModel = SearchViewModel(musicBrowserService: homeViewModel.musicBrowserService)
+            queueViewController.playerViewModel = PlayerViewModel(musicPlayerService: homeViewModel.musicPlayerService)
         }
     }
     
@@ -64,14 +67,18 @@ class HomeViewController: UIViewController {
     
     @IBAction func joinButtonPressed(_ sender: HomeViewButton) {
         homeViewModel.joinRoom(roomID: roomIDTextField.text!, as: displayNameTextField.text!) { [self] in
+            homeViewModel.connectMusicBrowserService()
             performSegue(withIdentifier: "QueueViewController", sender: self)
         }
     }
     
     @IBAction func connectSpotifyButtonPressed(_ sender: HomeViewButton) {
-//        homeViewModel.hostRoom(as: displayNameTextField.text!) { [self] in
-//            performSegue(withIdentifier: "QueueViewController", sender: self)
-//        }
+        let displayName = displayNameTextField.text!
+        homeViewModel.connectMusicPlayerService { [self] in
+            homeViewModel.hostRoom(as: displayName) { [self] in
+                performSegue(withIdentifier: "QueueViewController", sender: self)
+            }
+        }
     }
     
     @objc func keyboardWillShow(_ notification: Notification) {

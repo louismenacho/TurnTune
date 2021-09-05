@@ -8,83 +8,50 @@
 import Foundation
 
 class HomeViewModel {
+    
+    private(set) var authService = FirebaseAuthService()
+    private(set) var roomDataAccess = RoomDataAccessProvider()
+    private(set) var memberDataAccess = MemberDataAccessProvider()
+    private(set) var musicBrowserService = SpotifyMusicBrowserService()
+    private(set) var musicPlayerService = SpotifyMusicPlayerService()
+    
+    init() {
+        authService.delegate = self
+        roomDataAccess.delegate = self
+        memberDataAccess.delegate = self
+        musicPlayerService.delegate = self
+    }
 
     func joinRoom(roomID: String, as displayName: String, completion: @escaping () -> Void) {
-        
-        // Authenticate user
-        FirebaseAuthService().signIn { error in
-            if let error = error {
-                print("signIn: \(error)")
-            }
-            
-            // Set user display name
-            FirebaseAuthService().setDisplayName(displayName) { error in
-                if let error = error {
-                    print("setDisplayName: \(error)")
-                }
-            }
-            
-            // Find room and save the current room in User Defaults
-            RoomService().getRoom(roomID) { roomResult in
-                switch roomResult {
-                case .failure(let error):
-                    print("getExistingRoom: \(error)")
-                case .success(let room):
-                    RoomService().saveRoomID(room.roomID)
-                    
-                    // Add user as a member to the current room
-                    MemberService().addMember(FirebaseAuthService().currentUser) { error in
-                        if let error = error {
-                            print("addMember: \(error)")
-                        }
-                        
-                        // Completion of tasks
-                        completion()
-                    }
-                }
+        authService.signIn { [self] in
+            roomDataAccess.getRoom(roomID) { [self] room in
+                let member = Member(userID: authService.currentUserID, displayName: displayName)
+                memberDataAccess.addMember(member)
+                completion()
             }
         }
     }
     
     func hostRoom(as displayName: String, completion: @escaping () -> Void) {
-        
-        // Authenticate user
-        FirebaseAuthService().signIn { error in
-            if let error = error {
-                print("signIn: \(error)")
-            }
-            
-            // Set user display name
-            FirebaseAuthService().setDisplayName(displayName) { error in
-                if let error = error {
-                    print("setDisplayName: \(error)")
-                }
-            }
-            
-            // Create room and save the current room in User Defaults
-            RoomService().createRoom(host: FirebaseAuthService().currentUser) { roomResult in
-                switch roomResult {
-                case .failure(let error):
-                    print("createRoom: \(error)")
-                case .success(let room):
-                    RoomService().saveRoomID(room.roomID)
-                    
-                    // Add user as a member to the current room
-                    MemberService().addMember(FirebaseAuthService().currentUser) { error in
-                        if let error = error {
-                            print("addMember: \(error)")
-                        }
-                        
-                        // Completion of tasks
-                        completion()
-                    }
-                }
+        authService.signIn { [self] in
+            let host = Member(userID: authService.currentUserID, displayName: displayName)
+            roomDataAccess.createRoom(host: host) { [self] room in
+                memberDataAccess.addMember(host)
+                completion()
             }
         }
     }
     
-    func connectSpotify(completion: @escaping () -> Void) {
-        SpotifyMusicPlayerService()
+    func connectMusicBrowserService(completion: (() -> Void)? = nil) {
+        musicBrowserService.initiate {
+            completion?()
+        }
+    }
+    
+    func connectMusicPlayerService(completion: @escaping () -> Void) {
+        musicPlayerService.initiate {
+            completion()
+        }
     }
     
     private func isNameValid(name: String) -> Bool {
@@ -95,4 +62,22 @@ class HomeViewModel {
         return true
     }
     
+}
+
+extension HomeViewModel: AuthenticationServiceableDelegate {
+    func authenticationServiceable(_ authenticationServiceable: AuthenticationServiceable, error: AuthenticationError) {
+        print(error)
+    }
+}
+
+extension HomeViewModel: DataAccessProviderDelegate {
+    func dataAccessProvider(_ dataAccessProvider: DataAccessProvider, error: DataAccessError) {
+        print(error)
+    }
+}
+
+extension HomeViewModel: MusicPlayerServiceableDelegate {
+    func musicPlayerServiceable(error: MusicPlayerServiceableError) {
+        print(error)
+    }
 }

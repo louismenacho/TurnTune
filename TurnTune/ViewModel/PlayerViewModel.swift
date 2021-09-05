@@ -10,22 +10,23 @@ import Foundation
 class PlayerViewModel {
     
     private(set) var authService = FirebaseAuthService()
-    private(set) var musicPlayerService: MusicPlayerServiceable
-    private(set) var playerStateService = MusicPlayerStateService()
-    private(set) var queueService = QueueService()
+    private(set) var musicPlayerService: SpotifyMusicPlayerService
+    private(set) var playerStateDataAccess = PlayerStateDataAccessProvider()
+    private(set) var queueDataAccess = QueueDataAccessProvider()
     
     var playerState = PlayerState()
-    var lastStateBeforeRadio: PlayerState?
-    var queue = [Song]()
-    var history = [Song]()
+    var queue = [QueueItem]()
+    var history = [QueueItem]()
     
-    init(musicPlayerService: MusicPlayerServiceable) {
+    init(musicPlayerService: SpotifyMusicPlayerService) {
         self.musicPlayerService = musicPlayerService
-        self.musicPlayerService.initiate(delegate: self)
+        self.musicPlayerService.playerStateChangeListener { [self] playerState in
+            playerStateDataAccess.updatePlayerState(playerState)
+        }
     }
     
     func loadPlayerState(completion: @escaping (PlayerState) -> Void) {
-        playerStateService.getPlayerState{ result in
+        playerStateDataAccess.getPlayerState{ result in
             switch result {
             case let .failure(error):
                 print(error)
@@ -36,23 +37,18 @@ class PlayerViewModel {
     }
     
     func playerStateChangeListener(completion: @escaping (PlayerState) -> Void) {
-        playerStateService.playerStateChangeListener { result in
+        playerStateDataAccess.playerStateChangeListener { result in
             switch result {
             case let .failure(error):
                 print(error)
             case let .success(playerState):
-//                if self.playerState.currentSong.spotifyURI != playerState.currentSong.spotifyURI {
-                    self.playerState = playerState
-                    completion(playerState)
-//                    return
-//                }
                 self.playerState = playerState
             }
         }
     }
     
-    func loadQueue(completion: @escaping ([Song]) -> Void) {
-        queueService.listQueue(queueMode: "Fair") { result in
+    func loadQueue(completion: @escaping ([QueueItem]) -> Void) {
+        queueDataAccess.listQueue(queueMode: .fair) { result in
             switch result {
             case let .failure(error):
                 print(error)
@@ -63,8 +59,8 @@ class PlayerViewModel {
         }
     }
     
-    func queueChangeListener(completion: @escaping ([Song]) -> Void) {
-        queueService.queueChangeListener(queueMode: "Fair") { result in
+    func queueChangeListener(completion: @escaping ([QueueItem]) -> Void) {
+        queueDataAccess.queueChangeListener(queueMode: .fair) { result in
             switch result {
             case let .failure(error):
                 print(error)
@@ -75,8 +71,8 @@ class PlayerViewModel {
         }
     }
     
-    func loadQueueHistory(completion: @escaping ([Song]) -> Void) {
-        queueService.listQueue(queueMode: "Fair", didPlayFlag: true) { result in
+    func loadQueueHistory(completion: @escaping ([QueueItem]) -> Void) {
+        queueDataAccess.listQueue(queueMode: .fair, didPlayFlag: true) { result in
             switch result {
             case let .failure(error):
                 print(error)
@@ -87,8 +83,8 @@ class PlayerViewModel {
         }
     }
     
-    func queueHistoryChangeListener(completion: @escaping ([Song]) -> Void) {
-        queueService.queueChangeListener(queueMode: "Fair", didPlayFlag: true) { result in
+    func queueHistoryChangeListener(completion: @escaping ([QueueItem]) -> Void) {
+        queueDataAccess.queueChangeListener(queueMode: .fair, didPlayFlag: true) { result in
             switch result {
             case let .failure(error):
                 print(error)
@@ -100,92 +96,102 @@ class PlayerViewModel {
     }
     
     func addToQueue(_ song: Song) {
-        var song = song
-        song.orderGroup = queue.filter({ $0.addedBy.userID == authService.currentUser.userID }).count
-        song.addedBy = authService.currentUser
-        queueService.addSong(song) { error in
+        var item = QueueItem(song: song)
+        item.priority = queue.filter({ $0.addedBy.userID == authService.currentUserID }).count
+        item.addedBy.userID = authService.currentUserID
+        queueDataAccess.addItem(item) { error in
             if let error = error {
                 print(error)
             }
         }
     }
     
-    func removeFromQueue(_ song: Song) {
-        queueService.removeSong(song) { error in
-            if let error = error {
-                print(error)
-            }
-        }
-    }
-    
-    func play(_ song: [Song]? = nil, position: Int = 0, completion: (() -> Void)? = nil ) {
-        musicPlayerService.startPlayback(songs: song, position: position) { error in
+    func removeFromQueue(_ item: QueueItem, completion: (() -> Void)? = nil) {
+        queueDataAccess.removeItem(item) { error in
             if let error = error {
                 print(error)
             } else {
-                print("playing \(song?.compactMap { $0.name } ?? [])")
                 completion?()
             }
+        }
+    }
+    
+    // MARK: - Host Methods
+    
+    func play(_ items: [QueueItem]? = nil, position: Int = 0, completion: (() -> Void)? = nil ) {
+        musicPlayerService.startPlayback(songs: items?.compactMap { $0.song }, position: position) {
+            print("playing \(items?.compactMap { $0.song.name } ?? [])")
+            completion?()
         }
     }
     
     func resumeQueue(completion: (() -> Void)? = nil) {
         if playerState.isRadio {
-            playNextSong()
-        }
-    }
-    
-    func playNextSong() {
-        if let nextSong = queue.first {
-            play([nextSong]) {
-                self.removeFromQueue(nextSong)
-            }
-        }
-    }
-    
-    func pause(completion: (() -> Void)? = nil ) {
-        musicPlayerService.pausePlayback { error in
-            if let error = error {
-                print(error)
-            } else {
-                print("paused")
+            playNextSong {
                 completion?()
             }
+        }
+    }
+    
+    func playNextSong(completion: (() -> Void)? = nil) {
+        guard let nextSong = queue.first else {
+            return
+        }
+        play([nextSong]) { [self] in
+            removeFromQueue(nextSong) {
+                completion?()
+            }
+        }
+    }
+    
+    func pause(completion: (() -> Void)? = nil) {
+        musicPlayerService.pausePlayback {
+            completion?()
+        }
+    }
+    
+    func startQueue(completion: (() -> Void)? = nil) {
+        musicPlayerService.initiate { [self] in
+            playNextSong {
+                completion?()
+            }
+        }
+    }
+    
+    func rewindSong(completion: (() -> Void)? = nil) {
+        musicPlayerService.rewindPlayback {
+            completion?()
         }
     }
     
 }
 
 extension PlayerViewModel: MusicPlayerServiceableDelegate  {
-    func musicPlayerServiceable(playbackDidStart playerState: PlayerState) {
-        print("playbackDidStart")
-        playerStateService.updatePlayerState(playerState) { _ in }
-    }
+//    func musicPlayerServiceable(playbackDidStart playerState: PlayerState) {
+//        print("playbackDidStart")
+//        playerStateDataAccess.updatePlayerState(playerState) { _ in }
+//    }
+//
+//    func musicPlayerServiceable(playbackDidPause playerState: PlayerState) {
+//        print("playbackDidPause")
+//        playerStateDataAccess.updatePlayerState(playerState) { _ in }
+//    }
+//
+//    func musicPlayerServiceable(playbackDidChange playerState: PlayerState) {
+//        print("playbackDidChange")
+//        playerStateDataAccess.updatePlayerState(playerState) { _ in }
+//    }
+//
+//    func musicPlayerServiceable(playbackDidFinish playerState: PlayerState) {
+//        print("playbackDidFinish")
+//        if queue.isEmpty {
+//            playerStateDataAccess.updatePlayerState(playerState) { _ in }
+//        } else {
+//            playNextSong()
+//        }
+//    }
     
-    func musicPlayerServiceable(playbackDidPause playerState: PlayerState) {
-        print("playbackDidPause")
-        playerStateService.updatePlayerState(playerState) { _ in }
-    }
-    
-    func musicPlayerServiceable(playbackDidChange playerState: PlayerState) {
-        print("playbackDidChange")
-        
-        if !self.playerState.isRadio && playerState.isRadio {
-            print("playing from other source")
-        }
-        if self.playerState.isRadio && !playerState.isRadio {
-            print("resuming queue")
-        }
-        
-        playerStateService.updatePlayerState(playerState) { _ in }
-    }
-    
-    func musicPlayerServiceable(playbackDidFinish playerState: PlayerState) {
-        print("playbackDidFinish")
-        if queue.isEmpty {
-            playerStateService.updatePlayerState(playerState) { _ in }
-        } else {
-            playNextSong()
-        }
+    func musicPlayerServiceable(error: MusicPlayerServiceableError) {
+        print(error)
     }
 }

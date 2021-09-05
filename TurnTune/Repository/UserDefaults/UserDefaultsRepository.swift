@@ -14,11 +14,11 @@ class UserDefaultsRepository {
     @UserDefaultsProperty(key: "User ID")
     var userID = ""
     
-    @UserDefaultsProperty(key: "Room ID")
-    var roomID = ""
-    
     @UserDefaultsProperty(key: "Display Name")
     var displayName = ""
+    
+    @UserDefaultsProperty(key: "Room ID")
+    var roomID = ""
     
     @UserDefaultsProperty(key: "Appearance")
     var appearance = UIUserInterfaceStyle.unspecified.rawValue

@@ -10,9 +10,11 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 
 
-struct Song {
-    
+struct Song: FirestoreDocument {
     typealias MilliSeconds = Int
+    
+    @DocumentID var documentID: String?
+    @ServerTimestamp var dateAdded: Timestamp?
     
     var name: String                
     var artist: String
@@ -20,16 +22,6 @@ struct Song {
     var artworkURL: String
     var duration: MilliSeconds
     
-    // MARK: - Queueing Protocol
-    var orderGroup: Int = 0
-    var didPlay: Bool = false
-    var addedBy: Member = Member()
-    
-    // MARK: - FirestoreDocument Protocol
-    @DocumentID var documentID: String?
-    @ServerTimestamp var dateAdded: Timestamp?
-    
-    // MARK: - SpotifyIdentifiable Protocol
     var spotifyID: String = ""
     var spotifyURI: String = ""
     
@@ -40,17 +32,6 @@ struct Song {
         artworkURL = ""
         duration = 0
     }
-}
-
-extension Song: Queueing {
-
-}
-
-extension Song: FirestoreDocument {
-    
-}
-
-extension Song: SpotifyIdentifiable {
     
     init(from spotifyTrack: Track) {
         spotifyURI = spotifyTrack.uri
@@ -71,5 +52,4 @@ extension Song: SpotifyIdentifiable {
         artworkURL = "https://i.scdn.co/image/"+spotifyTrack.imageIdentifier.dropFirst(14)
         duration = Int(spotifyTrack.duration)
     }
-
 }

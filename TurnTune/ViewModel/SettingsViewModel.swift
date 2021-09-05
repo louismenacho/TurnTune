@@ -7,16 +7,11 @@
 
 import Foundation
 
-enum QueueType: String, CaseIterable {
-    case fair
-    case ordered
-}
-
 class SettingsViewModel {
     
     private(set) var authService = FirebaseAuthService()
-    private(set) var roomService = RoomService()
-    private(set) var memberService = MemberService()
+    private(set) var roomService = RoomDataAccessProvider()
+    private(set) var memberService = MemberDataAccessProvider()
     
     private(set) var room = Room()
     private(set) var memberList = [Member]()
@@ -26,74 +21,48 @@ class SettingsViewModel {
     }
     
     var currentQueueType: QueueType {
-        QueueType(rawValue: room.queueType) ?? .fair
+        QueueType(rawValue: room.queueMode) ?? .fair
     }
     
     func loadCurrentRoom() {
-        roomService.getCurrentRoom { roomResult in
-            switch roomResult {
-            case .failure(let error):
-                print(error)
-            case .success(let room):
-                self.room = room
-            }
+        roomService.getRoom { room in
+            self.room = room
         }
     }
     
     func updateRoom(_ room: Room, completion: (() -> Void)? = nil) {
-        roomService.updateRoom(room) { error in
-            if let error = error {
-                print(error)
-            } else {
-                completion?()
-                print("room updated: \(room)")
-            }
+        roomService.updateRoom(room) {
+            completion?()
         }
     }
     
     func roomChangeListener(completion: @escaping (Room) -> Void) {
-        roomService.roomChangeListener { result in
-            switch result {
-            case let .failure(error):
-                print(error)
-            case let .success(room):
-                self.room = room
-                completion(room)
-            }
+        roomService.roomChangeListener { room in
+            self.room = room
+            completion(room)
         }
     }
     
     func loadMemberList(completion: @escaping ([Member]) -> Void) {
-        memberService.listMembers { result in
-            switch result {
-            case let .failure(error):
-                print(error)
-            case let .success(memberList):
-                completion(memberList)
-            }
+        memberService.listMembers { memberList in
+            self.memberList = memberList
+            completion(memberList)
         }
     }
     
     func memberListChangeListener(completion: @escaping ([Member]) -> Void) {
-        memberService.membersChangeListener { result in
-            switch result {
-            case let .failure(error):
-                print(error)
-            case let .success(memberList):
-                self.memberList = memberList
-                completion(memberList)
-            }
+        memberService.membersChangeListener { memberList in
+            self.memberList = memberList
+            completion(memberList)
+            
         }
     }
     
     func removeMember(_ member: Member, completion: (() -> Void)? = nil) {
-        memberService.removeMember(member) { error in
-            if let error = error {
-                print(error)
-            }
+        memberService.removeMember(member) {
+            completion?()
         }
     }
-    
     
     func isHost(_ member: Member) -> Bool {
         return member.userID == room.host.userID

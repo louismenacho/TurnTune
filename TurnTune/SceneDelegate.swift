@@ -12,8 +12,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     
     var spotifyMusicService: SpotifyMusicPlayerService? {
-        let playerViewController = window?.rootViewController?.children.first(where: { ($0 is PlayerViewController) }) as? PlayerViewController
-        return playerViewController?.playerViewModel.musicPlayerService as? SpotifyMusicPlayerService
+        let homeViewController = window?.rootViewController?.children.first(where: { ($0 is HomeViewController) }) as? HomeViewController
+        return homeViewController?.homeViewModel.musicPlayerService as? SpotifyMusicPlayerService
     }
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -59,9 +59,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-//        print("scene openURLContexts URLCcontexts")
         if let url = URLContexts.first?.url {
-            spotifyMusicService?.appRemoteService.sessionManager.handleOpenURL(url)
+            spotifyMusicService?.sessionManagerService.handleOpenURL(url)
         }
     }
 

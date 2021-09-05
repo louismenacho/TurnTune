@@ -8,17 +8,20 @@
 import Foundation
 
 protocol MusicPlayerServiceableDelegate: AnyObject {
-    func musicPlayerServiceable(playbackDidStart playerState: PlayerState)
-    func musicPlayerServiceable(playbackDidPause playerState: PlayerState)
-    func musicPlayerServiceable(playbackDidFinish playerState: PlayerState)
-    func musicPlayerServiceable(playbackDidChange playerState: PlayerState)
+//    func musicPlayerServiceable(playbackDidStart playerState: PlayerState)
+//    func musicPlayerServiceable(playbackDidPause playerState: PlayerState)
+//    func musicPlayerServiceable(playbackDidFinish playerState: PlayerState)
+//    func musicPlayerServiceable(playbackDidChange playerState: PlayerState)
+    func musicPlayerServiceable(error: MusicPlayerServiceableError)
 }
 
 protocol MusicPlayerServiceable {
     
     var delegate: MusicPlayerServiceableDelegate? { get set }
     
-    func initiate(delegate: MusicPlayerServiceableDelegate?)
-    func startPlayback(songs: [Song]?, position: Int, completion: @escaping (Error?) -> Void)
-    func pausePlayback(completion: @escaping (Error?) -> Void)
+    func initiate(completion: (() -> Void)?)
+    func startPlayback(songs: [Song]?, position: Int, completion: (() -> Void)?)
+    func pausePlayback(completion: (() -> Void)?)
+    func rewindPlayback(completion: (() -> Void)?)
+    func playerStateChangeListener(completion: @escaping (PlayerState) -> Void)
 }

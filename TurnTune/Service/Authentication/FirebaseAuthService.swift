@@ -10,52 +10,45 @@ import FirebaseAuth
 
 class FirebaseAuthService: AuthenticationServiceable {
     
-    private(set) var auth: Auth = {
+    weak var delegate: AuthenticationServiceableDelegate?
+    
+    var currentUserID: String = UserDefaultsRepository().userID {
+        didSet {
+            UserDefaultsRepository().userID = currentUserID
+        }
+    }
+    
+    private var auth: Auth = {
         Auth.auth()
     }()
     
     var isSignedIn: Bool {
         auth.currentUser != nil
     }
-    
-    var currentUser: Member {
-        Member(
-            userID: UserDefaultsRepository().userID,
-            displayName: UserDefaultsRepository().displayName
-        )
-    }
         
-    func signIn(completion: @escaping (Error?) -> Void) {
-        auth.signInAnonymously { authDataResult, error in
+    func signIn(completion: (() -> Void)?) {
+        auth.signInAnonymously { [self] authDataResult, error in
+            if let error = error {
+                delegate?.authenticationServiceable(self, error: .signInFailed(error: error))
+            }
             if let authData = authDataResult {
-                UserDefaultsRepository().userID = authData.user.uid
+                self.currentUserID = authData.user.uid
+                completion?()
             }
-            completion(error)
         }
     }
     
-    func setDisplayName(_ displayName: String, completion: @escaping (Error?) -> Void) {
-        let changeRequest = auth.currentUser?.createProfileChangeRequest()
-        changeRequest?.displayName = displayName
-        changeRequest?.commitChanges { error in
-            if error == nil {
-                UserDefaultsRepository().displayName = displayName
-            }
-            completion(error)
-        }
-    }
-    
-    func signOut(completion: @escaping (Error?) -> Void) {
+    func signOut(completion: (() -> Void)?) {
         do {
             try auth.signOut()
         } catch {
-            completion(error)
+            delegate?.authenticationServiceable(self, error: .signOutFailed(error: error))
         }
     }
     
-    func addStateDidChangeListener(completion: @escaping (Result<Auth, Error>) -> Void) {
+    func addStateDidChangeListener(completion: @escaping (Auth) -> Void) {
         auth.addStateDidChangeListener { auth, user in
-            completion(.success(auth))
+            completion(auth)
         }
     }
 

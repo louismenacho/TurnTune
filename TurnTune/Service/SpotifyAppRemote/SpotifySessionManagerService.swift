@@ -35,13 +35,13 @@ class SpotifySessionManagerService: NSObject {
         .userReadCurrentlyPlaying,
         .userReadRecentlyPlayed,
         .userReadPlaybackState,
-        .userModifyPlaybackState
+        .userModifyPlaybackState,
+        .userReadPrivate
     ]
-    
-    func initiateSession(with uri: String? = nil) {
+        
+    func initiate(with uri: String? = nil) {
         config.playURI = uri
-        sessionManager = SPTSessionManager(configuration: config, delegate: self)
-        sessionManager.initiateSession(with: scope, options: .default)
+        sessionManager.initiateSession(with: scope, options: .clientOnly)
     }
     
     func renewSession() {

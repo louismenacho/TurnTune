@@ -6,16 +6,16 @@
 //
 
 import Foundation
+import FirebaseFirestore
 
-struct SpotifyConfig {
+struct SpotifyConfig: FirestoreDocument {
+    
+    var documentID: String?
+    var dateAdded: Timestamp?
+    
     var clientID: String
     var clientSecret: String
     var redirectURL: String
     var tokenSwapURL: String
     var tokenRefreshURL: String
-    
-    // MARK: - FirestoreDocument Protocol
-    var documentID: String?
 }
-
-extension SpotifyConfig: FirestoreDocument {}

@@ -1,5 +1,5 @@
 //
-//  MusicPlayerStateService.swift
+//  PlayerStateDataAccessProvider.swift
 //  TurnTune
 //
 //  Created by Louis Menacho on 7/21/21.
@@ -7,14 +7,16 @@
 
 import Foundation
 
-class MusicPlayerStateService {
+class PlayerStateDataAccessProvider: DataAccessProvider {
+    
+    weak var delegate: DataAccessProviderDelegate?
+    
+    private var currentRoomID: String {
+        UserDefaultsRepository().roomID
+    }
     
     private var playerStateRepository: FirestoreRepository<PlayerState> {
         FirestoreRepository<PlayerState>(collectionPath: "rooms/"+currentRoomID+"/player")
-    }
-
-    private var currentRoomID: String {
-        UserDefaultsRepository().roomID
     }
     
     func getPlayerState(completion: @escaping (Result<PlayerState, Error>) -> Void) {
@@ -28,9 +30,9 @@ class MusicPlayerStateService {
         }
     }
         
-    func updatePlayerState(_ playerState: PlayerState, completion: @escaping (Error?) -> Void) {
+    func updatePlayerState(_ playerState: PlayerState, completion: ((Error?) -> Void)? = nil) {
         playerStateRepository.update(playerState) { error in
-            completion(error)
+            completion?(error)
         }
     }
     

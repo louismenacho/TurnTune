@@ -9,21 +9,20 @@ import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-struct Member {
+struct Member: FirestoreDocument {
+    
+    @DocumentID var documentID: String?
+    @ServerTimestamp var dateAdded: Timestamp?
+    
+    
     var userID: String
     var displayName: String
-    
-    // MARK: - FirestoreDocument Protocol
-    @DocumentID var documentID: String?
-    @ServerTimestamp var dateJoined: Timestamp?
-    
+
     init() {
         userID = ""
         displayName = ""
     }
-}
-
-extension Member: FirestoreDocument {
+    
     init(userID: String, displayName: String) {
         self.userID = userID
         self.displayName = displayName

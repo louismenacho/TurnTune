@@ -7,12 +7,17 @@
 
 import Foundation
 
+protocol AuthenticationServiceableDelegate: AnyObject {
+    func authenticationServiceable(_ authenticationServiceable: AuthenticationServiceable, error: AuthenticationError)
+}
+
 protocol AuthenticationServiceable {
     
-    var isSignedIn: Bool { get }
-    var currentUser: Member { get }
+    var delegate: AuthenticationServiceableDelegate? { get }
     
-    func signIn(completion: @escaping (Error?) -> Void)
-    func setDisplayName(_ displayName: String, completion: @escaping (Error?) -> Void)
-    func signOut(completion: @escaping (Error?) -> Void)
+    var currentUserID: String { get }
+    var isSignedIn: Bool { get }
+    
+    func signIn(completion: (() -> Void)?)
+    func signOut(completion: (() -> Void)?)
 }

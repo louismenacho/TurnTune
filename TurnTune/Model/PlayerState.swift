@@ -9,14 +9,15 @@ import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-struct PlayerState {
+struct PlayerState: FirestoreDocument {
+    
+    @DocumentID var documentID: String? = "state"
+    @ServerTimestamp var dateAdded: Timestamp?
+    
     var currentSong: Song
     var position: Int
     var isPaused: Bool
     var isRadio: Bool
-    
-    // MARK: - FirestoreDocument Protocol
-    @DocumentID var documentID: String? = "state"
     
     init() {
         currentSong = Song()
@@ -24,11 +25,7 @@ struct PlayerState {
         isPaused = true
         isRadio = true
     }
-}
-
-extension PlayerState: FirestoreDocument {}
-
-extension PlayerState {
+    
     init(from spotifyPlayerState: SPTAppRemotePlayerState) {
         currentSong = Song(from: spotifyPlayerState.track)
         position = spotifyPlayerState.playbackPosition

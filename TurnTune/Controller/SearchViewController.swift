@@ -15,7 +15,7 @@ class SearchViewController: UIViewController {
     
     weak var delegate: SearchViewControllerDelegate?
 
-    var searcherViewModel = SearcherViewModel(musicBrowserService: SpotifyMusicBrowser())
+    var searcherViewModel = SearchViewModel(musicBrowserService: SpotifyMusicBrowserService())
     
     @IBOutlet weak var tableview: UITableView!
     

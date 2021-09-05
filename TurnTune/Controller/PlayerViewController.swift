@@ -9,29 +9,27 @@ import UIKit
 
 class PlayerViewController: UIViewController {
     
+    var searchViewModel = SearchViewModel(musicBrowserService: SpotifyMusicBrowserService())
     var playerViewModel = PlayerViewModel(musicPlayerService: SpotifyMusicPlayerService())
-    
-//    var playbackView: PlaybackView?
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var playbackView: PlaybackView!
     @IBOutlet weak var miniPlaybackView: PlaybackView!
-    @IBOutlet weak var miniPaybackViewBottomConstraint: NSLayoutConstraint!
+    @IBOutlet weak var miniPlaybackViewBottomConstraint: NSLayoutConstraint!
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         navigationController?.navigationBar.prefersLargeTitles = false
         navigationController!.navigationBar.standardAppearance.shadowColor = .clear
         navigationItem.hidesSearchBarWhenScrolling = false
-        navigationItem.searchController = prepareSearchViewController()
+        navigationItem.searchController = prepareSearchController()
         
         tableView.dataSource = self
         tableView.delegate = self
         
         playbackView.frame.size = CGSize(width: playbackView.frame.width, height: view.frame.width/3+40)
-        miniPaybackViewBottomConstraint.constant = -114
+        miniPlaybackViewBottomConstraint.constant = -114
             
         playerViewModel.playerStateChangeListener { playerState in
             print("playerStateDidChange")
@@ -43,10 +41,12 @@ class PlayerViewController: UIViewController {
             print("queueDidChange")
             self.tableView.reloadSections([0], with: .automatic)
         }
+        
+        playbackView.delegate = self
     }
     
-    private func prepareSearchViewController() -> UISearchController {
-        let searchViewController = prepareSearchResultsViewController()
+    private func prepareSearchController() -> UISearchController {
+        let searchViewController = prepareSearchViewController()
         let searchController = UISearchController(searchResultsController: searchViewController)
         searchController.searchResultsUpdater = searchViewController
         searchController.delegate = self
@@ -55,16 +55,13 @@ class PlayerViewController: UIViewController {
         return searchController
     }
 
-    private func prepareSearchResultsViewController() -> SearchViewController {
+    private func prepareSearchViewController() -> SearchViewController {
         guard let searchResultsViewController = storyboard?.instantiateViewController(identifier: "SearchViewController") as? SearchViewController else {
             fatalError("Could not instantiate SearchViewController")
         }
         searchResultsViewController.delegate = self
+        searchResultsViewController.searcherViewModel = searchViewModel
         return searchResultsViewController
-    }
-    
-    @IBAction func playNextSongButton(_ sender: Any) {
-        playerViewModel.playNextSong()
     }
     
     @IBAction func settingsButtonPressed(_ sender: UIBarButtonItem) {
@@ -100,6 +97,29 @@ extension PlayerViewController: SearchViewControllerDelegate {
 }
 
 
+// MARK: - UITableViewDelegate
+extension PlayerViewController: PlaybackViewDelegate {
+    
+    func playbackView(rewindButtonPressedFor playbackView: PlaybackView) {
+        playerViewModel.rewindSong()
+    }
+    
+    func playbackView(playPauseButtonPressedFor playbackView: PlaybackView) {
+        playerViewModel.playerState.isPaused ? playerViewModel.play() : playerViewModel.pause()
+    }
+
+    func playbackView(playNextButtonPressedFor playbackView: PlaybackView) {
+        playerViewModel.playNextSong()
+    }
+    
+    func playbackView(startQueueButtonPressedFor playbackView: PlaybackView) {
+        playerViewModel.startQueue() {
+            
+        }
+    }
+}
+
+
 // MARK: - UITableViewDataSource
 extension PlayerViewController: UITableViewDataSource {
 
@@ -113,7 +133,7 @@ extension PlayerViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SongTableViewCell", for: indexPath) as! SongTableViewCell
-        cell.song = playerViewModel.queue[indexPath.row]
+        cell.song = playerViewModel.queue[indexPath.row].song
         return cell
     }
 }
@@ -143,27 +163,15 @@ extension PlayerViewController: UITableViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView.contentOffset.y <= 114 {
             UIView.animate(withDuration: 0.3) { [self] in
-                miniPaybackViewBottomConstraint.constant = -114
+                miniPlaybackViewBottomConstraint.constant = -114
                 view.layoutIfNeeded()
             }
         }
         if scrollView.contentOffset.y > 114 {
             UIView.animate(withDuration: 0.3) { [self] in
-                miniPaybackViewBottomConstraint.constant = 0
+                miniPlaybackViewBottomConstraint.constant = 0
                 view.layoutIfNeeded()
             }
         }
-    }
-}
-
-
-// MARK: - UITableViewDelegate
-extension PlayerViewController: PlaybackViewDelegate {
-    func playbackView(playButtonPressedFor playbackView: PlaybackView) {
-        playerViewModel.play()
-    }
-    
-    func playbackView(pauseButtonPressedFor playbackView: PlaybackView) {
-        playerViewModel.pause()
     }
 }

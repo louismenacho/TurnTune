@@ -130,33 +130,6 @@ struct ExternalIDS: Codable {
     var isrc: String?
 }
 
-// MARK: - Encode/decode helpers
-
-class JSONNull: Codable, Hashable {
-
-    public static func == (lhs: JSONNull, rhs: JSONNull) -> Bool {
-        return true
-    }
-
-    public init() {}
-
-    public required init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        if !container.decodeNil() {
-            throw DecodingError.typeMismatch(JSONNull.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for JSONNull"))
-        }
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encodeNil()
-    }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(0)
-    }
-}
-
 // MARK: - CurrentlyPlayingResponse
 struct CurrentlyPlayingResponse: Codable {
     var isPlaying: Bool?
@@ -315,5 +288,85 @@ struct Seed: Codable {
         case id = "id"
         case type = "type"
         case href = "href"
+    }
+}
+
+// MARK: - UserProfileResponse
+struct UserProfileResponse: Codable {
+    var country: String?
+    var displayName: String?
+    var email: String?
+    var explicitContent: ExplicitContent?
+    var externalUrls: ExternalUrls?
+    var followers: Followers?
+    var href: String?
+    var id: String?
+    var images: [Image]?
+    var product: String
+    var type: String?
+    var uri: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case country = "country"
+        case displayName = "display_name"
+        case email = "email"
+        case explicitContent = "explicit_content"
+        case externalUrls = "external_urls"
+        case followers = "followers"
+        case href = "href"
+        case id = "id"
+        case images = "images"
+        case product = "product"
+        case type = "type"
+        case uri = "uri"
+    }
+}
+
+// MARK: - ExplicitContent
+struct ExplicitContent: Codable {
+    var filterEnabled: Bool?
+    var filterLocked: Bool?
+    
+    enum CodingKeys: String, CodingKey {
+        case filterEnabled = "filter_enabled"
+        case filterLocked = "filter_locked"
+    }
+}
+
+// MARK: - Followers
+struct Followers: Codable {
+    var href: JSONNull?
+    var total: Int?
+    
+    enum CodingKeys: String, CodingKey {
+        case href = "href"
+        case total = "total"
+    }
+}
+
+// MARK: - Encode/decode helpers
+
+class JSONNull: Codable, Hashable {
+    
+    public static func == (lhs: JSONNull, rhs: JSONNull) -> Bool {
+        return true
+    }
+    
+    public init() {}
+    
+    public required init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if !container.decodeNil() {
+            throw DecodingError.typeMismatch(JSONNull.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for JSONNull"))
+        }
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encodeNil()
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(0)
     }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="3uh-Jl-gVg">
-    <device id="retina5_9" orientation="portrait" appearance="dark"/>
+    <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
@@ -309,6 +309,9 @@
                                                                         <constraint firstAttribute="width" secondItem="puy-Yl-YxK" secondAttribute="height" multiplier="1:1" id="sL6-KG-8H5"/>
                                                                     </constraints>
                                                                     <state key="normal" image="Spotify_Icon_CMYK_Green"/>
+                                                                    <connections>
+                                                                        <action selector="logoButtonPressed:" destination="evn-nV-Qa8" eventType="touchUpInside" id="fy6-Ca-AOs"/>
+                                                                    </connections>
                                                                 </button>
                                                             </subviews>
                                                         </stackView>
@@ -319,11 +322,14 @@
                                                                     <rect key="frame" x="33.666666666666657" y="0.0" width="134.66666666666666" height="41.666666666666664"/>
                                                                     <subviews>
                                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Y9m-6K-G20">
-                                                                            <rect key="frame" x="0.0" y="10" width="17.666666666666668" height="22"/>
-                                                                            <state key="normal" image="stop.fill" catalog="system"/>
+                                                                            <rect key="frame" x="0.0" y="10" width="19.666666666666668" height="22"/>
+                                                                            <state key="normal" image="backward.end.fill" catalog="system"/>
+                                                                            <connections>
+                                                                                <action selector="rewindButtonPressed:" destination="evn-nV-Qa8" eventType="touchUpInside" id="Olk-0B-mbd"/>
+                                                                            </connections>
                                                                         </button>
                                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aFo-dJ-wRn">
-                                                                            <rect key="frame" x="46.333333333333343" y="1" width="40" height="40"/>
+                                                                            <rect key="frame" x="47.333333333333343" y="1" width="40" height="40"/>
                                                                             <constraints>
                                                                                 <constraint firstAttribute="width" constant="40" id="5uo-zu-bzy"/>
                                                                                 <constraint firstAttribute="width" secondItem="aFo-dJ-wRn" secondAttribute="height" multiplier="1:1" id="JDe-ud-efH"/>
@@ -339,7 +345,7 @@
                                                                             <rect key="frame" x="115.00000000000003" y="10" width="19.666666666666657" height="22"/>
                                                                             <state key="normal" image="forward.end.fill" catalog="system"/>
                                                                             <connections>
-                                                                                <action selector="playNextSongButton:" destination="4CS-Lz-P0e" eventType="touchUpInside" id="OmC-Id-Wls"/>
+                                                                                <action selector="playNextButtonPressed:" destination="evn-nV-Qa8" eventType="touchUpInside" id="3IY-jh-yAs"/>
                                                                             </connections>
                                                                         </button>
                                                                     </subviews>
@@ -350,6 +356,34 @@
                                                                 <constraint firstItem="b4h-CI-7h7" firstAttribute="top" secondItem="zLW-vb-YXD" secondAttribute="top" id="dVq-Fh-lsT"/>
                                                                 <constraint firstItem="b4h-CI-7h7" firstAttribute="width" secondItem="zLW-vb-YXD" secondAttribute="width" multiplier="2:3" id="mb2-9l-JuO"/>
                                                                 <constraint firstItem="b4h-CI-7h7" firstAttribute="centerX" secondItem="zLW-vb-YXD" secondAttribute="centerX" id="qAm-qR-VdG"/>
+                                                            </constraints>
+                                                        </view>
+                                                        <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jeV-RU-Jr3">
+                                                            <rect key="frame" x="0.0" y="125" width="202" height="0.0"/>
+                                                            <subviews>
+                                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RDH-5a-0fg" customClass="HomeViewButton" customModule="TurnTune" customModuleProvider="target">
+                                                                    <rect key="frame" x="-24" y="-24" width="250" height="48"/>
+                                                                    <color key="backgroundColor" systemColor="linkColor"/>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="height" constant="48" id="ena-u5-uva"/>
+                                                                    </constraints>
+                                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleTitle3"/>
+                                                                    <state key="normal" title="Start Queue">
+                                                                        <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                    </state>
+                                                                    <userDefinedRuntimeAttributes>
+                                                                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                                            <real key="value" value="24"/>
+                                                                        </userDefinedRuntimeAttribute>
+                                                                    </userDefinedRuntimeAttributes>
+                                                                    <connections>
+                                                                        <action selector="startQueueButtonPressed:" destination="evn-nV-Qa8" eventType="touchUpInside" id="nFE-5c-IJR"/>
+                                                                    </connections>
+                                                                </button>
+                                                            </subviews>
+                                                            <constraints>
+                                                                <constraint firstItem="RDH-5a-0fg" firstAttribute="centerY" secondItem="jeV-RU-Jr3" secondAttribute="centerY" id="RdQ-bJ-zsM"/>
+                                                                <constraint firstItem="RDH-5a-0fg" firstAttribute="centerX" secondItem="jeV-RU-Jr3" secondAttribute="centerX" id="gAn-vf-GKA"/>
                                                             </constraints>
                                                         </view>
                                                     </subviews>
@@ -370,6 +404,7 @@
                                     <constraints>
                                         <constraint firstItem="WwB-Ba-pW0" firstAttribute="leading" secondItem="evn-nV-Qa8" secondAttribute="leading" constant="20" id="4SW-Yk-CiH"/>
                                         <constraint firstItem="WwB-Ba-pW0" firstAttribute="top" secondItem="evn-nV-Qa8" secondAttribute="top" constant="20" symbolic="YES" id="6ww-Uj-6VS"/>
+                                        <constraint firstItem="RDH-5a-0fg" firstAttribute="width" secondItem="evn-nV-Qa8" secondAttribute="width" multiplier="2:3" id="AZb-G6-V76"/>
                                         <constraint firstAttribute="bottom" secondItem="WwB-Ba-pW0" secondAttribute="bottom" constant="20" symbolic="YES" id="BwM-ak-bM4"/>
                                         <constraint firstAttribute="trailing" secondItem="WwB-Ba-pW0" secondAttribute="trailing" constant="20" id="KwE-fk-tei"/>
                                         <constraint firstItem="prs-hl-KSD" firstAttribute="width" secondItem="evn-nV-Qa8" secondAttribute="width" multiplier="1:3" id="QgZ-qe-5J6"/>
@@ -377,8 +412,12 @@
                                     <connections>
                                         <outlet property="albumImageView" destination="prs-hl-KSD" id="xg9-nQ-Y40"/>
                                         <outlet property="artistLabel" destination="u09-PH-ghs" id="5cP-Dv-SpZ"/>
+                                        <outlet property="logoButton" destination="puy-Yl-YxK" id="aNT-r9-Ukg"/>
+                                        <outlet property="playNextButton" destination="wtS-l6-B2y" id="USC-l2-6bF"/>
                                         <outlet property="playPauseButton" destination="aFo-dJ-wRn" id="4B7-sq-30v"/>
+                                        <outlet property="rewindButton" destination="Y9m-6K-G20" id="VSI-vQ-M5p"/>
                                         <outlet property="songLabel" destination="gwA-c2-KSM" id="VET-7e-GMY"/>
+                                        <outlet property="startQueueButton" destination="RDH-5a-0fg" id="hG3-IQ-DvV"/>
                                     </connections>
                                 </view>
                                 <prototypes>
@@ -414,7 +453,7 @@
                                                                     <color key="textColor" systemColor="secondaryLabelColor"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
-                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Added by @Louis" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Rp0-sg-K7i">
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Added by @Louis" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KW2-ko-sYw">
                                                                     <rect key="frame" x="0.0" y="34" width="267" height="14.333333333333336"/>
                                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                                                     <color key="textColor" systemColor="tertiaryLabelColor"/>
@@ -532,8 +571,8 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="miniPaybackViewBottomConstraint" destination="SrV-Zb-ogm" id="tRz-rz-4yH"/>
                         <outlet property="miniPlaybackView" destination="Mk5-3R-P8E" id="Cw9-lT-6pF"/>
+                        <outlet property="miniPlaybackViewBottomConstraint" destination="SrV-Zb-ogm" id="tRz-rz-4yH"/>
                         <outlet property="playbackView" destination="evn-nV-Qa8" id="cfS-qh-lck"/>
                         <outlet property="tableView" destination="lKA-bO-MOT" id="rTj-2z-mJg"/>
                         <segue destination="kJE-xb-ZC8" kind="presentation" identifier="PlayerDetailViewController" id="sOy-Ve-48q"/>
@@ -647,7 +686,7 @@
                                                         <rect key="frame" x="0.0" y="0.0" width="250" height="48"/>
                                                         <color key="backgroundColor" red="0.01383694448" green="0.65886992219999996" blue="0.3999607563" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                        <state key="normal" title="Connect Your Spotify">
+                                                        <state key="normal" title="Continue with Spotify">
                                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         </state>
                                                         <userDefinedRuntimeAttributes>
@@ -894,6 +933,9 @@
         <designable name="Ohm-3k-bR1">
             <size key="intrinsicContentSize" width="32" height="33"/>
         </designable>
+        <designable name="RDH-5a-0fg">
+            <size key="intrinsicContentSize" width="92" height="33"/>
+        </designable>
         <designable name="dxk-AQ-Kkc">
             <size key="intrinsicContentSize" width="84.666666666666671" height="22"/>
         </designable>
@@ -904,12 +946,13 @@
             <size key="intrinsicContentSize" width="36" height="33"/>
         </designable>
         <designable name="qO3-zq-Mm5">
-            <size key="intrinsicContentSize" width="162" height="33"/>
+            <size key="intrinsicContentSize" width="164" height="33"/>
         </designable>
     </designables>
     <resources>
         <image name="Spotify_Icon_CMYK_Green" width="170" height="170"/>
         <image name="Spotify_Icon_CMYK_White" width="170" height="170"/>
+        <image name="backward.end.fill" catalog="system" width="128" height="102"/>
         <image name="checkmark.circle.fill" catalog="system" width="128" height="121"/>
         <image name="chevron.compact.down" catalog="system" width="128" height="43"/>
         <image name="ellipsis" catalog="system" width="128" height="37"/>

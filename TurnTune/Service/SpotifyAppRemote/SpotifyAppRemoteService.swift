@@ -8,7 +8,6 @@
 import Foundation
 
 protocol SpotifyAppRemoteServiceDelegate: AnyObject {
-    func spotifyAppRemoteService(didAuthorize newSession: SPTSession)
     func spotifyAppRemoteService(didEstablishConnection appRemote: SPTAppRemote)
     func spotifyAppRemoteService(playerStateDidChange newPlayerState: SPTAppRemotePlayerState)
 }
@@ -16,8 +15,6 @@ protocol SpotifyAppRemoteServiceDelegate: AnyObject {
 class SpotifyAppRemoteService: NSObject {
     
     weak var delegate: SpotifyAppRemoteServiceDelegate?
-    
-    private(set) var sessionManager = SpotifySessionManagerService()
     
     private(set) lazy var config: SPTConfiguration = {
         let config = SPTConfiguration(
@@ -34,12 +31,7 @@ class SpotifyAppRemoteService: NSObject {
         appRemote.delegate = self
         return appRemote
     }()
-    
-    func initiate(play uri: String? = nil) {
-        sessionManager.delegate = self
-        sessionManager.initiateSession(with: uri)
-    }
-    
+        
     func setToken(_ accessToken: String) {
         appRemote.connectionParameters.accessToken = accessToken
     }
@@ -61,6 +53,7 @@ class SpotifyAppRemoteService: NSObject {
             if let error = error {
                 print("appRemote playerState subscribe failed")
                 print(self.errorMessage(for: error))
+                print(error)
             }
         }
     }
@@ -98,16 +91,6 @@ class SpotifyAppRemoteService: NSObject {
     }
 }
 
-extension SpotifyAppRemoteService: SpotifySessionManagerServiceDelegate {
-    
-    func spotifySessionManagerService(didAuthorize newSession: SPTSession) {
-        setToken(newSession.accessToken)
-        connect()
-        delegate?.spotifyAppRemoteService(didAuthorize: newSession)
-    }
-}
-
-
 extension SpotifyAppRemoteService: SPTAppRemoteDelegate {
     
     func appRemoteDidEstablishConnection(_ appRemote: SPTAppRemote) {
@@ -135,7 +118,6 @@ extension SpotifyAppRemoteService: SPTAppRemotePlayerStateDelegate {
     
     func playerStateDidChange(_ playerState: SPTAppRemotePlayerState) {
         delegate?.spotifyAppRemoteService(playerStateDidChange: playerState)
-//        debugPlayerState(playerState: playerState)
     }
     
     func debugPlayerState(playerState: SPTAppRemotePlayerState) {

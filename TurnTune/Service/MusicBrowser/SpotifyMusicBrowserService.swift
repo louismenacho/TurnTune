@@ -1,5 +1,5 @@
 //
-//  SpotifyMusicBrowser.swift
+//  SpotifyMusicBrowserService.swift
 //  TurnTune
 //
 //  Created by Louis Menacho on 7/18/21.
@@ -7,9 +7,33 @@
 
 import Foundation
 
-class SpotifyMusicBrowser: MusicBrowserServiceable {
+class SpotifyMusicBrowserService: MusicBrowserServiceable {
+    
+    weak var delegate: MusicBrowserServiceableDelegate?
     
     private var webService = SpotifyWebService()
+    private var accountsService = SpotifyAccountsService()
+    private var spotifyConfigDataAccess = SpotifyConfigDataAccessProvider()
+    
+    func initiate(completion: (() -> Void)?) {
+        spotifyConfigDataAccess.getSpotifyConfig { [self] config in
+            accountsService.setClientCredentials(clientID: config.clientID, clientSecret: config.clientID)
+            generateToken {
+                completion?()
+            }
+        }
+    }
+    
+    func generateToken(completion: (() -> Void)?) {
+        accountsService.generateToken {[self] (result: Result<TokenResponse, Error>) in
+            switch result {
+                case let .failure(error):
+                    delegate?.musicBrowserServiceable(error: .initiate(error: error))
+                case let .success(tokenResponse):
+                    webService.setToken(tokenResponse.accessToken)
+            }
+        }
+    }
     
     func searchSong(query: String, completion: @escaping (Result<[Song], Error>) -> Void) {
         webService.search(query: query) { (result: Result<SearchResponse, Error>) in

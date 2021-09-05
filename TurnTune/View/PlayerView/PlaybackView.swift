@@ -8,8 +8,10 @@
 import UIKit
 
 protocol PlaybackViewDelegate: AnyObject {
-    func playbackView(playButtonPressedFor playbackView: PlaybackView)
-    func playbackView(pauseButtonPressedFor playbackView: PlaybackView)
+    func playbackView(rewindButtonPressedFor playbackView: PlaybackView)
+    func playbackView(playPauseButtonPressedFor playbackView: PlaybackView)
+    func playbackView(playNextButtonPressedFor playbackView: PlaybackView)
+    func playbackView(startQueueButtonPressedFor playbackView: PlaybackView)
 }
 
 class PlaybackView: UIView {
@@ -27,23 +29,32 @@ class PlaybackView: UIView {
         }
     }
     
-    @IBOutlet weak var logoImageView: UIImageView!
+    @IBOutlet weak var logoButton: UIButton!
     @IBOutlet weak var albumImageView: UIImageView!
     @IBOutlet weak var songLabel: UILabel!
     @IBOutlet weak var artistLabel: UILabel!
+    @IBOutlet weak var rewindButton: UIButton!
     @IBOutlet weak var playPauseButton: UIButton!
+    @IBOutlet weak var playNextButton: UIButton!
+    @IBOutlet weak var startQueueButton: HomeViewButton!
     
-
-    @IBAction func playPauseButtonPressed(_ sender: UIButton) {
-        if sender.image(for: .normal) == UIImage(systemName: "play.circle") {
-            delegate?.playbackView(playButtonPressedFor: self)
-        }
-        if sender.image(for: .normal) == UIImage(systemName: "pause.circle") {
-            delegate?.playbackView(pauseButtonPressedFor: self)
-        }
+    @IBAction func logoButtonPressed(_ sender: UIButton) {
+        delegate?.playbackView(startQueueButtonPressedFor: self)
     }
     
-    @IBAction func viewTapped(_ sender: UITapGestureRecognizer) {
-        
+    @IBAction func startQueueButtonPressed(_ sender: HomeViewButton) {
+        delegate?.playbackView(startQueueButtonPressedFor: self)
+    }
+    
+    @IBAction func rewindButtonPressed(_ sender: UIButton) {
+        delegate?.playbackView(rewindButtonPressedFor: self)
+    }
+    
+    @IBAction func playPauseButtonPressed(_ sender: UIButton) {
+        delegate?.playbackView(playPauseButtonPressedFor: self)
+    }
+    
+    @IBAction func playNextButtonPressed(_ sender: UIButton) {
+        delegate?.playbackView(playNextButtonPressedFor: self)
     }
 }

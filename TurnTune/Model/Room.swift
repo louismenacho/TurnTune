@@ -9,27 +9,25 @@ import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-struct Room {
+struct Room: FirestoreDocument {
+    
+    @DocumentID var documentID: String?
+    @ServerTimestamp var dateAdded: Timestamp?
+    
     var roomID: String
     var host: Member
-    var queueType: String
-    
-    // MARK: - FirestoreDocument Protocol
-    @DocumentID var documentID: String?
-    @ServerTimestamp var dateCreated: Timestamp?
+    var queueMode: String
     
     init() {
         roomID = ""
         host = Member()
-        queueType = "fair"
+        queueMode = "fair"
     }
-}
-
-extension Room: FirestoreDocument {
+    
     init(_ roomID: String, host: Member) {
         self.roomID = roomID
         self.host = host
         self.documentID = roomID
-        self.queueType = "fair"
+        self.queueMode = "fair"
     }
 }
