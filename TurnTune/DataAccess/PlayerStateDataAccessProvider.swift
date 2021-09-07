@@ -19,30 +19,34 @@ class PlayerStateDataAccessProvider: DataAccessProvider {
         FirestoreRepository<PlayerState>(collectionPath: "rooms/"+currentRoomID+"/player")
     }
     
-    func getPlayerState(completion: @escaping (Result<PlayerState, Error>) -> Void) {
-        playerStateRepository.get(id: "state") { result in
+    func getPlayerState(completion: @escaping (PlayerState) -> Void) {
+        playerStateRepository.get(id: "state") { [self] result in
             switch result {
             case let .failure(error):
-                completion(.failure(error))
+                delegate?.dataAccessProvider(self, error: .playerState(error: error))
             case let .success(playerState):
-                completion(.success(playerState))
+                completion(playerState)
             }
         }
     }
         
-    func updatePlayerState(_ playerState: PlayerState, completion: ((Error?) -> Void)? = nil) {
-        playerStateRepository.update(playerState) { error in
-            completion?(error)
+    func updatePlayerState(_ playerState: PlayerState, completion: (() -> Void)? = nil) {
+        playerStateRepository.update(playerState) { [self] error in
+            if let error = error {
+                delegate?.dataAccessProvider(self, error: .playerState(error: error))
+            } else {
+                completion?()
+            }
         }
     }
     
-    func playerStateChangeListener(completion: @escaping (Result<PlayerState, Error>) -> Void) {
-        playerStateRepository.addListener(id: "state") { result in
+    func playerStateChangeListener(completion: @escaping (PlayerState) -> Void) {
+        playerStateRepository.addListener(id: "state") { [self] result in
             switch result {
             case let .failure(error):
-                completion(.failure(error))
+                delegate?.dataAccessProvider(self, error: .playerState(error: error))
             case let .success(playerState):
-                completion(.success(playerState))
+                completion(playerState)
             }
         }
     }

@@ -28,16 +28,15 @@ class RoomDataAccessProvider: DataAccessProvider {
             if let error = error {
                 delegate?.dataAccessProvider(self, error: .room(error: error))
             } else {
-                currentRoomID = newRoom.roomID
                 completion?(newRoom)
             }
         }
     }
     
     func updateRoom(_ room: Room, completion: (() -> Void)? = nil) {
-        roomRepository.update(room) { error in
+        roomRepository.update(room) { [self] error in
             if let error = error {
-                
+                delegate?.dataAccessProvider(self, error: .room(error: error))
             } else {
                 completion?()
             }
@@ -64,6 +63,10 @@ class RoomDataAccessProvider: DataAccessProvider {
                 completion(room)
             }
         }
+    }
+    
+    func setCurrentRoom(roomID: String) {
+        currentRoomID = roomID
     }
     
     private func isRoomCodeValid(code: String) -> Bool {

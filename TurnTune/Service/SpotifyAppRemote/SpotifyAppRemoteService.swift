@@ -96,6 +96,8 @@ extension SpotifyAppRemoteService: SPTAppRemoteDelegate {
     func appRemoteDidEstablishConnection(_ appRemote: SPTAppRemote) {
         print("SPTAppRemote appRemoteDidEstablishConnection")
         appRemote.playerAPI?.delegate = self
+        appRemote.playerAPI?.setShuffle(false)
+        appRemote.playerAPI?.setRepeatMode(.off)
         delegate?.spotifyAppRemoteService(didEstablishConnection: appRemote)
     }
     

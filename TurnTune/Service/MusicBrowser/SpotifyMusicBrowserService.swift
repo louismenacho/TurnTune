@@ -17,7 +17,7 @@ class SpotifyMusicBrowserService: MusicBrowserServiceable {
     
     func initiate(completion: (() -> Void)?) {
         spotifyConfigDataAccess.getSpotifyConfig { [self] config in
-            accountsService.setClientCredentials(clientID: config.clientID, clientSecret: config.clientID)
+            accountsService.setClientCredentials(clientID: config.clientID, clientSecret: config.clientSecret)
             generateToken {
                 completion?()
             }
@@ -25,9 +25,10 @@ class SpotifyMusicBrowserService: MusicBrowserServiceable {
     }
     
     func generateToken(completion: (() -> Void)?) {
-        accountsService.generateToken {[self] (result: Result<TokenResponse, Error>) in
+        accountsService.generateToken { [self] (result: Result<TokenResponse, Error>) in
             switch result {
                 case let .failure(error):
+                    print(error)
                     delegate?.musicBrowserServiceable(error: .initiate(error: error))
                 case let .success(tokenResponse):
                     webService.setToken(tokenResponse.accessToken)

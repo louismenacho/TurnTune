@@ -11,8 +11,8 @@ class SearchViewModel {
     
     private(set) var musicBrowserService: SpotifyMusicBrowserService
     
-    private(set) var searchResult = [Song]()
-    
+    var searchResult = [SearchResultItem]()
+        
     init(musicBrowserService: SpotifyMusicBrowserService) {
         self.musicBrowserService = musicBrowserService
     }
@@ -23,9 +23,15 @@ class SearchViewModel {
             case let .failure(error):
                 print(error)
             case let .success(songSearchResult):
-                searchResult = songSearchResult
+                searchResult = songSearchResult.map { SearchResultItem(song: $0) }
                 completion()
             }
         }
     }
 }
+
+struct SearchResultItem {
+    var song: Song = Song()
+    var isAdded: Bool = false
+}
+

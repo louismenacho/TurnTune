@@ -13,7 +13,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var spotifyMusicService: SpotifyMusicPlayerService? {
         let homeViewController = window?.rootViewController?.children.first(where: { ($0 is HomeViewController) }) as? HomeViewController
-        return homeViewController?.homeViewModel.musicPlayerService as? SpotifyMusicPlayerService
+        return homeViewController?.homeViewModel.musicPlayerService
     }
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {

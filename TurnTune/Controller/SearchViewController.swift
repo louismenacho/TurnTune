@@ -15,7 +15,7 @@ class SearchViewController: UIViewController {
     
     weak var delegate: SearchViewControllerDelegate?
 
-    var searcherViewModel = SearchViewModel(musicBrowserService: SpotifyMusicBrowserService())
+    var searchViewModel: SearchViewModel!
     
     @IBOutlet weak var tableview: UITableView!
     
@@ -30,7 +30,7 @@ extension SearchViewController: UISearchResultsUpdating {
         if searchController.searchBar.searchTextField.text!.isEmpty {
             return
         }
-        searcherViewModel.search(query: searchController.searchBar.searchTextField.text!) {
+        searchViewModel.search(query: searchController.searchBar.searchTextField.text!) {
             DispatchQueue.main.async {
                 self.tableview.reloadData()
             }
@@ -40,24 +40,29 @@ extension SearchViewController: UISearchResultsUpdating {
 
 extension SearchViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return searcherViewModel.searchResult.count
+        return searchViewModel.searchResult.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.row >= searcherViewModel.searchResult.count {
+        if indexPath.row >= searchViewModel.searchResult.count {
             return UITableViewCell()
         }
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "SearchResultsTableViewCell", for: indexPath) as! SearchResultsTableViewCell
         cell.delegate = self
         
-        cell.song = searcherViewModel.searchResult[indexPath.row]
+        cell.searchResultItem = searchViewModel.searchResult[indexPath.row]
         return cell
     }
 }
 
 extension SearchViewController: SearchResultsTableViewCellDelegate {
     func searchResultsTableViewCell(addButtonPressedFor cell: SearchResultsTableViewCell) {
+        guard let selectedRow = tableview.indexPath(for: cell)?.row else {
+            return
+        }
+        searchViewModel.searchResult[selectedRow].isAdded = true
+        tableview.reloadData()
         delegate?.searchViewController(searchViewController: self, didSelectCell: cell)
     }
 }

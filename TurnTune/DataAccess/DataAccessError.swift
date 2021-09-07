@@ -11,6 +11,6 @@ enum DataAccessError: Error {
     case room(error: Error)
     case member(error: Error)
     case queue(error: Error)
-    case player(error: Error)
+    case playerState(error: Error)
     case spotifyConfig(error: Error)
 }

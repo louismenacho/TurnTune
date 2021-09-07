@@ -22,8 +22,6 @@ class SpotifyWebService {
     }
             
     func search(query: String, completion: @escaping (Result<SearchResponse, Error>) -> Void) {
-        print("searchAPI.auth")
-        print(searchAPI.auth)
         searchAPI.request(.search(query: query, type: "track", limit: 50)) { result in
             completion(result)
         }

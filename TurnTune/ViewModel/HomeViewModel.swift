@@ -25,6 +25,7 @@ class HomeViewModel {
     func joinRoom(roomID: String, as displayName: String, completion: @escaping () -> Void) {
         authService.signIn { [self] in
             roomDataAccess.getRoom(roomID) { [self] room in
+                roomDataAccess.setCurrentRoom(roomID: room.roomID)
                 let member = Member(userID: authService.currentUserID, displayName: displayName)
                 memberDataAccess.addMember(member)
                 completion()
@@ -36,6 +37,7 @@ class HomeViewModel {
         authService.signIn { [self] in
             let host = Member(userID: authService.currentUserID, displayName: displayName)
             roomDataAccess.createRoom(host: host) { [self] room in
+                roomDataAccess.setCurrentRoom(roomID: room.roomID)
                 memberDataAccess.addMember(host)
                 completion()
             }
@@ -49,8 +51,10 @@ class HomeViewModel {
     }
     
     func connectMusicPlayerService(completion: @escaping () -> Void) {
-        musicPlayerService.initiate {
-            completion()
+        musicPlayerService.initiate { [self] in
+            musicPlayerService.checkCurrentUserProfileIsPremium {
+                completion()
+            }
         }
     }
     

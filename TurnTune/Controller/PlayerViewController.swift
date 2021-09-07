@@ -17,7 +17,6 @@ class PlayerViewController: UIViewController {
     @IBOutlet weak var miniPlaybackView: PlaybackView!
     @IBOutlet weak var miniPlaybackViewBottomConstraint: NSLayoutConstraint!
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.navigationBar.prefersLargeTitles = false
@@ -60,7 +59,7 @@ class PlayerViewController: UIViewController {
             fatalError("Could not instantiate SearchViewController")
         }
         searchResultsViewController.delegate = self
-        searchResultsViewController.searcherViewModel = searchViewModel
+        searchResultsViewController.searchViewModel = searchViewModel
         return searchResultsViewController
     }
     
@@ -92,7 +91,7 @@ extension PlayerViewController: UISearchControllerDelegate {
 // MARK: - SearchViewControllerDelegate
 extension PlayerViewController: SearchViewControllerDelegate {
     func searchViewController(searchViewController: SearchViewController, didSelectCell cell: SearchResultsTableViewCell) {
-        playerViewModel.addToQueue(cell.song)
+        playerViewModel.addToQueue(cell.searchResultItem.song)
     }
 }
 

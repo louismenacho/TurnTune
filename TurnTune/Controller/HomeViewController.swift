@@ -26,7 +26,7 @@ class HomeViewController: UIViewController {
         displayNameTextField.delegate = self
         roomIDTextField.delegate = self
         displayNameTextField.text = "Louis"
-        roomIDTextField.text = "WNWG"
+        roomIDTextField.text = "XRXR"
         stackViewContainerCenterXConstraint.constant = view.frame.width/2
         NotificationCenter.default.addObserver(self,
             selector: #selector(self.keyboardWillShow(_:)),
@@ -46,6 +46,7 @@ class HomeViewController: UIViewController {
             let queueViewController = segue.destination as! PlayerViewController
             queueViewController.searchViewModel = SearchViewModel(musicBrowserService: homeViewModel.musicBrowserService)
             queueViewController.playerViewModel = PlayerViewModel(musicPlayerService: homeViewModel.musicPlayerService)
+            queueViewController.navigationItem.title = homeViewModel.roomDataAccess.currentRoomID
         }
     }
     
@@ -74,6 +75,7 @@ class HomeViewController: UIViewController {
     
     @IBAction func connectSpotifyButtonPressed(_ sender: HomeViewButton) {
         let displayName = displayNameTextField.text!
+        homeViewModel.connectMusicBrowserService()
         homeViewModel.connectMusicPlayerService { [self] in
             homeViewModel.hostRoom(as: displayName) { [self] in
                 performSegue(withIdentifier: "QueueViewController", sender: self)

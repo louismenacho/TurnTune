@@ -16,17 +16,21 @@ class SearchResultsTableViewCell: UITableViewCell {
     
     weak var delegate: SearchResultsTableViewCellDelegate?
     
-    var song: Song = Song() {
+    var searchResultItem = SearchResultItem() {
         didSet {
-            albumImageView.sd_setImage(with: URL(string: song.artworkURL), placeholderImage: UIImage(systemName: "photo.fill"))
-            songLabel.text = song.name
-            artistLabel.text = song.artist
+            albumImageView.sd_setImage(with: URL(string: searchResultItem.song.artworkURL), placeholderImage: UIImage(systemName: "photo.fill"))
+            songLabel.text = searchResultItem.song.name
+            artistLabel.text = searchResultItem.song.artist
+            let imageName = searchResultItem.isAdded ? "checkmark.circle.fill" : "plus.circle"
+            addButton.setImage(UIImage(systemName: imageName), for: .normal)
+            addButton.isUserInteractionEnabled = !searchResultItem.isAdded
         }
     }
     
     @IBOutlet weak var albumImageView: UIImageView!
     @IBOutlet weak var songLabel: UILabel!
     @IBOutlet weak var artistLabel: UILabel!
+    @IBOutlet weak var addButton: UIButton!
     
     override func awakeFromNib() {
         albumImageView.image = UIImage(systemName: "photo.fill")
@@ -37,8 +41,6 @@ class SearchResultsTableViewCell: UITableViewCell {
     @IBAction func addButtonPressed(_ sender: UIButton) {
         let generator = UIImpactFeedbackGenerator(style: .heavy)
         generator.impactOccurred()
-        sender.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
-        sender.isUserInteractionEnabled = false
         delegate?.searchResultsTableViewCell(addButtonPressedFor: self)
     }
 }

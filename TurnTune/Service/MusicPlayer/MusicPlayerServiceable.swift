@@ -19,7 +19,7 @@ protocol MusicPlayerServiceable {
     
     var delegate: MusicPlayerServiceableDelegate? { get set }
     
-    func initiate(completion: (() -> Void)?)
+    func initiate(with song: Song?, completion: (() -> Void)?)
     func startPlayback(songs: [Song]?, position: Int, completion: (() -> Void)?)
     func pausePlayback(completion: (() -> Void)?)
     func rewindPlayback(completion: (() -> Void)?)

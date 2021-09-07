@@ -24,45 +24,45 @@ class QueueDataAccessProvider: DataAccessProvider {
         FirestoreRepository<QueueItem>(collectionPath: "rooms/"+currentRoomID+"/queue")
     }
      
-    func addItem(_ item: QueueItem, completion: @escaping (Error?) -> Void) {
-        queueRepository.create(item) { error in
-            completion(error)
-        }
-    }
-    
-    func removeItem(_ item: QueueItem, completion: @escaping (Error?) -> Void) {
-        queueRepository.delete(item) { error in
-            completion(error)
-        }
-    }
-    
-    func updateItem(_ item: QueueItem, completion: @escaping (Error?) -> Void) {
-        queueRepository.update(item) { error in
-            completion(error)
-        }
-    }
-    
-    func listQueue(queueMode: QueueType, didPlayFlag: Bool = false, completion: @escaping (Result<[QueueItem], Error>) -> Void) {
-        var query = queueRepository.collectionReference.whereField("didPlay", isEqualTo: didPlayFlag)
-        
-        switch queueMode {
-            case .fair:
-                query = query.order(by: "priority").order(by: "dateAdded")
-            case .ordered:
-                query = query.order(by: "dateAdded")
-        }
-        
-        queueRepository.list(query) { result in
-            switch result {
-            case let .failure(error):
-                completion(.failure(error))
-            case let .success(queue):
-                completion(.success(queue))
+    func addItem(_ item: QueueItem, completion: (() -> Void)? = nil) {
+        queueRepository.create(item) { [self] error in
+            if let error = error {
+                delegate?.dataAccessProvider(self, error: .queue(error: error))
+            } else {
+                completion?()
             }
         }
     }
     
-    func queueChangeListener(queueMode: QueueType, didPlayFlag: Bool = false, completion: @escaping (Result<[QueueItem], Error>) -> Void) {
+    func markDidPlay(_ item: QueueItem, completion: (() -> Void)? = nil) {
+        var item = item
+        item.didPlay = true
+        updateItem(item) {
+            completion?()
+        }
+    }
+    
+    func removeItem(_ item: QueueItem, completion: (() -> Void)? = nil) {
+        queueRepository.delete(item) { [self] error in
+            if let error = error {
+                delegate?.dataAccessProvider(self, error: .queue(error: error))
+            } else {
+                completion?()
+            }
+        }
+    }
+    
+    func updateItem(_ item: QueueItem, completion: (() -> Void)? = nil) {
+        queueRepository.update(item) { [self] error in
+            if let error = error {
+                delegate?.dataAccessProvider(self, error: .queue(error: error))
+            } else {
+                completion?()
+            }
+        }
+    }
+    
+    func listQueue(queueMode: QueueType, didPlayFlag: Bool = false, completion: @escaping ([QueueItem]) -> Void) {
         var query = queueRepository.collectionReference.whereField("didPlay", isEqualTo: didPlayFlag)
         
         switch queueMode {
@@ -72,12 +72,32 @@ class QueueDataAccessProvider: DataAccessProvider {
                 query = query.order(by: "dateAdded")
         }
         
-        queueRepository.addListener(query) { result in
+        queueRepository.list(query) { [self] result in
             switch result {
             case let .failure(error):
-                print(error)
+                delegate?.dataAccessProvider(self, error: .queue(error: error))
             case let .success(queue):
-                completion(.success(queue))
+                completion(queue)
+            }
+        }
+    }
+    
+    func queueChangeListener(queueMode: QueueType, didPlayFlag: Bool = false, completion: @escaping ([QueueItem]) -> Void) {
+        var query = queueRepository.collectionReference.whereField("didPlay", isEqualTo: didPlayFlag)
+        
+        switch queueMode {
+            case .fair:
+                query = query.order(by: "priority").order(by: "dateAdded")
+            case .ordered:
+                query = query.order(by: "dateAdded")
+        }
+        
+        queueRepository.addListener(query) { [self] result in
+            switch result {
+            case let .failure(error):
+                delegate?.dataAccessProvider(self, error: .queue(error: error))
+            case let .success(queue):
+                completion(queue)
             }
         }
     }

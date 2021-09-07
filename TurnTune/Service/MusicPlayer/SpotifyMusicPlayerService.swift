@@ -24,15 +24,19 @@ class SpotifyMusicPlayerService: MusicPlayerServiceable {
         appRemoteService.delegate = self
     }
     
-    func initiate(completion: (() -> Void)?) {
-        sessionManagerService.initiate()
-        initiateCompletion = { [self] in
-            currentUserProfileIsPremium { isPremium in
-                if isPremium {
-                    completion?()
-                } else {
-                    delegate?.musicPlayerServiceable(error: .cannotPlayOnDemand)
-                }
+    func initiate(with song: Song? = nil, completion: (() -> Void)?) {
+        sessionManagerService.initiate(with: song?.spotifyURI)
+        initiateCompletion = {
+            completion?()
+        }
+    }
+    
+    func checkCurrentUserProfileIsPremium(completion: @escaping () -> Void) {
+        currentUserProfileIsPremium { [self] isPremium in
+            if isPremium {
+                completion()
+            } else {
+                delegate?.musicPlayerServiceable(error: .cannotPlayOnDemand)
             }
         }
     }
@@ -81,9 +85,7 @@ class SpotifyMusicPlayerService: MusicPlayerServiceable {
     func playerStateChangeListener(completion: @escaping (PlayerState) -> Void) {
         appRemoteService.subscribe()
         playerStateDidChange = { playerState in
-            if playerState.contextURI.absoluteString.isEmpty {
-                completion(PlayerState(from: playerState))
-            }
+            completion(PlayerState(from: playerState))
         }
     }
 }
@@ -93,6 +95,7 @@ extension SpotifyMusicPlayerService: SpotifySessionManagerServiceDelegate {
     func spotifySessionManagerService(didAuthorize newSession: SPTSession) {
         webService.setToken(newSession.accessToken)
         appRemoteService.setToken(newSession.accessToken)
+        appRemoteService.connect()
         initiateCompletion?()
     }
 }
