@@ -10,11 +10,16 @@ import Foundation
 class SettingsViewModel {
     
     private(set) var authService = FirebaseAuthService()
-    private(set) var roomService = RoomDataAccessProvider()
-    private(set) var memberService = MemberDataAccessProvider()
+    private(set) var roomDataAccess = RoomDataAccessProvider()
+    private(set) var memberDataAccess = MemberDataAccessProvider()
     
     private(set) var room = Room()
     private(set) var memberList = [Member]()
+    
+    init() {
+        self.roomDataAccess.delegate = self
+        self.memberDataAccess.delegate = self
+    }
     
     var queueTypes: [QueueType] {
         QueueType.allCases
@@ -25,46 +30,57 @@ class SettingsViewModel {
     }
     
     func loadCurrentRoom() {
-        roomService.getRoom { room in
+        roomDataAccess.getRoom { room in
             self.room = room
         }
     }
     
     func updateRoom(_ room: Room, completion: (() -> Void)? = nil) {
-        roomService.updateRoom(room) {
+        roomDataAccess.updateRoom(room) {
             completion?()
         }
     }
     
     func roomChangeListener(completion: @escaping (Room) -> Void) {
-        roomService.roomChangeListener { room in
+        roomDataAccess.roomChangeListener { room in
             self.room = room
             completion(room)
         }
     }
     
     func loadMemberList(completion: @escaping ([Member]) -> Void) {
-        memberService.listMembers { memberList in
+        memberDataAccess.listMembers { memberList in
             self.memberList = memberList
             completion(memberList)
         }
     }
     
     func memberListChangeListener(completion: @escaping ([Member]) -> Void) {
-        memberService.membersChangeListener { memberList in
+        memberDataAccess.membersChangeListener { memberList in
             self.memberList = memberList
             completion(memberList)
-            
         }
     }
     
     func removeMember(_ member: Member, completion: (() -> Void)? = nil) {
-        memberService.removeMember(member) {
+        memberDataAccess.removeMember(member) {
             completion?()
         }
     }
     
     func isHost(_ member: Member) -> Bool {
         return member.userID == room.host.userID
+    }
+    
+    func updateQueueMode(queueType: QueueType) {
+        var room = room
+        room.queueMode = queueType.rawValue
+        updateRoom(room)
+    }
+}
+
+extension SettingsViewModel: DataAccessProviderDelegate {
+    func dataAccessProvider(_ dataAccessProvider: DataAccessProvider, error: DataAccessError) {
+        print(error)
     }
 }

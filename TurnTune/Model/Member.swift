@@ -14,7 +14,6 @@ struct Member: FirestoreDocument {
     @DocumentID var documentID: String?
     @ServerTimestamp var dateAdded: Timestamp?
     
-    
     var userID: String
     var displayName: String
 

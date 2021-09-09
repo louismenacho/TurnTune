@@ -33,6 +33,7 @@
 		958B339F25C941F8002B8F7E /* HTTPAuthorization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958B339E25C941F8002B8F7E /* HTTPAuthorization.swift */; };
 		958EC56E264F583200337A9E /* UserDefaultsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958EC56D264F583200337A9E /* UserDefaultsRepository.swift */; };
 		958EC571264F68AB00337A9E /* UserDefaultsProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958EC570264F68AB00337A9E /* UserDefaultsProperty.swift */; };
+		95986A2926E8618C009D5D43 /* UIViewController+Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95986A2826E8618C009D5D43 /* UIViewController+Alert.swift */; };
 		95993CF826B6F3A2007827F6 /* PlaybackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95993CF726B6F3A2007827F6 /* PlaybackView.swift */; };
 		959B0FA826DAC42700EC2A31 /* DataAccessError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 959B0FA726DAC42700EC2A31 /* DataAccessError.swift */; };
 		959B0FAA26DAC71300EC2A31 /* DataAccessProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 959B0FA926DAC71300EC2A31 /* DataAccessProvider.swift */; };
@@ -92,7 +93,6 @@
 		95FA8BE22601C716003FA6FD /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95FA8BE12601C716003FA6FD /* HTTPMethod.swift */; };
 		95FDBA4D26D46C1000C586BE /* QueueItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95FDBA4C26D46C1000C586BE /* QueueItem.swift */; };
 		95FDFB7126CCB2DA00E2B4CB /* MemberTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95FDFB7026CCB2DA00E2B4CB /* MemberTableViewCell.swift */; };
-		95FDFB7526CCCF1F00E2B4CB /* AlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95FDFB7426CCCF1F00E2B4CB /* AlertController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -119,6 +119,7 @@
 		958B33DD25CBAE47002B8F7E /* TurnTune-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TurnTune-Bridging-Header.h"; sourceTree = "<group>"; };
 		958EC56D264F583200337A9E /* UserDefaultsRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsRepository.swift; sourceTree = "<group>"; };
 		958EC570264F68AB00337A9E /* UserDefaultsProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsProperty.swift; sourceTree = "<group>"; };
+		95986A2826E8618C009D5D43 /* UIViewController+Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Alert.swift"; sourceTree = "<group>"; };
 		95993CF726B6F3A2007827F6 /* PlaybackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackView.swift; sourceTree = "<group>"; };
 		959B0FA726DAC42700EC2A31 /* DataAccessError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAccessError.swift; sourceTree = "<group>"; };
 		959B0FA926DAC71300EC2A31 /* DataAccessProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAccessProvider.swift; sourceTree = "<group>"; };
@@ -178,7 +179,6 @@
 		95FA8BE12601C716003FA6FD /* HTTPMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
 		95FDBA4C26D46C1000C586BE /* QueueItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueueItem.swift; sourceTree = "<group>"; };
 		95FDFB7026CCB2DA00E2B4CB /* MemberTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberTableViewCell.swift; sourceTree = "<group>"; };
-		95FDFB7426CCCF1F00E2B4CB /* AlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -253,6 +253,15 @@
 			path = SettingsView;
 			sourceTree = "<group>";
 		};
+		954B757826E71B3A00B58C92 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				95AE518526C3591D00AC5610 /* UIView+CornerRadius.swift */,
+				95986A2826E8618C009D5D43 /* UIViewController+Alert.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		955A52BB26AB93A7004B01B4 /* Firestore */ = {
 			isa = PBXGroup;
 			children = (
@@ -297,14 +306,6 @@
 				95AF13A6269FD48700C79782 /* Web */,
 			);
 			path = Service;
-			sourceTree = "<group>";
-		};
-		95AE518426C358E300AC5610 /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				95AE518526C3591D00AC5610 /* UIView+CornerRadius.swift */,
-			);
-			path = Extensions;
 			sourceTree = "<group>";
 		};
 		95AF13A5269E9A2200C79782 /* Spotify */ = {
@@ -397,6 +398,7 @@
 		95C7715025944C1E00EDF930 /* TurnTune */ = {
 			isa = PBXGroup;
 			children = (
+				954B757826E71B3A00B58C92 /* Extensions */,
 				95C7715125944C1E00EDF930 /* AppDelegate.swift */,
 				95C7715325944C1E00EDF930 /* SceneDelegate.swift */,
 				958B33DD25CBAE47002B8F7E /* TurnTune-Bridging-Header.h */,
@@ -423,7 +425,6 @@
 				95574A8526C90784005C5F4A /* PlayerDetailViewController.swift */,
 				95DD20AB259B1E65000EE8B3 /* SearchViewController.swift */,
 				9586D6CE262FF30C00DBE910 /* SettingsViewController.swift */,
-				95FDFB7426CCCF1F00E2B4CB /* AlertController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -435,7 +436,6 @@
 				9545C2F726BE36E700616155 /* PlayerView */,
 				9545C2F826BE36FF00616155 /* SearcherView */,
 				9545C2F926BE370F00616155 /* SettingsView */,
-				95AE518426C358E300AC5610 /* Extensions */,
 				95C7715C25944C1F00EDF930 /* LaunchScreen.storyboard */,
 				95C7715725944C1E00EDF930 /* Main.storyboard */,
 			);
@@ -651,6 +651,7 @@
 				95EFACC82671B10300506577 /* FirebaseAuthService.swift in Sources */,
 				95AE518626C3591D00AC5610 /* UIView+CornerRadius.swift in Sources */,
 				9533C08F26DBB18300A09CD9 /* MusicPlayerServiceableError.swift in Sources */,
+				95986A2926E8618C009D5D43 /* UIViewController+Alert.swift in Sources */,
 				95AF13AB269FDB2900C79782 /* SpotifyMusicPlayerService.swift in Sources */,
 				9504E62A2665616F002B712E /* FirestoreDocument.swift in Sources */,
 				95D6403126E18926002B0E54 /* SpotifyUserProfileAPI.swift in Sources */,
@@ -667,7 +668,6 @@
 				95A4045C25C3BD8B00F10E36 /* SearchViewModel.swift in Sources */,
 				95DD20AC259B1E65000EE8B3 /* SearchViewController.swift in Sources */,
 				95A56298260325A900C9496B /* HTTPError.swift in Sources */,
-				95FDFB7526CCCF1F00E2B4CB /* AlertController.swift in Sources */,
 				95AF13C226A5284C00C79782 /* SpotifyMusicBrowserService.swift in Sources */,
 				954A26A8261AB9D90034356D /* SongTableViewCell.swift in Sources */,
 				954A26972618D7920034356D /* Constants.swift in Sources */,

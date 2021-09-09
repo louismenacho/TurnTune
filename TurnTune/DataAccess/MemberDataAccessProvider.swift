@@ -41,7 +41,7 @@ class MemberDataAccessProvider: DataAccessProvider {
     }
     
     func listMembers(completion: @escaping ([Member]) -> Void) {
-        memberRepository.list(memberRepository.collectionReference.order(by: "dateJoined", descending: true)) { [self] result in
+        memberRepository.list(memberRepository.collectionReference.order(by: "dateAdded", descending: true)) { [self] result in
             switch result {
             case let .failure(error):
                 delegate?.dataAccessProvider(self, error: .member(error: error))
@@ -52,7 +52,7 @@ class MemberDataAccessProvider: DataAccessProvider {
     }
     
     func membersChangeListener(completion: @escaping ([Member]) -> Void) {
-        memberRepository.addListener(memberRepository.collectionReference.order(by: "dateJoined", descending: true)) { [self] result in
+        memberRepository.addListener(memberRepository.collectionReference.order(by: "dateAdded", descending: true)) { [self] result in
             switch result {
             case let .failure(error):
                 delegate?.dataAccessProvider(self, error: .member(error: error))

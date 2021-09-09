@@ -20,6 +20,9 @@ class PlayerViewModel {
     
     init(musicPlayerService: SpotifyMusicPlayerService) {
         self.musicPlayerService = musicPlayerService
+        self.playerStateDataAccess.delegate = self
+        self.queueDataAccess.delegate = self
+        
         self.musicPlayerService.playerStateChangeListener { [self] newPlayerState in
             if playerState != newPlayerState {
                 if newPlayerState.didFinish {
@@ -123,3 +126,10 @@ extension PlayerViewModel: MusicPlayerServiceableDelegate  {
         print(error)
     }
 }
+
+extension PlayerViewModel: DataAccessProviderDelegate {
+    func dataAccessProvider(_ dataAccessProvider: DataAccessProvider, error: DataAccessError) {
+        print(error)
+    }
+}
+
