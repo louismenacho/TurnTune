@@ -17,7 +17,7 @@ extension UIViewController {
         actionTitles:[String],
         actionStyles:[UIAlertAction.Style],
         actions: [ActionHandler],
-        completion: @escaping (UIAlertController) -> Void
+        completion: ((UIAlertController) -> Void)? = nil
     ) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: alertStyle)
         actionTitles.enumerated().forEach { index, indexTitle in
@@ -25,7 +25,7 @@ extension UIViewController {
             alertController.addAction(action)
         }
         self.present(alertController, animated: true) {
-            completion(alertController)
+            completion?(alertController)
         }
     }
 }

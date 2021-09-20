@@ -7,19 +7,23 @@
 
 import Foundation
 
-class HomeViewModel {
+class HomeViewModel: ViewModel {
+    
+    var delegate: ViewModelDelegate?
     
     private(set) var authService = FirebaseAuthService()
     private(set) var roomDataAccess = RoomDataAccessProvider()
     private(set) var memberDataAccess = MemberDataAccessProvider()
+    private(set) var playerStateDataAccess = PlayerStateDataAccessProvider()
     private(set) var musicBrowserService = SpotifyMusicBrowserService()
-    private(set) var musicPlayerService = SpotifyMusicPlayerService()
+    
+    private(set) var spotifyCredentialsDataAccess = SpotifyCredentialsDataAccessProvider()
+    private(set) var spotifyMusicPlayerService: SpotifyMusicPlayerService?
     
     init() {
         authService.delegate = self
         roomDataAccess.delegate = self
         memberDataAccess.delegate = self
-        musicPlayerService.delegate = self
     }
 
     func joinRoom(roomID: String, as displayName: String, completion: @escaping () -> Void) {
@@ -39,6 +43,7 @@ class HomeViewModel {
             roomDataAccess.createRoom(host: host) { [self] room in
                 roomDataAccess.setCurrentRoom(roomID: room.roomID)
                 memberDataAccess.addMember(host)
+                playerStateDataAccess.createPlayerState(playerState: PlayerState())
                 completion()
             }
         }
@@ -51,9 +56,14 @@ class HomeViewModel {
     }
     
     func connectMusicPlayerService(completion: @escaping () -> Void) {
-        musicPlayerService.initiate { [self] in
-            musicPlayerService.checkCurrentUserProfileIsPremium {
-                completion()
+        spotifyCredentialsDataAccess.getSpotifyCredentials { [self] credentials in
+            spotifyMusicPlayerService = SpotifyMusicPlayerService(credentials: credentials)
+            spotifyMusicPlayerService!.initiateSession { [self] in
+                spotifyMusicPlayerService!.isCurrentUserProfilePremium { isPremium in
+                    if isPremium {
+                        completion()
+                    }
+                }
             }
         }
     }
@@ -70,18 +80,18 @@ class HomeViewModel {
 
 extension HomeViewModel: AuthenticationServiceableDelegate {
     func authenticationServiceable(_ authenticationServiceable: AuthenticationServiceable, error: AuthenticationError) {
-        print(error)
+        delegate?.viewModel(self, error: .home(error: error))
     }
 }
 
 extension HomeViewModel: DataAccessProviderDelegate {
     func dataAccessProvider(_ dataAccessProvider: DataAccessProvider, error: DataAccessError) {
-        print(error)
+        delegate?.viewModel(self, error: .home(error: error))
     }
 }
 
 extension HomeViewModel: MusicPlayerServiceableDelegate {
-    func musicPlayerServiceable(error: MusicPlayerServiceableError) {
-        print(error)
+    func musicPlayerServiceable(error: MusicPlayerError) {
+        delegate?.viewModel(self, error: .home(error: error))
     }
 }

@@ -9,8 +9,8 @@ import UIKit
 
 class PlayerViewController: UIViewController {
     
-    var searchViewModel = SearchViewModel(musicBrowserService: SpotifyMusicBrowserService())
-    var playerViewModel = PlayerViewModel(musicPlayerService: SpotifyMusicPlayerService())
+    var searchViewModel: SearchViewModel!
+    var playerViewModel: PlayerViewModel!
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var playbackView: PlaybackView!

@@ -1,5 +1,5 @@
 //
-//  SpotifyConfigDataAccessProvider.swift
+//  SpotifyCredentialsDataAccessProvider.swift
 //  TurnTune
 //
 //  Created by Louis Menacho on 9/5/21.
@@ -7,16 +7,16 @@
 
 import Foundation
 
-class SpotifyConfigDataAccessProvider: DataAccessProvider {
+class SpotifyCredentialsDataAccessProvider: DataAccessProvider {
     
     weak var delegate: DataAccessProviderDelegate?
         
-    private var spotifyConfigRepository = {
-        FirestoreRepository<SpotifyConfig>(collectionPath: "spotify")
+    private var spotifyCredentialsRepository = {
+        FirestoreRepository<SpotifyCredentials>(collectionPath: "spotify")
     }()
 
-    func getSpotifyConfig(completion: @escaping (SpotifyConfig) -> Void) {
-        spotifyConfigRepository.get(id: "configuration") { [self] result in
+    func getSpotifyCredentials(completion: @escaping (SpotifyCredentials) -> Void) {
+        spotifyCredentialsRepository.get(id: "credentials") { [self] result in
             switch result {
                 case let .failure(error):
                     delegate?.dataAccessProvider(self, error: .spotifyConfig(error: error))

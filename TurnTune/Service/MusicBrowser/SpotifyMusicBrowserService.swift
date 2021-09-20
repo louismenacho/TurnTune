@@ -11,13 +11,14 @@ class SpotifyMusicBrowserService: MusicBrowserServiceable {
     
     weak var delegate: MusicBrowserServiceableDelegate?
     
-    private var webService = SpotifyWebService()
-    private var accountsService = SpotifyAccountsService()
-    private var spotifyConfigDataAccess = SpotifyConfigDataAccessProvider()
+    private var accountsAPI = SpotifyAPIClient<SpotifyAccountsAPI>()
+    private var searchAPI = SpotifyAPIClient<SpotifySearchAPI>()
+    private var recommendationsAPI = SpotifyAPIClient<SpotfiyRecommendationsAPI>()
+    private var spotifyConfigDataAccess = SpotifyCredentialsDataAccessProvider()
     
     func initiate(completion: (() -> Void)?) {
-        spotifyConfigDataAccess.getSpotifyConfig { [self] config in
-            accountsService.setClientCredentials(clientID: config.clientID, clientSecret: config.clientSecret)
+        spotifyConfigDataAccess.getSpotifyCredentials { [self] config in
+            accountsAPI.auth = .basic(username: config.clientID, password: config.clientSecret)
             generateToken {
                 completion?()
             }
@@ -25,19 +26,20 @@ class SpotifyMusicBrowserService: MusicBrowserServiceable {
     }
     
     func generateToken(completion: (() -> Void)?) {
-        accountsService.generateToken { [self] (result: Result<TokenResponse, Error>) in
+        accountsAPI.request(.apiToken) { [self] (result: Result<TokenResponse, Error>) in
             switch result {
                 case let .failure(error):
                     print(error)
                     delegate?.musicBrowserServiceable(error: .initiate(error: error))
                 case let .success(tokenResponse):
-                    webService.setToken(tokenResponse.accessToken)
+                    searchAPI.auth = .bearer(token: tokenResponse.accessToken)
+                    recommendationsAPI.auth = .bearer(token: tokenResponse.accessToken)
             }
         }
     }
     
     func searchSong(query: String, completion: @escaping (Result<[Song], Error>) -> Void) {
-        webService.search(query: query) { (result: Result<SearchResponse, Error>) in
+        searchAPI.request(.search(query: query, type: "track", limit: 50)) { (result: Result<SearchResponse, Error>) in
             let songSearchResult = Result {
                 try result.get().tracks.items.map { trackItem in
                     Song(from: trackItem)
@@ -47,19 +49,8 @@ class SpotifyMusicBrowserService: MusicBrowserServiceable {
         }
     }
     
-    func getRecentlyPlayedTracks(completion: @escaping (Result<[Song], Error>) -> Void) {
-        webService.recentlyPlayedTracks { (result: Result<RecentlyPlayedResponse, Error>) in
-            let recentlyPlayedTracksResult = Result {
-                try result.get().items.map { item in
-                    Song(from: item)
-                }
-            }
-            completion(recentlyPlayedTracksResult)
-        }
-    }
-    
     func getSongRecommendations(from recentSongs: [Song], completion: @escaping (Result<[Song], Error>) -> Void) {
-        webService.recommendations(limit: 20, seedTrackIDs: recentSongs.compactMap { $0.spotifyID }) { (result: Result<RecommendationsResponse, Error>) in
+        recommendationsAPI.request(.recommendations(limit: 20, seedTrackIDs: recentSongs.compactMap { $0.spotifyID })) { (result: Result<RecommendationsResponse, Error>) in
             let recommendationsResult = Result {
                 try result.get().tracks.map { track in
                     Song(from: track)
@@ -68,5 +59,4 @@ class SpotifyMusicBrowserService: MusicBrowserServiceable {
             completion(recommendationsResult)
         }
     }
-    
 }

@@ -19,17 +19,16 @@ class PlayerStateDataAccessProvider: DataAccessProvider {
         FirestoreRepository<PlayerState>(collectionPath: "rooms/"+currentRoomID+"/player")
     }
     
-    func getPlayerState(completion: @escaping (PlayerState) -> Void) {
-        playerStateRepository.get(id: "state") { [self] result in
-            switch result {
-            case let .failure(error):
+    func createPlayerState(playerState: PlayerState ,completion: (() -> Void)? = nil) {
+        playerStateRepository.create(playerState) { [self] error in
+            if let error = error {
                 delegate?.dataAccessProvider(self, error: .playerState(error: error))
-            case let .success(playerState):
-                completion(playerState)
+            } else {
+                completion?()
             }
         }
     }
-        
+            
     func updatePlayerState(_ playerState: PlayerState, completion: (() -> Void)? = nil) {
         playerStateRepository.update(playerState) { [self] error in
             if let error = error {

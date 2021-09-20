@@ -1,5 +1,5 @@
 //
-//  SpotifyConfig.swift
+//  SpotifyCredentials.swift
 //  TurnTune
 //
 //  Created by Louis Menacho on 6/12/21.
@@ -8,7 +8,7 @@
 import Foundation
 import FirebaseFirestore
 
-struct SpotifyConfig: FirestoreDocument {
+struct SpotifyCredentials: FirestoreDocument {
     
     var documentID: String?
     var dateAdded: Timestamp?

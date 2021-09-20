@@ -13,7 +13,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var spotifyMusicService: SpotifyMusicPlayerService? {
         let homeViewController = window?.rootViewController?.children.first(where: { ($0 is HomeViewController) }) as? HomeViewController
-        return homeViewController?.homeViewModel.musicPlayerService
+        return homeViewController?.homeViewModel.spotifyMusicPlayerService
     }
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -37,14 +37,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let style = UIUserInterfaceStyle(rawValue: UserDefaultsRepository().appearance), let window = window {
             window.overrideUserInterfaceStyle = style
         }
-        spotifyMusicService?.appRemoteService.connect()
+        spotifyMusicService?.connect()
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
         // Called when the scene will move from an active state to an inactive state.
         // This may occur due to temporary interruptions (ex. an incoming phone call).
 //        print("sceneWillResignActive")
-        spotifyMusicService?.appRemoteService.disconnect()
+        spotifyMusicService?.disconnect()
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
@@ -60,7 +60,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         if let url = URLContexts.first?.url {
-            spotifyMusicService?.sessionManagerService.handleOpenURL(url)
+            spotifyMusicService?.handleOpenURL(url)
         }
     }
 

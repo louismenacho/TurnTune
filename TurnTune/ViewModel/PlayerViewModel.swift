@@ -22,16 +22,6 @@ class PlayerViewModel {
         self.musicPlayerService = musicPlayerService
         self.playerStateDataAccess.delegate = self
         self.queueDataAccess.delegate = self
-        
-        self.musicPlayerService.playerStateChangeListener { [self] newPlayerState in
-            if playerState != newPlayerState {
-                if newPlayerState.didFinish {
-                    playNextSong()
-                } else {
-                    updatePlayerState(newPlayerState)
-                }
-            }
-        }
     }
     
     func playerStateChangeListener(completion: @escaping (PlayerState) -> Void) {
@@ -79,7 +69,7 @@ class PlayerViewModel {
     // MARK: - Host Methods
     
     func play(_ items: [QueueItem]? = nil, position: Int = 0, completion: (() -> Void)? = nil ) {
-        musicPlayerService.startPlayback(songs: items?.compactMap { $0.song }, position: position) {
+        musicPlayerService.startPlayback(songs: items?.compactMap { $0.song }, position: position) { error in
             print("playing \(items?.compactMap { $0.song.name } ?? [])")
             completion?()
         }
@@ -97,7 +87,7 @@ class PlayerViewModel {
     }
     
     func pause(completion: (() -> Void)? = nil) {
-        musicPlayerService.pausePlayback {
+        musicPlayerService.pausePlayback { error in
             completion?()
         }
     }
@@ -106,15 +96,25 @@ class PlayerViewModel {
         guard let firstItem = queue.first else {
             return
         }
-        musicPlayerService.initiate(with: firstItem.song) { [self] in
+        musicPlayerService.initiateSession(playing: firstItem.song) { [self] in
             removeFromQueue(firstItem) {
                 completion?()
             }
         }
+        musicPlayerService.playerStateChangeListener { [self] newPlayerState in
+            if playerState != newPlayerState {
+                if newPlayerState.didFinish {
+                    playNextSong()
+                } else {
+                    updatePlayerState(newPlayerState)
+                }
+            }
+        }
+
     }
     
     func rewindSong(completion: (() -> Void)? = nil) {
-        musicPlayerService.rewindPlayback {
+        musicPlayerService.rewindPlayback { error in
             completion?()
         }
     }
@@ -122,7 +122,7 @@ class PlayerViewModel {
 }
 
 extension PlayerViewModel: MusicPlayerServiceableDelegate  {
-    func musicPlayerServiceable(error: MusicPlayerServiceableError) {
+    func musicPlayerServiceable(error: MusicPlayerError) {
         print(error)
     }
 }

@@ -1,5 +1,5 @@
 //
-//  MusicBrowserServiceableError.swift
+//  MusicBrowserError.swift
 //  TurnTune
 //
 //  Created by Louis Menacho on 9/5/21.
@@ -7,6 +7,6 @@
 
 import Foundation
 
-enum MusicBrowserServiceableError: Error {
+enum MusicBrowserError: Error {
     case initiate(error: Error)
 }
