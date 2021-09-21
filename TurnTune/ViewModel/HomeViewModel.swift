@@ -24,6 +24,8 @@ class HomeViewModel: ViewModel {
         authService.delegate = self
         roomDataAccess.delegate = self
         memberDataAccess.delegate = self
+        playerStateDataAccess.delegate = self
+        musicBrowserService.delegate = self
     }
 
     func joinRoom(roomID: String, as displayName: String, completion: @escaping () -> Void) {
@@ -58,6 +60,7 @@ class HomeViewModel: ViewModel {
     func connectMusicPlayerService(completion: @escaping () -> Void) {
         spotifyCredentialsDataAccess.getSpotifyCredentials { [self] credentials in
             spotifyMusicPlayerService = SpotifyMusicPlayerService(credentials: credentials)
+            spotifyMusicPlayerService!.delegate = self
             spotifyMusicPlayerService!.initiateSession { [self] in
                 spotifyMusicPlayerService!.isCurrentUserProfilePremium { isPremium in
                     if isPremium {
@@ -80,18 +83,24 @@ class HomeViewModel: ViewModel {
 
 extension HomeViewModel: AuthenticationServiceableDelegate {
     func authenticationServiceable(_ authenticationServiceable: AuthenticationServiceable, error: AuthenticationError) {
-        delegate?.viewModel(self, error: .home(error: error))
+        delegate?.viewModel(self, error: .authenticationError(error: error))
     }
 }
 
 extension HomeViewModel: DataAccessProviderDelegate {
     func dataAccessProvider(_ dataAccessProvider: DataAccessProvider, error: DataAccessError) {
-        delegate?.viewModel(self, error: .home(error: error))
+        delegate?.viewModel(self, error: .dataAccessError(error: error))
     }
 }
 
 extension HomeViewModel: MusicPlayerServiceableDelegate {
     func musicPlayerServiceable(error: MusicPlayerError) {
-        delegate?.viewModel(self, error: .home(error: error))
+        delegate?.viewModel(self, error: .musicPlayerError(error: error))
+    }
+}
+
+extension HomeViewModel: MusicBrowserServiceableDelegate {
+    func musicBrowserServiceable(error: MusicBrowserError) {
+        delegate?.viewModel(self, error: .musicBrowserError(error: error))
     }
 }

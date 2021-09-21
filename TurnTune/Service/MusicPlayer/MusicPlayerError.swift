@@ -9,17 +9,16 @@ import Foundation
 
 enum MusicPlayerError: Error {
     case initiate(error: Error)
-    case startPlayback(error: Error)
-    case pausePlayback(error: Error)
-    case rewindPlayback(error: Error)
-    
-    case currentUserProfile(error: Error)
-    case currentUserNotPremium
+    case startPlayback(error: HTTPError)
+    case pausePlayback(error: HTTPError)
+    case rewindPlayback(error: HTTPError)
+    case currentUserProfile(error: HTTPError)
+    case currentUserIsNotPremium
     case spotifyAppNotInstalled
-    case authorizationFailed
-    case renewSessionFailed
-    case jsonFailed
-    case unknown
+    
+    // Spotify Errors
+    case spotify(code: SPTErrorCode)
+    case spotifyAppRemote(code: SPTAppRemoteErrorCode)
 }
 
 extension MusicPlayerError: LocalizedError {
@@ -35,18 +34,40 @@ extension MusicPlayerError: LocalizedError {
                 return "Could not rewind playback"
             case .currentUserProfile:
                 return "Coult not get current user profile"
-            case .currentUserNotPremium:
+            case .currentUserIsNotPremium:
                 return "Current user does not have a premium account"
             case .spotifyAppNotInstalled:
                 return "Spotify app is not installed"
-            case .authorizationFailed:
-                return "Authorization Failed"
-            case .renewSessionFailed:
-                return "Could not renew session"
-            case .jsonFailed:
-                return "Failed to parse the returned JSON"
-            case .unknown:
-                return "An unknown error has occured"
+            case .spotify(let code):
+                switch code {
+                    case .authorizationFailed:
+                        return ""
+                    case .renewSessionFailed:
+                        return ""
+                    case .jsonFailed:
+                        return ""
+                    case .unknown:
+                        return ""
+                    default:
+                        return ""
+                }
+            case .spotifyAppRemote(let code):
+                switch code {
+                    case .backgroundWakeupFailedError:
+                        return "backgroundWakeupFailedError"
+                    case .connectionAttemptFailedError:
+                        return "connectionAttemptFailedError"
+                    case .connectionTerminatedError:
+                        return "connectionTerminatedError"
+                    case .invalidArgumentsError:
+                        return "invalidArgumentsError"
+                    case .requestFailedError:
+                        return "requestFailedError"
+                    case .unknownError:
+                        return "unknownError"
+                    default:
+                        return "Could not resolve appRemoteErrorCode"
+                }
         }
     }
 }

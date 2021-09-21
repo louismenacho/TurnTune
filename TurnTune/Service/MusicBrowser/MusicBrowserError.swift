@@ -8,5 +8,7 @@
 import Foundation
 
 enum MusicBrowserError: Error {
-    case initiate(error: Error)
+    case generateToken(error: HTTPError)
+    case searchSong(error: HTTPError)
+    case getSongRecommendations(error: HTTPError)
 }

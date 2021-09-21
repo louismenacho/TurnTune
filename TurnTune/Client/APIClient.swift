@@ -13,13 +13,13 @@ protocol APIClient {
 }
 
 extension APIClient {
-    func request<Response: Decodable>(_ endpoint: Endpoint, auth: HTTPAuthorization? = nil, completion: @escaping (Result<Response, Error>) -> Void) {
+    func request<Response: Decodable>(_ endpoint: Endpoint, auth: HTTPAuthorization? = nil, completion: @escaping (Result<Response, HTTPError>) -> Void) {
         var apiRequest = endpoint.request
         apiRequest.auth = auth ?? self.auth
         
         URLSession.shared.dataTask(with: apiRequest.asURLRequest) { (data, response, error) in
             if let error = error {
-                completion(.failure(error))
+                completion(.failure(.client(error: error)))
                 return
             }
 
@@ -46,7 +46,7 @@ extension APIClient {
                     completion(.success(responseData))
                 }
             } catch {
-                completion(.failure(error))
+                completion(.failure(.decode(error: error)))
             }
         }
         .resume()

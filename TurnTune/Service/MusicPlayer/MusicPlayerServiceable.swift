@@ -16,8 +16,8 @@ protocol MusicPlayerServiceable {
     var delegate: MusicPlayerServiceableDelegate? { get set }
     
     func initiateSession(playing song: Song?, completion: (() -> Void)?)
-    func startPlayback(songs: [Song]?, position: Int, completion: ((Error?) -> Void)?)
-    func pausePlayback(completion: ((Error?) -> Void)?)
-    func rewindPlayback(completion: ((Error?) -> Void)?)
+    func startPlayback(songs: [Song]?, position: Int, completion: (() -> Void)?)
+    func pausePlayback(completion: (() -> Void)?)
+    func rewindPlayback(completion: (() -> Void)?)
     func playerStateChangeListener(completion: @escaping (PlayerState) -> Void)
 }

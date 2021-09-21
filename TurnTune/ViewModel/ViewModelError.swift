@@ -9,23 +9,30 @@
 import Foundation
 
 enum ViewModelError: Error {
-    case home(error: Error)
-    case player(error: Error)
-    case search(error: Error)
-    case setting(error: Error)
+    case httpError(error: HTTPError)
+    case repositoryError(error: RepositoryError)
+    case dataAccessError(error: DataAccessError)
+    case musicPlayerError(error: MusicPlayerError)
+    case musicBrowserError(error: MusicBrowserError)
+    case authenticationError(error: AuthenticationError)
 }
 
 extension ViewModelError: LocalizedError {
     var errorDescription: String? {
         switch self {
-            case let .home(error):
+            case let .httpError(error):
                 return error.localizedDescription
-            case let .player(error):
+            case let .repositoryError(error):
                 return error.localizedDescription
-            case let .search(error):
+            case let .dataAccessError(error):
                 return error.localizedDescription
-            case let .setting(error):
+            case let .musicPlayerError(error):
                 return error.localizedDescription
+            case let .musicBrowserError(error):
+                return error.localizedDescription
+            case let .authenticationError(error):
+                return error.localizedDescription
+
         }
     }
 }

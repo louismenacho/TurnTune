@@ -26,11 +26,11 @@ class SpotifyMusicBrowserService: MusicBrowserServiceable {
     }
     
     func generateToken(completion: (() -> Void)?) {
-        accountsAPI.request(.apiToken) { [self] (result: Result<TokenResponse, Error>) in
+        accountsAPI.request(.apiToken) { [self] (result: Result<TokenResponse, HTTPError>) in
             switch result {
                 case let .failure(error):
                     print(error)
-                    delegate?.musicBrowserServiceable(error: .initiate(error: error))
+                    delegate?.musicBrowserServiceable(error: .generateToken(error: error))
                 case let .success(tokenResponse):
                     searchAPI.auth = .bearer(token: tokenResponse.accessToken)
                     recommendationsAPI.auth = .bearer(token: tokenResponse.accessToken)
@@ -38,25 +38,27 @@ class SpotifyMusicBrowserService: MusicBrowserServiceable {
         }
     }
     
-    func searchSong(query: String, completion: @escaping (Result<[Song], Error>) -> Void) {
-        searchAPI.request(.search(query: query, type: "track", limit: 50)) { (result: Result<SearchResponse, Error>) in
-            let songSearchResult = Result {
-                try result.get().tracks.items.map { trackItem in
-                    Song(from: trackItem)
-                }
+    func searchSong(query: String, completion: @escaping ([Song]) -> Void) {
+        searchAPI.request(.search(query: query, type: "track", limit: 50)) { [self] (result: Result<SearchResponse, HTTPError>) in
+            switch result {
+                case .failure(let error):
+                    delegate?.musicBrowserServiceable(error: .searchSong(error: error))
+                case .success(let response):
+                    let songSearchResult = response.tracks.items.map { Song(from: $0) }
+                    completion(songSearchResult)
             }
-            completion(songSearchResult)
         }
     }
     
-    func getSongRecommendations(from recentSongs: [Song], completion: @escaping (Result<[Song], Error>) -> Void) {
-        recommendationsAPI.request(.recommendations(limit: 20, seedTrackIDs: recentSongs.compactMap { $0.spotifyID })) { (result: Result<RecommendationsResponse, Error>) in
-            let recommendationsResult = Result {
-                try result.get().tracks.map { track in
-                    Song(from: track)
-                }
+    func getSongRecommendations(from recentSongs: [Song], completion: @escaping ([Song]) -> Void) {
+        recommendationsAPI.request(.recommendations(limit: 20, seedTrackIDs: recentSongs.compactMap { $0.spotifyID })) { [self] (result: Result<RecommendationsResponse, HTTPError>) in
+            switch result {
+                case .failure(let error):
+                    delegate?.musicBrowserServiceable(error: .getSongRecommendations(error: error))
+                case .success(let response):
+                    let recommendationsResult = response.tracks.map { Song(from: $0) }
+                    completion(recommendationsResult)
             }
-            completion(recommendationsResult)
         }
     }
 }

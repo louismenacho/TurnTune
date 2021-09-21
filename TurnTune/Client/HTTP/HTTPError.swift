@@ -8,6 +8,8 @@
 import Foundation
 
 enum HTTPError: Error {
-    case noResponse
+    case client(error: Error)
     case status(code: Int, description: String)
+    case decode(error: Error)
+    case noResponse
 }

@@ -162,28 +162,45 @@ extension HomeViewController: UITextFieldDelegate {
 extension HomeViewController: ViewModelDelegate {
     func viewModel(_ viewModel: ViewModel, error: ViewModelError) {
         stopActivityIndicator()
-        if case .home(let error) = error,
-           case .spotifyAppNotInstalled = error as? MusicPlayerError {
-                presentAlert(
-                    title: error.localizedDescription,
-                    alertStyle: .alert,
-                    actionTitles: ["Get Spotify App", "Close"],
-                    actionStyles: [.default, .cancel],
-                    actions: [
-                        { _ in
-                            let spotifyAppID = "\(SPTAppRemote.spotifyItunesItemIdentifier())"
-                            if let url = URL(string: "itms-apps://apple.com/app/id"+spotifyAppID) {
-                                UIApplication.shared.open(url)
-                            }
-                        },
-                        { _ in }
-                    ])
+        
+        var localizedDescription = ""
+        switch error {
+            case let .httpError(error):
+                localizedDescription = error.localizedDescription
+            case let .repositoryError(error):
+                localizedDescription = error.localizedDescription
+            case let .dataAccessError(error):
+                localizedDescription = error.localizedDescription
+            case let .musicPlayerError(error):
+                if case .spotifyAppNotInstalled = error {
+                    presentAlert(
+                        title: error.localizedDescription,
+                        alertStyle: .alert,
+                        actionTitles: ["Get Spotify App", "Close"],
+                        actionStyles: [.default, .cancel],
+                        actions: [
+                            { _ in
+                                let spotifyAppID = "\(SPTAppRemote.spotifyItunesItemIdentifier())"
+                                if let url = URL(string: "itms-apps://apple.com/app/id"+spotifyAppID) {
+                                    UIApplication.shared.open(url)
+                                }
+                            },
+                            { _ in }
+                        ])
+                }
+            case let .musicBrowserError(error):
+                localizedDescription = error.localizedDescription
+            case let .authenticationError(error):
+                localizedDescription = error.localizedDescription
         }
-        presentAlert(
-            title: error.errorDescription,
-            alertStyle: .alert,
-            actionTitles: ["Close"],
-            actionStyles: [.cancel],
-            actions: [{_ in }])
+        
+        if !localizedDescription.isEmpty {
+            presentAlert(
+                title: localizedDescription,
+                alertStyle: .alert,
+                actionTitles: ["Close"],
+                actionStyles: [.cancel],
+                actions: [{_ in }])
+        }
     }
 }

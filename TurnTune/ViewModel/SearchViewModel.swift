@@ -18,14 +18,9 @@ class SearchViewModel {
     }
     
     func search(query: String, completion: @escaping () -> Void) {
-        musicBrowserService.searchSong(query: query) { [self] (result: Result<[Song], Error>) in
-            switch result {
-            case let .failure(error):
-                print(error)
-            case let .success(songSearchResult):
-                searchResult = songSearchResult.map { SearchResultItem(song: $0) }
-                completion()
-            }
+        musicBrowserService.searchSong(query: query) { [self] songSearchResult in
+            searchResult = songSearchResult.map { SearchResultItem(song: $0) }
+            completion()
         }
     }
 }
@@ -34,4 +29,3 @@ struct SearchResultItem {
     var song: Song = Song()
     var isAdded: Bool = false
 }
-

@@ -69,7 +69,7 @@ class PlayerViewModel {
     // MARK: - Host Methods
     
     func play(_ items: [QueueItem]? = nil, position: Int = 0, completion: (() -> Void)? = nil ) {
-        musicPlayerService.startPlayback(songs: items?.compactMap { $0.song }, position: position) { error in
+        musicPlayerService.startPlayback(songs: items?.compactMap { $0.song }, position: position) {
             print("playing \(items?.compactMap { $0.song.name } ?? [])")
             completion?()
         }
@@ -87,7 +87,7 @@ class PlayerViewModel {
     }
     
     func pause(completion: (() -> Void)? = nil) {
-        musicPlayerService.pausePlayback { error in
+        musicPlayerService.pausePlayback {
             completion?()
         }
     }
@@ -114,7 +114,7 @@ class PlayerViewModel {
     }
     
     func rewindSong(completion: (() -> Void)? = nil) {
-        musicPlayerService.rewindPlayback { error in
+        musicPlayerService.rewindPlayback {
             completion?()
         }
     }

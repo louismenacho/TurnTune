@@ -68,41 +68,41 @@ class SpotifyMusicPlayerService: NSObject, MusicPlayerServiceable {
         }
     }
         
-    func startPlayback(songs: [Song]? = nil, position: Int = 0, completion: ((Error?) -> Void)?) {
-        playerAPI.request(.startPlayback(uris: songs?.compactMap { $0.spotifyURI }, position: position)) { (result: Result<String, Error>) in
+    func startPlayback(songs: [Song]? = nil, position: Int = 0, completion: (() -> Void)?) {
+        playerAPI.request(.startPlayback(uris: songs?.compactMap { $0.spotifyURI }, position: position)) { [self] (result: Result<String, HTTPError>) in
             switch result {
                 case let .failure(error):
-                    completion?(error)
+                    delegate?.musicPlayerServiceable(error: .startPlayback(error: error))
                 case .success:
-                    completion?(nil)
+                    completion?()
             }
         }
     }
     
-    func pausePlayback(completion: ((Error?) -> Void)?) {
-        playerAPI.request(.pausePlayback) { (result: Result<String, Error>) in
+    func pausePlayback(completion: (() -> Void)?) {
+        playerAPI.request(.pausePlayback) { [self] (result: Result<String, HTTPError>) in
             switch result {
                 case let .failure(error):
-                    completion?(error)
+                    delegate?.musicPlayerServiceable(error: .pausePlayback(error: error))
                 case .success:
-                    completion?(nil)
+                    completion?()
             }
         }
     }
     
-    func rewindPlayback(completion: ((Error?) -> Void)?) {
-        playerAPI.request(.seek(position: 0)) { (result: Result<String, Error>) in
+    func rewindPlayback(completion: (() -> Void)?) {
+        playerAPI.request(.seek(position: 0)) { [self] (result: Result<String, HTTPError>) in
             switch result {
                 case let .failure(error):
-                    completion?(error)
+                    delegate?.musicPlayerServiceable(error: .rewindPlayback(error: error))
                 case .success:
-                    completion?(nil)
+                    completion?()
             }
         }
     }
     
     func isCurrentUserProfilePremium(completion: ((Bool) -> Void)?) {
-        userProfileAPI.request(.currentUserProfile){ [self] (result: Result<UserProfileResponse, Error>) in
+        userProfileAPI.request(.currentUserProfile) { [self] (result: Result<UserProfileResponse, HTTPError>) in
             switch result {
                 case let .failure(error):
                     delegate?.musicPlayerServiceable(error: .currentUserProfile(error: error))
@@ -141,7 +141,13 @@ extension SpotifyMusicPlayerService: SPTSessionManagerDelegate {
     
     func sessionManager(manager: SPTSessionManager, didFailWith error: Error) {
         print("SPTSession didFailWith error")
-        initiateCompletion?()
+        if let error = error as NSError? {
+            if !sessionManager.isSpotifyAppInstalled, case .authorizationFailed = SPTErrorCode(rawValue: UInt(error.code)) {
+                delegate?.musicPlayerServiceable(error: .spotifyAppNotInstalled)
+            } else {
+                delegate?.musicPlayerServiceable(error: .spotify(code: SPTErrorCode(rawValue: UInt(error.code)) ?? .unknown))
+            }
+        }
     }
 }
 
@@ -157,41 +163,15 @@ extension SpotifyMusicPlayerService: SPTAppRemoteDelegate {
     
     func appRemote(_ appRemote: SPTAppRemote, didFailConnectionAttemptWithError error: Error?) {
         print("appRemote didFailConnectionAttemptWithError")
-        if let error = error {
-            print(errorMessage(for: error))
+        if let error = error as NSError? {
+            delegate?.musicPlayerServiceable(error: .spotifyAppRemote(code: SPTAppRemoteErrorCode(rawValue: error.code) ?? .unknownError))
         }
     }
     
     func appRemote(_ appRemote: SPTAppRemote, didDisconnectWithError error: Error?) {
         print("appRemote didDisconnectWithError")
-        if let error = error {
-            print(errorMessage(for: error))
-        }
-    }
-    
-    func errorMessage(for error: Error) -> String {
-        guard
-            let error = error as NSError?,
-            let appRemoteErrorCode = SPTAppRemoteErrorCode(rawValue: error.code)
-        else {
-            return error.localizedDescription
-        }
-        
-        switch appRemoteErrorCode {
-            case .backgroundWakeupFailedError:
-                return "backgroundWakeupFailedError"
-            case .connectionAttemptFailedError:
-                return "connectionAttemptFailedError"
-            case .connectionTerminatedError:
-                return "connectionTerminatedError"
-            case .invalidArgumentsError:
-                return "invalidArgumentsError"
-            case .requestFailedError:
-                return "requestFailedError"
-            case .unknownError:
-                return "unknownError"
-            default:
-                return "Could not resolve appRemoteErrorCode"
+        if let error = error as NSError? {
+            delegate?.musicPlayerServiceable(error: .spotifyAppRemote(code: SPTAppRemoteErrorCode(rawValue: error.code) ?? .unknownError))
         }
     }
 }
@@ -199,92 +179,6 @@ extension SpotifyMusicPlayerService: SPTAppRemoteDelegate {
 extension SpotifyMusicPlayerService: SPTAppRemotePlayerStateDelegate {
     
     func playerStateDidChange(_ playerState: SPTAppRemotePlayerState) {
-        print("PLAYER STATE CHANGED")
         playerStateDidChange?(playerState)
     }
-    
-    func debugPlayerState(playerState: SPTAppRemotePlayerState) {
-        print("\tcontextTitle: \(playerState.contextTitle)")
-        print("\tcontextURI: \(playerState.contextURI)")
-        print("\tisPaused: \(playerState.isPaused)")
-        print("\tplaybackPosition: \(playerState.playbackPosition)")
-        print("\tplaybackSpeed: \(playerState.playbackSpeed)")
-        print("\turi: \(playerState.track.uri)")
-        print("\ttrack name: \(playerState.track.name)")
-        print("\tartist name: \(playerState.track.artist.name)")
-        print("\talbum name: \(playerState.track.album.name)\n")
-    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//extension SpotifyMusicPlayerService: SpotifySessionManagerServiceDelegate {
-//
-//    func spotifySessionManagerService(didAuthorize newSession: SPTSession) {
-//        webService.setToken(newSession.accessToken)
-//        appRemoteService.setToken(newSession.accessToken)
-//        appRemoteService.connect()
-//        initiateCompletion?()
-//    }
-//
-//    func spotifySessionManagerService(didFailWith error: SPTErrorCode) {
-//        switch error {
-//            case .authorizationFailed:
-//                delegate?.musicPlayerServiceable(error: .authorizationFailed)
-//            case .renewSessionFailed:
-//                delegate?.musicPlayerServiceable(error: .renewSessionFailed)
-//            case .jsonFailed:
-//                delegate?.musicPlayerServiceable(error: .jsonFailed)
-//            case .unknown:
-//                delegate?.musicPlayerServiceable(error: .unknown)
-//            default:
-//                delegate?.musicPlayerServiceable(error: .unknown)
-//        }
-//    }
-//}
-//
-//extension SpotifyMusicPlayerService: SpotifyAppRemoteServiceDelegate {
-//
-//    func spotifyAppRemoteService(didEstablishConnection appRemote: SPTAppRemote) {
-//        print("spotifyAppRemoteService didEstablishConnection")
-//        appRemoteService.subscribe()
-//    }
-//
-//    func spotifyAppRemoteService(playerStateDidChange newPlayerState: SPTAppRemotePlayerState) {
-////        guard let oldPlayerState = currentPlayerState else {
-////            currentPlayerState = newPlayerState
-////            delegate?.musicPlayerServiceable(playbackDidStart: PlayerState(from: newPlayerState))
-////            return
-////        }
-////
-////        if oldPlayerState.isPaused && !newPlayerState.isPaused {
-////            delegate?.musicPlayerServiceable(playbackDidStart: PlayerState(from: newPlayerState))
-////        }
-////
-////        if !oldPlayerState.isPaused && newPlayerState.isPaused {
-////            delegate?.musicPlayerServiceable(playbackDidPause: PlayerState(from: newPlayerState))
-////        }
-////
-////        if oldPlayerState.track.uri != newPlayerState.track.uri || oldPlayerState.contextURI != newPlayerState.contextURI {
-////            delegate?.musicPlayerServiceable(playbackDidChange: PlayerState(from: newPlayerState))
-////        }
-////
-////        if !oldPlayerState.isPaused && newPlayerState.isPaused && newPlayerState.playbackPosition == 0 {
-////            delegate?.musicPlayerServiceable(playbackDidFinish: PlayerState())
-////        }
-////
-////        currentPlayerState = newPlayerState
-//        playerStateDidChange?(newPlayerState)
-//    }
-//}
