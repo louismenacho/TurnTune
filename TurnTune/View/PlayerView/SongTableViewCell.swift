@@ -10,17 +10,19 @@ import SDWebImage
 
 class SongTableViewCell: UITableViewCell {
     
-    var song: Song = Song() {
+    var queueItem: QueueItem = QueueItem(song: Song()) {
         didSet {
-            albumImageView.sd_setImage(with: URL(string: song.artworkURL), placeholderImage: UIImage(systemName: "photo.fill"))
-            songLabel.text = song.name
-            artistLabel.text = song.artist
+            albumImageView.sd_setImage(with: URL(string: queueItem.song.artworkURL), placeholderImage: UIImage(systemName: "photo.fill"))
+            songLabel.text = queueItem.song.name
+            artistLabel.text = queueItem.song.artist
+            memberLabel.text = "@"+queueItem.addedBy.displayName
         }
     }
     
     @IBOutlet weak var albumImageView: UIImageView!
     @IBOutlet weak var songLabel: UILabel!
     @IBOutlet weak var artistLabel: UILabel!
+    @IBOutlet weak var memberLabel: UILabel!
     
     override func awakeFromNib() {
         albumImageView.image = UIImage(systemName: "photo.fill")

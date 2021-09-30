@@ -414,6 +414,7 @@
                                         <outlet property="albumImageView" destination="prs-hl-KSD" id="xg9-nQ-Y40"/>
                                         <outlet property="artistLabel" destination="u09-PH-ghs" id="5cP-Dv-SpZ"/>
                                         <outlet property="logoButton" destination="puy-Yl-YxK" id="aNT-r9-Ukg"/>
+                                        <outlet property="memberLabel" destination="h2Q-A0-eWe" id="PbA-8p-HKu"/>
                                         <outlet property="playNextButton" destination="wtS-l6-B2y" id="USC-l2-6bF"/>
                                         <outlet property="playPauseButton" destination="aFo-dJ-wRn" id="4B7-sq-30v"/>
                                         <outlet property="rewindButton" destination="Y9m-6K-G20" id="VSI-vQ-M5p"/>
@@ -476,6 +477,7 @@
                                         <connections>
                                             <outlet property="albumImageView" destination="4Hj-GK-7Bq" id="btn-BU-K4Y"/>
                                             <outlet property="artistLabel" destination="Q9X-SS-332" id="OAH-k8-J6t"/>
+                                            <outlet property="memberLabel" destination="KW2-ko-sYw" id="9Wa-vB-4Rc"/>
                                             <outlet property="songLabel" destination="qg1-9l-qFt" id="4oE-zG-TkW"/>
                                         </connections>
                                     </tableViewCell>

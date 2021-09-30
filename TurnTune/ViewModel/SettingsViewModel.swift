@@ -32,6 +32,10 @@ class SettingsViewModel {
         QueueType(rawValue: room.queueMode) ?? .fair
     }
     
+    var currentMember: Member? {
+        memberList.first { $0.userID == authService.currentUserID }
+    }
+    
     var isCurrentMemberHost: Bool {
         authService.currentUserID == room.host.userID
     }

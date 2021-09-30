@@ -124,15 +124,3 @@ extension SettingsViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
     }
 }
-
-
-// MARK: - PlayerViewControllerDelegate
-//extension SettingsViewController: PlayerViewControllerDelegate {
-//    func playerViewController(_ playerViewController: PlayerViewController, playerStateDidChange state: PlayerState) {
-//        
-//    }
-//    
-//    func playerViewController(_ playerViewController: PlayerViewController, settingsDidChange room: Room) {
-//        
-//    }
-//}

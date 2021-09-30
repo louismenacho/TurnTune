@@ -14,7 +14,7 @@ struct QueueItem: FirestoreDocument {
     @DocumentID var documentID: String?
     @ServerTimestamp var dateAdded: Timestamp?
     
-    var song: Song
+    var song: Song = Song()
     var priority: Int = 0
     var didPlay: Bool = false
     var addedBy: Member = Member()

@@ -63,10 +63,10 @@ class PlayerViewModel {
         }
     }
     
-    func addToQueue(_ song: Song, completion: (() -> Void)? = nil) {
+    func addToQueue(_ song: Song, addedBy member: Member, completion: (() -> Void)? = nil) {
         var item = QueueItem(song: song)
         item.priority = queue.filter({ $0.addedBy.userID == authService.currentUserID }).count
-        item.addedBy.userID = authService.currentUserID
+        item.addedBy = member
         queueDataAccess.addItem(item) {
             completion?()
         }

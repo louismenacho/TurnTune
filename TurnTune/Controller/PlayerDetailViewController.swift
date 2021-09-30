@@ -71,14 +71,3 @@ extension PlayerDetailViewController: PlaybackViewDelegate {
     func playbackView(startQueueButtonPressedFor playbackView: PlaybackView) {
     }
 }
-
-// MARK: - PlayerViewControllerDelegate
-//extension PlayerDetailViewController: PlayerViewControllerDelegate {
-//    func playerViewController(_ playerViewController: PlayerViewController, playerStateDidChange state: PlayerState) {
-//        playbackView.playerState = state
-//    }
-//
-//    func playerViewController(_ playerViewController: PlayerViewController, settingsDidChange room: Room) {
-//
-//    }
-//}

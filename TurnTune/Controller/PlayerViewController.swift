@@ -7,14 +7,8 @@
 
 import UIKit
 
-//protocol PlayerViewControllerDelegate: AnyObject {
-//    func playerViewController(_ playerViewController: PlayerViewController, playerStateDidChange state: PlayerState)
-//    func playerViewController(_ playerViewController: PlayerViewController, settingsDidChange room: Room)
-//}
 
 class PlayerViewController: UIViewController {
-    
-//    weak var delegate: PlayerViewControllerDelegate?
     
     var searchViewModel: SearchViewModel!
     var settingsViewModel: SettingsViewModel!
@@ -65,7 +59,6 @@ class PlayerViewController: UIViewController {
             print("updating playback views")
             self.playbackView.playerState = playerState
             self.miniPlaybackView.playerState = playerState
-//            self.delegate?.playerViewController(self, playerStateDidChange: playerState)
         }
         
         playerViewModel.queueChangeListener { queue in
@@ -119,7 +112,6 @@ class PlayerViewController: UIViewController {
             let playerDetailViewController = segue.destination as! PlayerDetailViewController
             playerDetailViewController.playerViewModel = playerViewModel
             playerDetailViewController.settingsViewModel = settingsViewModel
-//            delegate = playerDetailViewController
         }
         if segue.identifier == "SettingsViewController" {
             let settingsViewController = segue.destination as! SettingsViewController
@@ -140,7 +132,13 @@ extension PlayerViewController: UISearchControllerDelegate {
 // MARK: - SearchViewControllerDelegate
 extension PlayerViewController: SearchViewControllerDelegate {
     func searchViewController(searchViewController: SearchViewController, didSelectCell cell: SearchResultsTableViewCell) {
-        playerViewModel.addToQueue(cell.searchResultItem.song)
+        if let currentMember = settingsViewModel.currentMember {
+            playerViewModel.addToQueue(cell.searchResultItem.song, addedBy: currentMember)
+        } else {
+            DispatchQueue.main.async {
+                self.navigationController?.popToRootViewController(animated: true)
+            }
+        }
     }
 }
 
@@ -181,7 +179,7 @@ extension PlayerViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SongTableViewCell", for: indexPath) as! SongTableViewCell
-        cell.song = playerViewModel.queue[indexPath.row].song
+        cell.queueItem = playerViewModel.queue[indexPath.row]
         return cell
     }
 }
@@ -193,12 +191,6 @@ extension PlayerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return "QUEUE"
     }
-    
-//    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-//        guard let sectionHeaderView = view as? UITableViewHeaderFooterView else { return }
-//        sectionHeaderView.textLabel?.font = UIFont.systemFont(ofSize: 12)
-//        sectionHeaderView.textLabel?.textColor = .label
-//    }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return tableView.frame.width * (82/tableView.frame.width)

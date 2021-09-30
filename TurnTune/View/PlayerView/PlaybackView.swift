@@ -20,9 +20,9 @@ class PlaybackView: UIView {
 
     var playerState = PlayerState() {
         didSet {
-            albumImageView.sd_setImage(with: URL(string: playerState.currentSong.artworkURL), placeholderImage: UIImage(systemName: "photo.fill"))
-            songLabel.text = playerState.currentSong.name
-            artistLabel.text = playerState.currentSong.artist
+            albumImageView.sd_setImage(with: URL(string: playerState.queueItem.song.artworkURL), placeholderImage: UIImage(systemName: "photo.fill"))
+            songLabel.text = playerState.queueItem.song.name
+            artistLabel.text = playerState.queueItem.song.artist
             
             let imageName = playerState.isPaused ? "play.circle" : "pause.circle"
             playPauseButton.setImage(UIImage(systemName: imageName), for: .normal)
@@ -33,6 +33,7 @@ class PlaybackView: UIView {
     @IBOutlet weak var albumImageView: UIImageView!
     @IBOutlet weak var songLabel: UILabel!
     @IBOutlet weak var artistLabel: UILabel!
+    @IBOutlet weak var memberLabel: UILabel!
     @IBOutlet weak var rewindButton: UIButton!
     @IBOutlet weak var playPauseButton: UIButton!
     @IBOutlet weak var playNextButton: UIButton!
