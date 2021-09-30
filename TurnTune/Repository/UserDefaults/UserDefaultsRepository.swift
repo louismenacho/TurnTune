@@ -20,10 +20,9 @@ class UserDefaultsRepository {
     @UserDefaultsProperty(key: "Room ID")
     var roomID = ""
     
+    @UserDefaultsProperty(key: "isHost")
+    var isHost = false
+    
     @UserDefaultsProperty(key: "Appearance")
     var appearance = UIUserInterfaceStyle.unspecified.rawValue
-    
-    func listKeys() -> [String] {
-        userDefaults.dictionaryRepresentation().keys.map { $0 }
-    }
 }

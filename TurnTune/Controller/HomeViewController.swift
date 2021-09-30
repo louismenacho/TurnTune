@@ -30,34 +30,64 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         homeViewModel.delegate = self
-        displayNameTextField.delegate = self
         roomIDTextField.delegate = self
-        displayNameTextField.text = "Louis"
-        roomIDTextField.text = "XRXR"
-        stackViewContainerCenterXConstraint.constant = view.frame.width/2
+        displayNameTextField.delegate = self
         
-        NotificationCenter.default.addObserver(self,
-            selector: #selector(self.keyboardWillShow(_:)),
-            name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self,
-            selector: #selector(self.keyboardWillHide(_:)),
-            name: UIResponder.keyboardWillHideNotification, object: nil);
+        addKeyboardObserver()
+        stackViewContainerCenterXConstraint.constant = view.frame.width/2
+
+        if homeViewModel.userIsHost, !homeViewModel.userRoomID.isEmpty {
+            print("rehosting")
+            rejoinRoom()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        roomIDTextField.text = homeViewModel.userRoomID
+        displayNameTextField.text = homeViewModel.userDisplayName
+        print(homeViewModel.userRoomID)
+        print(homeViewModel.userDisplayName)
+
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "QueueViewController" {
+        if segue.identifier == "PlayerViewController" {
             let queueViewController = segue.destination as! PlayerViewController
             queueViewController.searchViewModel = SearchViewModel(musicBrowserService: homeViewModel.musicBrowserService)
-            queueViewController.playerViewModel = PlayerViewModel(musicPlayerService: homeViewModel.spotifyMusicPlayerService!)
-            queueViewController.navigationItem.title = homeViewModel.roomDataAccess.currentRoomID
+            queueViewController.playerViewModel = PlayerViewModel(musicPlayerService: homeViewModel.spotifyMusicPlayerService)
+            queueViewController.settingsViewModel = SettingsViewModel(
+                roomDataAccess: homeViewModel.roomDataAccess,
+                memberDataAccess: homeViewModel.memberDataAccess
+            )
         }
     }
     
+    private func rejoinRoom() {
+        startActivityIndicator()
+        homeViewModel.rejoinRoom() { [self] (room, member) in
+            homeViewModel.connectMusicBrowserService()
+            if member.isHost {
+                homeViewModel.connectMusicPlayerService {
+                    stopActivityIndicator()
+                    DispatchQueue.main.async {
+                        performSegue(withIdentifier: "PlayerViewController", sender: self)
+                    }
+                }
+            }
+        }
+    }
+    
+    private func addKeyboardObserver() {
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    @IBAction func viewTapped(_ sender: UITapGestureRecognizer) {
+        view.endEditing(true)
+    }
+
     @IBAction func segmentedControlSwitched(_ sender: HomeViewSegmentedControl) {
         if sender.selectedSegmentIndex == 0 {
             stackViewContainerCenterXConstraint.constant = view.frame.width/2
@@ -66,17 +96,15 @@ class HomeViewController: UIViewController {
             stackViewContainerCenterXConstraint.constant = -view.frame.width/2
         }
     }
-    
-    @IBAction func viewTapped(_ sender: UITapGestureRecognizer) {
-        view.endEditing(true)
-    }
-    
+        
     @IBAction func joinButtonPressed(_ sender: HomeViewButton) {
         startActivityIndicator()
         homeViewModel.joinRoom(roomID: roomIDTextField.text!, as: displayNameTextField.text!) { [self] in
             homeViewModel.connectMusicBrowserService()
-            performSegue(withIdentifier: "QueueViewController", sender: self)
             stopActivityIndicator()
+            DispatchQueue.main.async {
+                performSegue(withIdentifier: "PlayerViewController", sender: self)
+            }
         }
     }
     
@@ -86,8 +114,10 @@ class HomeViewController: UIViewController {
         homeViewModel.connectMusicPlayerService { [self] in
             homeViewModel.hostRoom(as: displayName) { [self] in
                 homeViewModel.connectMusicBrowserService()
-                performSegue(withIdentifier: "QueueViewController", sender: self)
                 stopActivityIndicator()
+                DispatchQueue.main.async {
+                    performSegue(withIdentifier: "PlayerViewController", sender: self)
+                }
             }
         }
     }

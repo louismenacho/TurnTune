@@ -7,9 +7,17 @@
 
 import UIKit
 
+//protocol PlayerViewControllerDelegate: AnyObject {
+//    func playerViewController(_ playerViewController: PlayerViewController, playerStateDidChange state: PlayerState)
+//    func playerViewController(_ playerViewController: PlayerViewController, settingsDidChange room: Room)
+//}
+
 class PlayerViewController: UIViewController {
     
+//    weak var delegate: PlayerViewControllerDelegate?
+    
     var searchViewModel: SearchViewModel!
+    var settingsViewModel: SettingsViewModel!
     var playerViewModel: PlayerViewModel!
     
     @IBOutlet weak var tableView: UITableView!
@@ -19,29 +27,57 @@ class PlayerViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationController?.navigationBar.prefersLargeTitles = false
+        
+        navigationController!.navigationBar.prefersLargeTitles = false
         navigationController!.navigationBar.standardAppearance.shadowColor = .clear
         navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.searchController = prepareSearchController()
         
-        tableView.dataSource = self
-        tableView.delegate = self
-        
         playbackView.frame.size = CGSize(width: playbackView.frame.width, height: view.frame.width/3+40)
         miniPlaybackViewBottomConstraint.constant = -114
-            
+        
+        tableView.dataSource = self
+        tableView.delegate = self
+        playbackView.delegate = self
+        miniPlaybackView.delegate = self
+        
+        if playerViewModel.musicPlayerService == nil {
+            hidePlayerControls()
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        print("PlayerViewController willAppear")
+        
+        settingsViewModel.roomChangeListener { room in
+            self.navigationItem.title = room.roomID
+        }
+        
+        settingsViewModel.memberListChangeListener { memberList in
+            if memberList == nil {
+                DispatchQueue.main.async {
+                    self.navigationController?.popToRootViewController(animated: true)
+                }
+            }
+        }
+        
         playerViewModel.playerStateChangeListener { playerState in
-            print("playerStateDidChange")
+            print("updating playback views")
             self.playbackView.playerState = playerState
             self.miniPlaybackView.playerState = playerState
+//            self.delegate?.playerViewController(self, playerStateDidChange: playerState)
         }
         
         playerViewModel.queueChangeListener { queue in
             print("queueDidChange")
             self.tableView.reloadSections([0], with: .automatic)
         }
-        
-        playbackView.delegate = self
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        print("PlayerViewController viewWillDisappear")
+        settingsViewModel.removeAllListeners()
+        playerViewModel.removeAllListeners()
     }
     
     private func prepareSearchController() -> UISearchController {
@@ -63,6 +99,13 @@ class PlayerViewController: UIViewController {
         return searchResultsViewController
     }
     
+    private func hidePlayerControls() {
+        playbackView.rewindButton.isHidden = true
+        playbackView.playPauseButton.isHidden = true
+        playbackView.playNextButton.isHidden = true
+        miniPlaybackView.playPauseButton.isHidden = true
+    }
+    
     @IBAction func settingsButtonPressed(_ sender: UIBarButtonItem) {
         performSegue(withIdentifier: "SettingsViewController", sender: self)
     }
@@ -74,7 +117,13 @@ class PlayerViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "PlayerDetailViewController" {
             let playerDetailViewController = segue.destination as! PlayerDetailViewController
-            playerDetailViewController.playerState = playbackView.playerState
+            playerDetailViewController.playerViewModel = playerViewModel
+            playerDetailViewController.settingsViewModel = settingsViewModel
+//            delegate = playerDetailViewController
+        }
+        if segue.identifier == "SettingsViewController" {
+            let settingsViewController = segue.destination as! SettingsViewController
+            settingsViewController.settingsViewModel = settingsViewModel
         }
     }
 }
@@ -96,7 +145,7 @@ extension PlayerViewController: SearchViewControllerDelegate {
 }
 
 
-// MARK: - UITableViewDelegate
+// MARK: - PlaybackViewDelegate
 extension PlayerViewController: PlaybackViewDelegate {
     
     func playbackView(rewindButtonPressedFor playbackView: PlaybackView) {

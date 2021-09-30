@@ -12,13 +12,27 @@ class HomeViewModel: ViewModel {
     var delegate: ViewModelDelegate?
     
     private(set) var authService = FirebaseAuthService()
+    private(set) var musicBrowserService = SpotifyMusicBrowserService()
+    private(set) var spotifyMusicPlayerService: SpotifyMusicPlayerService?
+    
     private(set) var roomDataAccess = RoomDataAccessProvider()
     private(set) var memberDataAccess = MemberDataAccessProvider()
     private(set) var playerStateDataAccess = PlayerStateDataAccessProvider()
-    private(set) var musicBrowserService = SpotifyMusicBrowserService()
-    
     private(set) var spotifyCredentialsDataAccess = SpotifyCredentialsDataAccessProvider()
-    private(set) var spotifyMusicPlayerService: SpotifyMusicPlayerService?
+    
+    private(set) var userDefaults = UserDefaultsRepository()
+    
+    var userIsHost: Bool {
+        userDefaults.isHost
+    }
+    
+    var userDisplayName: String {
+        userDefaults.displayName
+    }
+    
+    var userRoomID: String {
+        userDefaults.roomID
+    }
     
     init() {
         authService.delegate = self
@@ -31,22 +45,49 @@ class HomeViewModel: ViewModel {
     func joinRoom(roomID: String, as displayName: String, completion: @escaping () -> Void) {
         authService.signIn { [self] in
             roomDataAccess.getRoom(roomID) { [self] room in
-                roomDataAccess.setCurrentRoom(roomID: room.roomID)
-                let member = Member(userID: authService.currentUserID, displayName: displayName)
-                memberDataAccess.addMember(member)
-                completion()
+                userDefaults.roomID = roomID
+                userDefaults.userID = authService.currentUserID
+                userDefaults.displayName = displayName
+                userDefaults.isHost = authService.currentUserID == room.host.userID
+                
+                let member = Member(
+                    userID: userDefaults.userID,
+                    displayName: userDefaults.displayName,
+                    isHost: userDefaults.isHost
+                )
+                memberDataAccess.addMember(member) {
+                    completion()
+                }
             }
         }
     }
     
+    func rejoinRoom(completion: @escaping (Room, Member) -> Void) {
+        authService.signIn { [self] in
+            roomDataAccess.getRoom(userRoomID) { [self] room in
+                memberDataAccess.getMember(authService.currentUserID) { member in
+                    completion(room, member)
+                }
+            }
+        }
+    }
+        
     func hostRoom(as displayName: String, completion: @escaping () -> Void) {
         authService.signIn { [self] in
-            let host = Member(userID: authService.currentUserID, displayName: displayName)
+            let host = Member(
+                userID: authService.currentUserID,
+                displayName: displayName,
+                isHost: true
+            )
             roomDataAccess.createRoom(host: host) { [self] room in
-                roomDataAccess.setCurrentRoom(roomID: room.roomID)
-                memberDataAccess.addMember(host)
+                userDefaults.userID = authService.currentUserID
+                userDefaults.roomID = room.roomID
+                userDefaults.displayName = host.displayName
+                
+                memberDataAccess.addMember(host) {
+                    completion()
+                }
                 playerStateDataAccess.createPlayerState(playerState: PlayerState())
-                completion()
             }
         }
     }
@@ -70,7 +111,7 @@ class HomeViewModel: ViewModel {
             }
         }
     }
-    
+
     private func isNameValid(name: String) -> Bool {
         if name.isEmpty || name.count > 12 {
             print("Invalid name")
@@ -78,7 +119,6 @@ class HomeViewModel: ViewModel {
         }
         return true
     }
-    
 }
 
 extension HomeViewModel: AuthenticationServiceableDelegate {

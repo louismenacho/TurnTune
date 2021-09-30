@@ -11,14 +11,21 @@ class MemberDataAccessProvider: DataAccessProvider {
     
     weak var delegate: DataAccessProviderDelegate?
     
-    private var currentRoomID: String {
-        UserDefaultsRepository().roomID
-    }
-    
     private var memberRepository: FirestoreRepository<Member> {
-        FirestoreRepository<Member>(collectionPath: "rooms/"+currentRoomID+"/members")
+        let roomID = UserDefaultsRepository().roomID
+        return FirestoreRepository<Member>(collectionPath: "rooms/"+roomID+"/members")
     }
     
+    func getMember(_ userID: String, completion: @escaping (Member) -> Void) {
+        memberRepository.get(id: userID) { [self] result in
+            switch result {
+                case let .failure(error):
+                    delegate?.dataAccessProvider(self, error: .member(error: error))
+                case let .success(member):
+                    completion(member)
+            }
+        }
+    }
             
     func addMember(_ member: Member, completion: (() -> Void)? = nil) {
         memberRepository.create(member) { [self] error in
@@ -40,8 +47,8 @@ class MemberDataAccessProvider: DataAccessProvider {
         }
     }
     
-    func listMembers(completion: @escaping ([Member]) -> Void) {
-        memberRepository.list(memberRepository.collectionReference.order(by: "dateAdded", descending: true)) { [self] result in
+    func membersChangeListener(completion: @escaping ([Member]) -> Void) {
+        memberRepository.addListener(memberRepository.collectionReference.order(by: "dateAdded", descending: false)) { [self] result in
             switch result {
             case let .failure(error):
                 delegate?.dataAccessProvider(self, error: .member(error: error))
@@ -51,15 +58,8 @@ class MemberDataAccessProvider: DataAccessProvider {
         }
     }
     
-    func membersChangeListener(completion: @escaping ([Member]) -> Void) {
-        memberRepository.addListener(memberRepository.collectionReference.order(by: "dateAdded", descending: true)) { [self] result in
-            switch result {
-            case let .failure(error):
-                delegate?.dataAccessProvider(self, error: .member(error: error))
-            case let .success(members):
-                completion(members)
-            }
-        }
+    func removeListener() {
+        memberRepository.removeListener()
     }
     
 }

@@ -12,6 +12,7 @@ import FirebaseFirestoreSwift
 class FirestoreRepository<Object: FirestoreDocument>: RemoteRepository {
     
     var collectionReference: CollectionReference
+    var collectionListener: ListenerRegistration?
     
     init(collectionPath: String) {
         collectionReference = Firestore.firestore().collection(collectionPath)
@@ -98,7 +99,7 @@ class FirestoreRepository<Object: FirestoreDocument>: RemoteRepository {
     }
     
     func addListener(id: String, completion: @escaping (Result<Object, Error>) -> Void) {
-        collectionReference.document(id).addSnapshotListener { documentSnapshot, error in
+        collectionListener = collectionReference.document(id).addSnapshotListener { documentSnapshot, error in
             if let error = error {
                 completion(.failure(error))
                 return
@@ -117,7 +118,7 @@ class FirestoreRepository<Object: FirestoreDocument>: RemoteRepository {
     }
 
     func addListener(_ query: Query? = nil, completion: @escaping (Result<[Object], Error>) -> Void) {
-        (query ?? collectionReference).addSnapshotListener { querySnapshot, error in
+        collectionListener = (query ?? collectionReference).addSnapshotListener { querySnapshot, error in
             if let error = error {
                 completion(.failure(error))
                 return
@@ -135,5 +136,9 @@ class FirestoreRepository<Object: FirestoreDocument>: RemoteRepository {
                 completion(.failure(error))
             }
         }
+    }
+    
+    func removeListener() {
+        collectionListener?.remove()
     }
 }

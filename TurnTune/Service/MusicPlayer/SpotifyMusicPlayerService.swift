@@ -57,7 +57,11 @@ class SpotifyMusicPlayerService: NSObject, MusicPlayerServiceable {
     }
     
     func connect() {
+        print("checking connect status")
+        print(appRemote.isConnected)
+        print(appRemote.connectionParameters.accessToken)
         if !appRemote.isConnected && appRemote.connectionParameters.accessToken != nil {
+            print("attempting connect")
             appRemote.connect()
         }
     }

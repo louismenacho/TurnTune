@@ -12,6 +12,19 @@ class MemberTableViewCell: UITableViewCell {
     var member = Member() {
         didSet {
             memberDisplayNameLabel.text = member.displayName
+            hostIndicatorLabel.isHidden = !member.isHost
+            
+            if isCurrentMemberHost {
+                isUserInteractionEnabled = !member.isHost
+                accessoryType = !member.isHost ? .disclosureIndicator : .none
+            }
+        }
+    }
+    
+    var isCurrentMemberHost: Bool = false {
+        didSet {
+            isUserInteractionEnabled = isCurrentMemberHost
+            accessoryType = isCurrentMemberHost ? .disclosureIndicator : .none
         }
     }
     
@@ -20,13 +33,5 @@ class MemberTableViewCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        hostIndicatorLabel.isHidden = true
     }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
-
 }

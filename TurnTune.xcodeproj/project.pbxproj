@@ -66,7 +66,7 @@
 		95C7715B25944C1F00EDF930 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 95C7715A25944C1F00EDF930 /* Assets.xcassets */; };
 		95C7715E25944C1F00EDF930 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 95C7715C25944C1F00EDF930 /* LaunchScreen.storyboard */; };
 		95C7716D2597F07100EDF930 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 95C7716C2597F07100EDF930 /* GoogleService-Info.plist */; };
-		95D00B242635C7BA0004B833 /* CheckmarkSettingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D00B232635C7BA0004B833 /* CheckmarkSettingTableViewCell.swift */; };
+		95D00B242635C7BA0004B833 /* QueueModeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D00B232635C7BA0004B833 /* QueueModeTableViewCell.swift */; };
 		95D01C0026937B5A00B687FD /* PlayerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D01BFF26937B5A00B687FD /* PlayerState.swift */; };
 		95D01C02269562A500B687FD /* SpotfiyRecommendationsAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D01C01269562A500B687FD /* SpotfiyRecommendationsAPI.swift */; };
 		95D01C04269568F600B687FD /* RecommendationsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D01C03269568F600B687FD /* RecommendationsResponse.swift */; };
@@ -151,7 +151,7 @@
 		95C7715D25944C1F00EDF930 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		95C7715F25944C1F00EDF930 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		95C7716C2597F07100EDF930 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		95D00B232635C7BA0004B833 /* CheckmarkSettingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckmarkSettingTableViewCell.swift; sourceTree = "<group>"; };
+		95D00B232635C7BA0004B833 /* QueueModeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueueModeTableViewCell.swift; sourceTree = "<group>"; };
 		95D01BFF26937B5A00B687FD /* PlayerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerState.swift; sourceTree = "<group>"; };
 		95D01C01269562A500B687FD /* SpotfiyRecommendationsAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotfiyRecommendationsAPI.swift; sourceTree = "<group>"; };
 		95D01C03269568F600B687FD /* RecommendationsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationsResponse.swift; sourceTree = "<group>"; };
@@ -241,7 +241,7 @@
 		9545C2F926BE370F00616155 /* SettingsView */ = {
 			isa = PBXGroup;
 			children = (
-				95D00B232635C7BA0004B833 /* CheckmarkSettingTableViewCell.swift */,
+				95D00B232635C7BA0004B833 /* QueueModeTableViewCell.swift */,
 				95FDFB7026CCB2DA00E2B4CB /* MemberTableViewCell.swift */,
 			);
 			path = SettingsView;
@@ -659,7 +659,7 @@
 				95A2190725B6AF34008EA6C7 /* Song.swift in Sources */,
 				955A52B726A8FB80004B01B4 /* PlayerViewModel.swift in Sources */,
 				95BECCDA26E484A500D066C2 /* SpotifyCredentialsDataAccessProvider.swift in Sources */,
-				95D00B242635C7BA0004B833 /* CheckmarkSettingTableViewCell.swift in Sources */,
+				95D00B242635C7BA0004B833 /* QueueModeTableViewCell.swift in Sources */,
 				95FDBA4D26D46C1000C586BE /* QueueItem.swift in Sources */,
 				955A52B326A7FFA1004B01B4 /* PlayerStateDataAccessProvider.swift in Sources */,
 				95A4046025C3EB8800F10E36 /* TokenResponse.swift in Sources */,

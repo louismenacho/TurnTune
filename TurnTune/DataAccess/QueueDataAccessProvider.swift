@@ -16,12 +16,9 @@ class QueueDataAccessProvider: DataAccessProvider {
     
     weak var delegate: DataAccessProviderDelegate?
     
-    private var currentRoomID: String {
-        UserDefaultsRepository().roomID
-    }
-    
     private var queueRepository: FirestoreRepository<QueueItem> {
-        FirestoreRepository<QueueItem>(collectionPath: "rooms/"+currentRoomID+"/queue")
+        let roomID = UserDefaultsRepository().roomID
+        return FirestoreRepository<QueueItem>(collectionPath: "rooms/"+roomID+"/queue")
     }
      
     func addItem(_ item: QueueItem, completion: (() -> Void)? = nil) {
@@ -100,6 +97,10 @@ class QueueDataAccessProvider: DataAccessProvider {
                 completion(queue)
             }
         }
+    }
+    
+    func removeListener() {
+        queueRepository.removeListener()
     }
     
 }

@@ -16,15 +16,18 @@ struct Member: FirestoreDocument {
     
     var userID: String
     var displayName: String
+    var isHost: Bool
 
     init() {
         userID = ""
         displayName = ""
+        isHost = false
     }
     
-    init(userID: String, displayName: String) {
+    init(userID: String, displayName: String, isHost: Bool) {
         self.userID = userID
         self.displayName = displayName
+        self.isHost = isHost
         self.documentID = userID
     }
 }

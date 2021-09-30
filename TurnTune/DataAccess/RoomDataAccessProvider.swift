@@ -11,10 +11,8 @@ class RoomDataAccessProvider: DataAccessProvider {
     
     weak var delegate: DataAccessProviderDelegate?
         
-    var currentRoomID: String = UserDefaultsRepository().roomID {
-        didSet {
-            UserDefaultsRepository().roomID = currentRoomID
-        }
+    var currentRoomID: String {
+        return UserDefaultsRepository().roomID
     }
     
     private var roomRepository = {
@@ -65,8 +63,8 @@ class RoomDataAccessProvider: DataAccessProvider {
         }
     }
     
-    func setCurrentRoom(roomID: String) {
-        currentRoomID = roomID
+    func removeListener() {
+        roomRepository.removeListener()
     }
     
     private func isRoomCodeValid(code: String) -> Bool {

@@ -10,13 +10,10 @@ import Foundation
 class PlayerStateDataAccessProvider: DataAccessProvider {
     
     weak var delegate: DataAccessProviderDelegate?
-    
-    private var currentRoomID: String {
-        UserDefaultsRepository().roomID
-    }
-    
+        
     private var playerStateRepository: FirestoreRepository<PlayerState> {
-        FirestoreRepository<PlayerState>(collectionPath: "rooms/"+currentRoomID+"/player")
+        let roomID = UserDefaultsRepository().roomID
+        return FirestoreRepository<PlayerState>(collectionPath: "rooms/"+roomID+"/player")
     }
     
     func createPlayerState(playerState: PlayerState ,completion: (() -> Void)? = nil) {
@@ -48,5 +45,9 @@ class PlayerStateDataAccessProvider: DataAccessProvider {
                 completion(playerState)
             }
         }
+    }
+    
+    func removeListener() {
+        playerStateRepository.removeListener()
     }
 }

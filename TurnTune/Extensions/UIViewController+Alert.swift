@@ -24,8 +24,10 @@ extension UIViewController {
             let action = UIAlertAction(title: indexTitle, style: actionStyles[index], handler: actions[index])
             alertController.addAction(action)
         }
-        self.present(alertController, animated: true) {
-            completion?(alertController)
+        DispatchQueue.main.async {
+            self.present(alertController, animated: true) {
+                completion?(alertController)
+            }
         }
     }
 }

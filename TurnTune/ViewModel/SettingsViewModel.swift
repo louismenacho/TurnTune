@@ -10,13 +10,16 @@ import Foundation
 class SettingsViewModel {
     
     private(set) var authService = FirebaseAuthService()
-    private(set) var roomDataAccess = RoomDataAccessProvider()
-    private(set) var memberDataAccess = MemberDataAccessProvider()
+    
+    private(set) var roomDataAccess: RoomDataAccessProvider
+    private(set) var memberDataAccess: MemberDataAccessProvider
     
     private(set) var room = Room()
     private(set) var memberList = [Member]()
     
-    init() {
+    init(roomDataAccess: RoomDataAccessProvider, memberDataAccess: MemberDataAccessProvider) {
+        self.roomDataAccess = roomDataAccess
+        self.memberDataAccess = memberDataAccess
         self.roomDataAccess.delegate = self
         self.memberDataAccess.delegate = self
     }
@@ -29,16 +32,8 @@ class SettingsViewModel {
         QueueType(rawValue: room.queueMode) ?? .fair
     }
     
-    func loadCurrentRoom() {
-        roomDataAccess.getRoom { room in
-            self.room = room
-        }
-    }
-    
-    func updateRoom(_ room: Room, completion: (() -> Void)? = nil) {
-        roomDataAccess.updateRoom(room) {
-            completion?()
-        }
+    var isCurrentMemberHost: Bool {
+        authService.currentUserID == room.host.userID
     }
     
     func roomChangeListener(completion: @escaping (Room) -> Void) {
@@ -48,17 +43,28 @@ class SettingsViewModel {
         }
     }
     
-    func loadMemberList(completion: @escaping ([Member]) -> Void) {
-        memberDataAccess.listMembers { memberList in
+    func memberListChangeListener(completion: @escaping ([Member]?) -> Void) {
+        memberDataAccess.membersChangeListener { [self] memberList in
             self.memberList = memberList
-            completion(memberList)
+            print("memberListChangeListener memberlist: \(memberList.map { $0.displayName })")
+            if memberList.first(where: { $0.userID == self.authService.currentUserID }) != nil {
+                completion(memberList)
+            } else {
+                completion(nil)
+            }
         }
     }
     
-    func memberListChangeListener(completion: @escaping ([Member]) -> Void) {
-        memberDataAccess.membersChangeListener { memberList in
-            self.memberList = memberList
-            completion(memberList)
+    func removeAllListeners() {
+        roomDataAccess.removeListener()
+        memberDataAccess.removeListener()
+    }
+        
+    // MARK: - Host Methods
+    
+    func updateRoom(_ room: Room, completion: (() -> Void)? = nil) {
+        roomDataAccess.updateRoom(room) {
+            completion?()
         }
     }
     
@@ -66,10 +72,6 @@ class SettingsViewModel {
         memberDataAccess.removeMember(member) {
             completion?()
         }
-    }
-    
-    func isHost(_ member: Member) -> Bool {
-        return member.userID == room.host.userID
     }
     
     func updateQueueMode(queueType: QueueType) {
