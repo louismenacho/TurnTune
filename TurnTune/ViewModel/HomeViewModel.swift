@@ -42,7 +42,7 @@ class HomeViewModel: ViewModel {
         musicBrowserService.delegate = self
     }
 
-    func joinRoom(roomID: String, as displayName: String, completion: @escaping () -> Void) {
+    func joinRoom(roomID: String, as displayName: String, completion: @escaping (Member) -> Void) {
         authService.signIn { [self] in
             roomDataAccess.getRoom(roomID) { [self] room in
                 userDefaults.roomID = roomID
@@ -50,27 +50,33 @@ class HomeViewModel: ViewModel {
                 userDefaults.displayName = displayName
                 userDefaults.isHost = authService.currentUserID == room.host.userID
                 
-                let member = Member(
-                    userID: userDefaults.userID,
-                    displayName: userDefaults.displayName,
-                    isHost: userDefaults.isHost
-                )
-                memberDataAccess.addMember(member) {
-                    completion()
+                memberDataAccess.getMember(authService.currentUserID) { [self] member in
+                    if let member = member {
+                        completion(member)
+                    } else {
+                        let member = Member(
+                            userID: userDefaults.userID,
+                            displayName: userDefaults.displayName,
+                            isHost: userDefaults.isHost
+                        )
+                        memberDataAccess.addMember(member) {
+                            completion(member)
+                        }
+                    }
                 }
             }
         }
     }
     
-    func rejoinRoom(completion: @escaping (Room, Member) -> Void) {
-        authService.signIn { [self] in
-            roomDataAccess.getRoom(userRoomID) { [self] room in
-                memberDataAccess.getMember(authService.currentUserID) { member in
-                    completion(room, member)
-                }
-            }
-        }
-    }
+//    func rejoinRoom(completion: @escaping (Room, Member) -> Void) {
+//        authService.signIn { [self] in
+//            roomDataAccess.getRoom(userRoomID) { [self] room in
+//                memberDataAccess.getMember(authService.currentUserID) { member in
+//                    completion(room, member)
+//                }
+//            }
+//        }
+//    }
         
     func hostRoom(as displayName: String, completion: @escaping () -> Void) {
         authService.signIn { [self] in

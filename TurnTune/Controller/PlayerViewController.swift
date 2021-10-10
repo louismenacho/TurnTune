@@ -61,7 +61,7 @@ class PlayerViewController: UIViewController {
             self.miniPlaybackView.playerState = playerState
         }
         
-        playerViewModel.queueChangeListener { queue in
+        playerViewModel.queueChangeListener { queue in
             print("queueDidChange")
             self.tableView.reloadSections([0], with: .automatic)
         }
@@ -116,6 +116,7 @@ class PlayerViewController: UIViewController {
         if segue.identifier == "SettingsViewController" {
             let settingsViewController = segue.destination as! SettingsViewController
             settingsViewController.settingsViewModel = settingsViewModel
+            settingsViewController.delegate = self
         }
     }
 }
@@ -132,12 +133,8 @@ extension PlayerViewController: UISearchControllerDelegate {
 // MARK: - SearchViewControllerDelegate
 extension PlayerViewController: SearchViewControllerDelegate {
     func searchViewController(searchViewController: SearchViewController, didSelectCell cell: SearchResultsTableViewCell) {
-        if let currentMember = settingsViewModel.currentMember {
-            playerViewModel.addToQueue(cell.searchResultItem.song, addedBy: currentMember)
-        } else {
-            DispatchQueue.main.async {
-                self.navigationController?.popToRootViewController(animated: true)
-            }
+        if let currentMember = settingsViewModel.currentMember, let currentMemberPosition = settingsViewModel.currentMemberPosition {
+            playerViewModel.addToQueue(cell.searchResultItem.song, addedBy: currentMember, memberPosition: currentMemberPosition)
         }
     }
 }
@@ -213,5 +210,14 @@ extension PlayerViewController: UITableViewDelegate {
                 view.layoutIfNeeded()
             }
         }
+    }
+}
+
+
+// MARK: - SettingsViewControllerDelegate
+extension PlayerViewController: SettingsViewControllerDelegate {
+    
+    func settingsViewController(_ settingsViewController: SettingsViewController, didRemoveMember member: Member) {
+        playerViewModel.removeQueueItems(for: member)
     }
 }

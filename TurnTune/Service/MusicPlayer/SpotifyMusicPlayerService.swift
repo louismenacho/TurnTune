@@ -15,10 +15,10 @@ class SpotifyMusicPlayerService: NSObject, MusicPlayerServiceable {
     private var playerStateDidChange: ((SPTAppRemotePlayerState) -> Void)?
 
     private var config: SPTConfiguration
-    private var appRemote: SPTAppRemote
+    private(set) var appRemote: SPTAppRemote
     private var sessionManager: SPTSessionManager
     
-    private var playerAPI = SpotifyAPIClient<SpotifyPlayerAPI>()
+    private(set) var playerAPI = SpotifyAPIClient<SpotifyPlayerAPI>()
     private var userProfileAPI = SpotifyAPIClient<SpotifyUserProfileAPI>()
     
     private var scope: SPTScope = [
@@ -58,8 +58,7 @@ class SpotifyMusicPlayerService: NSObject, MusicPlayerServiceable {
     
     func connect() {
         print("checking connect status")
-        print(appRemote.isConnected)
-        print(appRemote.connectionParameters.accessToken)
+        print("appRemote isConnected: \(appRemote.isConnected)")
         if !appRemote.isConnected && appRemote.connectionParameters.accessToken != nil {
             print("attempting connect")
             appRemote.connect()

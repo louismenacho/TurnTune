@@ -63,9 +63,11 @@ class PlayerViewModel {
         }
     }
     
-    func addToQueue(_ song: Song, addedBy member: Member, completion: (() -> Void)? = nil) {
+    func addToQueue(_ song: Song, addedBy member: Member, memberPosition: Int, completion: (() -> Void)? = nil) {
         var item = QueueItem(song: song)
-        item.priority = queue.filter({ $0.addedBy.userID == authService.currentUserID }).count
+        let minPriority = queue.map { $0.priority }.min() ?? 0
+        item.priority = queue.filter({ $0.addedBy.userID == authService.currentUserID }).count + minPriority
+        item.position = memberPosition
         item.addedBy = member
         queueDataAccess.addItem(item) {
             completion?()
@@ -75,6 +77,14 @@ class PlayerViewModel {
     func removeFromQueue(_ item: QueueItem, completion: (() -> Void)? = nil) {
         queueDataAccess.markDidPlay(item) {
             completion?()
+        }
+    }
+    
+    func removeQueueItems(for member: Member) {
+        queue.forEach { queueItem in
+            if queueItem.addedBy.userID == member.userID {
+                queueDataAccess.removeItem(queueItem)
+            }
         }
     }
     
@@ -93,11 +103,11 @@ class PlayerViewModel {
     }
     
     func playNextSong(completion: (() -> Void)? = nil) {
-        guard let nextSong = queue.first else {
+        guard let nextQueueItem = queue.first else {
             return
         }
-        play([nextSong]) { [self] in
-            removeFromQueue(nextSong) {
+        play([nextQueueItem]) { [self] in
+            removeFromQueue(nextQueueItem) {
                 completion?()
             }
         }

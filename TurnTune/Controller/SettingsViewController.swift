@@ -7,7 +7,13 @@
 
 import UIKit
 
+protocol SettingsViewControllerDelegate: AnyObject {
+    func settingsViewController(_ settingsViewController: SettingsViewController, didRemoveMember member: Member)
+}
+
 class SettingsViewController: UIViewController {
+    
+    weak var delegate: SettingsViewControllerDelegate?
     
     var settingsViewModel: SettingsViewModel!
 
@@ -114,7 +120,9 @@ extension SettingsViewController: UITableViewDelegate {
                 actionStyles: [.destructive],
                 actions: [
                     { _ in
-                        self.settingsViewModel.removeMember(memberCell.member)
+                        self.settingsViewModel.removeMember(memberCell.member) {
+                            self.delegate?.settingsViewController(self, didRemoveMember: memberCell.member)
+                        }
                     }
                 ],
                 completion: { alertController in

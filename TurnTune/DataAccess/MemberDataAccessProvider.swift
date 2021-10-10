@@ -16,11 +16,15 @@ class MemberDataAccessProvider: DataAccessProvider {
         return FirestoreRepository<Member>(collectionPath: "rooms/"+roomID+"/members")
     }
     
-    func getMember(_ userID: String, completion: @escaping (Member) -> Void) {
+    func getMember(_ userID: String, completion: @escaping (Member?) -> Void) {
         memberRepository.get(id: userID) { [self] result in
             switch result {
                 case let .failure(error):
-                    delegate?.dataAccessProvider(self, error: .member(error: error))
+                    if case .notFound = error as? RepositoryError {
+                        completion(nil)
+                    } else {
+                        delegate?.dataAccessProvider(self, error: .member(error: error))
+                    }
                 case let .success(member):
                     completion(member)
             }

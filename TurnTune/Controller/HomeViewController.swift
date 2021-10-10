@@ -36,10 +36,10 @@ class HomeViewController: UIViewController {
         addKeyboardObserver()
         stackViewContainerCenterXConstraint.constant = view.frame.width/2
 
-        if homeViewModel.userIsHost, !homeViewModel.userRoomID.isEmpty {
-            print("rehosting")
-            rejoinRoom()
-        }
+//        if homeViewModel.userIsHost, !homeViewModel.userRoomID.isEmpty {
+//            print("rehosting")
+//            rejoinRoom()
+//        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -64,20 +64,20 @@ class HomeViewController: UIViewController {
         }
     }
     
-    private func rejoinRoom() {
-        startActivityIndicator()
-        homeViewModel.rejoinRoom() { [self] (room, member) in
-            homeViewModel.connectMusicBrowserService()
-            if member.isHost {
-                homeViewModel.connectMusicPlayerService {
-                    stopActivityIndicator()
-                    DispatchQueue.main.async {
-                        performSegue(withIdentifier: "PlayerViewController", sender: self)
-                    }
-                }
-            }
-        }
-    }
+//    private func rejoinRoom() {
+//        startActivityIndicator()
+//        homeViewModel.rejoinRoom() { [self] (room, member) in
+//            homeViewModel.connectMusicBrowserService()
+//            if member.isHost {
+//                homeViewModel.connectMusicPlayerService {
+//                    stopActivityIndicator()
+//                    DispatchQueue.main.async {
+//                        performSegue(withIdentifier: "PlayerViewController", sender: self)
+//                    }
+//                }
+//            }
+//        }
+//    }
     
     private func addKeyboardObserver() {
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -99,11 +99,20 @@ class HomeViewController: UIViewController {
         
     @IBAction func joinButtonPressed(_ sender: HomeViewButton) {
         startActivityIndicator()
-        homeViewModel.joinRoom(roomID: roomIDTextField.text!, as: displayNameTextField.text!) { [self] in
+        homeViewModel.joinRoom(roomID: roomIDTextField.text!, as: displayNameTextField.text!) { [self] member in
             homeViewModel.connectMusicBrowserService()
-            stopActivityIndicator()
-            DispatchQueue.main.async {
-                performSegue(withIdentifier: "PlayerViewController", sender: self)
+            if member.isHost {
+                homeViewModel.connectMusicPlayerService {
+                    stopActivityIndicator()
+                    DispatchQueue.main.async {
+                        performSegue(withIdentifier: "PlayerViewController", sender: self)
+                    }
+                }
+            } else {
+                stopActivityIndicator()
+                DispatchQueue.main.async {
+                    performSegue(withIdentifier: "PlayerViewController", sender: self)
+                }
             }
         }
     }

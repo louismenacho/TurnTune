@@ -15,7 +15,7 @@ class SongTableViewCell: UITableViewCell {
             albumImageView.sd_setImage(with: URL(string: queueItem.song.artworkURL), placeholderImage: UIImage(systemName: "photo.fill"))
             songLabel.text = queueItem.song.name
             artistLabel.text = queueItem.song.artist
-            memberLabel.text = "@"+queueItem.addedBy.displayName
+            memberLabel.text = "Added by "+queueItem.addedBy.displayName
         }
     }
     
