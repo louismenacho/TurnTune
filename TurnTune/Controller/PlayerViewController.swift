@@ -61,7 +61,7 @@ class PlayerViewController: UIViewController {
             self.miniPlaybackView.playerState = playerState
         }
         
-        playerViewModel.queueChangeListener { queue in
+        playerViewModel.queueChangeListener { queue in
             print("queueDidChange")
             self.tableView.reloadSections([0], with: .automatic)
         }
