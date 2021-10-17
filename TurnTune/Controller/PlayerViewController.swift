@@ -74,10 +74,10 @@ class PlayerViewController: UIViewController {
     }
     
     private func prepareSearchController() -> UISearchController {
-        let searchViewController = prepareSearchViewController()
+        let searchViewController: SearchViewController = prepareSearchViewController()
         let searchController = UISearchController(searchResultsController: searchViewController)
-        searchController.searchResultsUpdater = searchViewController
         searchController.delegate = self
+        searchController.searchBar.delegate = searchViewController
         searchController.searchBar.autocapitalizationType = .none
         searchController.searchBar.placeholder = "Search songs"
         return searchController

@@ -66,7 +66,7 @@ class PlayerViewModel {
     func addToQueue(_ song: Song, addedBy member: Member, memberPosition: Int, completion: (() -> Void)? = nil) {
         var item = QueueItem(song: song)
         let minPriority = queue.map { $0.priority }.min() ?? 0
-        item.priority = (songCount(for: member) * 10) + minPriority + memberPosition
+        item.priority = songCount(for: member) * 10 + minPriority + memberPosition
         item.addedBy = member
         queueDataAccess.addItem(item) {
             completion?()

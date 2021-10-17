@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import NVActivityIndicatorView
+import NVActivityIndicatorViewExtended
 
 protocol SearchViewControllerDelegate: AnyObject {
     func searchViewController(_ searchViewController: SearchViewController, shouldAddSongForCell cell: SearchResultsTableViewCell) -> Bool
@@ -18,6 +20,11 @@ class SearchViewController: UIViewController {
 
     var searchViewModel: SearchViewModel!
     
+    lazy var actvityIndicator = NVActivityIndicatorView(
+        frame: view.bounds,
+        padding: view.frame.width/2 - 30
+    )
+    
     @IBOutlet weak var tableview: UITableView!
     
     override func viewDidLoad() {
@@ -25,22 +32,39 @@ class SearchViewController: UIViewController {
         tableview.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: tableview.frame.width, height: 1))
         tableview.dataSource = self
     }
+    
+    func startActivityIndicator() {
+        DispatchQueue.main.async { [self] in
+            view.addSubview(actvityIndicator)
+            actvityIndicator.backgroundColor = .black
+            actvityIndicator.alpha = 0.5
+            actvityIndicator.startAnimating()
+        }
+    }
+    
+    func stopActivityIndicator() {
+        DispatchQueue.main.async { [self] in
+            actvityIndicator.stopAnimating()
+            actvityIndicator.removeFromSuperview()
+        }
+    }
 }
 
-extension SearchViewController: UISearchResultsUpdating {
-    func updateSearchResults(for searchController: UISearchController) {
-        if searchController.searchBar.searchTextField.text!.isEmpty {
-            return
-        }
-        searchViewModel.search(query: searchController.searchBar.searchTextField.text!) {
+
+extension SearchViewController: UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        startActivityIndicator()
+        searchViewModel.search(query: searchBar.searchTextField.text!) { [self] in
             DispatchQueue.main.async {
-                self.tableview.reloadData()
+                tableview.reloadData()
+                stopActivityIndicator()
             }
         }
     }
 }
 
 extension SearchViewController: UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return searchViewModel.searchResult.count
     }
@@ -59,6 +83,7 @@ extension SearchViewController: UITableViewDataSource {
 }
 
 extension SearchViewController: SearchResultsTableViewCellDelegate {
+    
     func searchResultsTableViewCell(addButtonPressedFor cell: SearchResultsTableViewCell) {
         guard let selectedRow = tableview.indexPath(for: cell)?.row else {
             return
@@ -67,6 +92,6 @@ extension SearchViewController: SearchResultsTableViewCellDelegate {
             delegate?.searchViewController(self, addSongForCell: cell)
             searchViewModel.searchResult[selectedRow].isAdded = true
             tableview.reloadData()
-        } 
+        }
     }
 }
