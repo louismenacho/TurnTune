@@ -11,14 +11,16 @@ import NVActivityIndicatorViewExtended
 
 protocol SearchViewControllerDelegate: AnyObject {
     func searchViewController(_ searchViewController: SearchViewController, shouldAddSongForCell cell: SearchResultsTableViewCell) -> Bool
-    func searchViewController(_ searchViewController: SearchViewController, addSongForCell cell: SearchResultsTableViewCell)
+    func searchViewController(_ searchViewController: SearchViewController, addSongForCell cell: SearchResultsTableViewCell) -> Int
 }
 
 class SearchViewController: UIViewController {
     
     weak var delegate: SearchViewControllerDelegate?
-
+    
     var searchViewModel: SearchViewModel!
+    
+    var timer: Timer?
     
     lazy var actvityIndicator = NVActivityIndicatorView(
         frame: view.bounds,
@@ -26,11 +28,15 @@ class SearchViewController: UIViewController {
     )
     
     @IBOutlet weak var tableview: UITableView!
+    @IBOutlet weak var songCountLabel: UILabel!
+    @IBOutlet weak var songCountViewBottomConstraint: NSLayoutConstraint!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         tableview.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: tableview.frame.width, height: 1))
         tableview.dataSource = self
+        
+        songCountViewBottomConstraint.constant = -76
     }
     
     func startActivityIndicator() {
@@ -52,6 +58,7 @@ class SearchViewController: UIViewController {
 
 
 extension SearchViewController: UISearchBarDelegate {
+    
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         startActivityIndicator()
         searchViewModel.search(query: searchBar.searchTextField.text!) { [self] in
@@ -62,6 +69,7 @@ extension SearchViewController: UISearchBarDelegate {
         }
     }
 }
+
 
 extension SearchViewController: UITableViewDataSource {
     
@@ -82,16 +90,48 @@ extension SearchViewController: UITableViewDataSource {
     }
 }
 
+
 extension SearchViewController: SearchResultsTableViewCellDelegate {
     
     func searchResultsTableViewCell(addButtonPressedFor cell: SearchResultsTableViewCell) {
-        guard let selectedRow = tableview.indexPath(for: cell)?.row else {
+        guard
+            delegate?.searchViewController(self, shouldAddSongForCell: cell) == true,
+            let newSongCount = delegate?.searchViewController(self, addSongForCell: cell),
+            let selectedRow = tableview.indexPath(for: cell)?.row
+        else {
+            songCountLabel.text = "Cannot add anymore songs"
+            UIView.animate(withDuration: 0.3) { [self] in
+                songCountViewBottomConstraint.constant = 0
+                view.layoutIfNeeded()
+            }
+            
+            timer?.invalidate()
+            timer = Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { timer in
+                
+                UIView.animate(withDuration: 0.3) { [self] in
+                    songCountViewBottomConstraint.constant = -76
+                    view.layoutIfNeeded()
+                }
+            }
             return
         }
-        if delegate?.searchViewController(self, shouldAddSongForCell: cell) == true {
-            delegate?.searchViewController(self, addSongForCell: cell)
-            searchViewModel.searchResult[selectedRow].isAdded = true
-            tableview.reloadData()
+            
+        songCountLabel.text = "\(newSongCount) / 10 songs added"
+        UIView.animate(withDuration: 0.3) { [self] in
+            songCountViewBottomConstraint.constant = 0
+            view.layoutIfNeeded()
         }
+        
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { timer in
+            
+            UIView.animate(withDuration: 0.3) { [self] in
+                songCountViewBottomConstraint.constant = -76
+                view.layoutIfNeeded()
+            }
+        }
+        
+        searchViewModel.searchResult[selectedRow].isAdded = true
+        tableview.reloadData()
     }
 }

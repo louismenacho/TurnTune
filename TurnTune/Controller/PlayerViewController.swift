@@ -137,19 +137,17 @@ extension PlayerViewController: SearchViewControllerDelegate {
         guard let currentMember = settingsViewModel.currentMember else {
             return false
         }
-        if playerViewModel.songCount(for: currentMember) >= 10 {
-            print("limit reached")
-            return false
-        }
-        return true
+        navigationItem.searchController?.searchBar.endEditing(true)
+        return playerViewModel.songCount(for: currentMember) < 10
     }
     
-    func searchViewController(_ searchViewController: SearchViewController, addSongForCell cell: SearchResultsTableViewCell) {
+    func searchViewController(_ searchViewController: SearchViewController, addSongForCell cell: SearchResultsTableViewCell) -> Int {
         guard let currentMember = settingsViewModel.currentMember else {
-            return
+            return -1
         }
         let currentMemberPosition = settingsViewModel.positon(for: currentMember)
         playerViewModel.addToQueue(cell.searchResultItem.song, addedBy: currentMember, memberPosition: currentMemberPosition)
+        return playerViewModel.songCount(for: currentMember) + 1
     }
 }
 
