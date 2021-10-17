@@ -65,7 +65,7 @@ class PlayerViewModel {
     
     func addToQueue(_ song: Song, addedBy member: Member, memberPosition: Int, completion: (() -> Void)? = nil) {
         var item = QueueItem(song: song)
-        item.priority = queue.filter({ $0.addedBy.userID == authService.currentUserID }).count * 10 + memberPosition
+        item.priority = songCount(for: member) * 10 + memberPosition
         item.addedBy = member
         queueDataAccess.addItem(item) {
             completion?()
@@ -84,6 +84,10 @@ class PlayerViewModel {
                 queueDataAccess.removeItem(queueItem)
             }
         }
+    }
+    
+    func songCount(for member: Member) -> Int {
+        queue.filter({ $0.addedBy.userID == member.userID }).count
     }
     
     func removeAllListeners() {

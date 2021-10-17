@@ -8,7 +8,8 @@
 import UIKit
 
 protocol SearchViewControllerDelegate: AnyObject {
-    func searchViewController(searchViewController: SearchViewController, didSelectCell cell: SearchResultsTableViewCell)
+    func searchViewController(_ searchViewController: SearchViewController, shouldAddSongForCell cell: SearchResultsTableViewCell) -> Bool
+    func searchViewController(_ searchViewController: SearchViewController, addSongForCell cell: SearchResultsTableViewCell)
 }
 
 class SearchViewController: UIViewController {
@@ -62,8 +63,10 @@ extension SearchViewController: SearchResultsTableViewCellDelegate {
         guard let selectedRow = tableview.indexPath(for: cell)?.row else {
             return
         }
-        searchViewModel.searchResult[selectedRow].isAdded = true
-        tableview.reloadData()
-        delegate?.searchViewController(searchViewController: self, didSelectCell: cell)
+        if delegate?.searchViewController(self, shouldAddSongForCell: cell) == true {
+            delegate?.searchViewController(self, addSongForCell: cell)
+            searchViewModel.searchResult[selectedRow].isAdded = true
+            tableview.reloadData()
+        } 
     }
 }

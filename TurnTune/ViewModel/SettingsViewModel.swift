@@ -63,6 +63,10 @@ class SettingsViewModel {
         }
     }
     
+    func positon(for member: Member) -> Int {
+        memberList.firstIndex { $0.userID == authService.currentUserID } ?? -1
+    }
+    
     func removeAllListeners() {
         roomDataAccess.removeListener()
         memberDataAccess.removeListener()
