@@ -16,7 +16,6 @@ struct QueueItem: FirestoreDocument {
     
     var song: Song = Song()
     var priority: Int = 0
-    var position: Int = 0
     var didPlay: Bool = false
     var addedBy: Member = Member()
     

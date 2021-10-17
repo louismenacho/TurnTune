@@ -64,7 +64,7 @@ class QueueDataAccessProvider: DataAccessProvider {
         
         switch queueMode {
             case .fair:
-                query = query.order(by: "priority").order(by: "position")
+                query = query.order(by: "priority")
             case .ordered:
                 query = query.order(by: "dateAdded")
         }
@@ -84,7 +84,7 @@ class QueueDataAccessProvider: DataAccessProvider {
         
         switch queueMode {
             case .fair:
-                query = query.order(by: "priority").order(by: "position")
+                query = query.order(by: "priority")
             case .ordered:
                 query = query.order(by: "dateAdded")
         }
