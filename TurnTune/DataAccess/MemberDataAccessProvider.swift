@@ -30,6 +30,18 @@ class MemberDataAccessProvider: DataAccessProvider {
             }
         }
     }
+    
+    func getMemberList(completion: @escaping ([Member]) -> Void) {
+        let query = memberRepository.collectionReference.order(by: "dateAdded")
+        memberRepository.list(query) { [self] result in
+            switch result {
+                case let .failure(error):
+                    delegate?.dataAccessProvider(self, error: .member(error: error))
+                case let .success(members):
+                    completion(members)
+            }
+        }
+    }
             
     func addMember(_ member: Member, completion: (() -> Void)? = nil) {
         memberRepository.create(member) { [self] error in

@@ -57,6 +57,13 @@ class SettingsViewModel {
             print("memberListChangeListener memberlist: \(memberList.map { $0.displayName })")
             if memberList.first(where: { $0.userID == self.authService.currentUserID }) != nil {
                 completion(memberList)
+                if room.memberCount != memberList.count {
+                    room.memberCount = memberList.count
+                    updateRoom(room)
+                }
+                if memberList.count > 10 {
+                    removeMember(memberList[10])
+                }
             } else {
                 completion(nil)
             }

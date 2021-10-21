@@ -11,6 +11,7 @@ import FirebaseAuth
 import FirebaseFirestore
 import NVActivityIndicatorView
 import NVActivityIndicatorViewExtended
+import SwiftUI
 
 class HomeViewController: UIViewController {
     
@@ -21,10 +22,13 @@ class HomeViewController: UIViewController {
         padding: view.frame.width/2 - 30
     )
     
+    @IBOutlet weak var switchImage: UIImageView!
+    @IBOutlet weak var appearanceSwitch: UISwitch!
     @IBOutlet weak var displayNameTextField: HomeViewTextField!
     @IBOutlet weak var roomIDTextField: HomeViewTextField!
     @IBOutlet weak var containerCenterYConstraint: NSLayoutConstraint!
     @IBOutlet weak var stackViewContainerCenterXConstraint: NSLayoutConstraint!
+    @IBOutlet weak var appearanceImageXConstraint: NSLayoutConstraint!
     
     
     override func viewDidLoad() {
@@ -45,11 +49,9 @@ class HomeViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        setUIAppearance(style: homeViewModel.getAppearance())
         roomIDTextField.text = homeViewModel.userRoomID
         displayNameTextField.text = homeViewModel.userDisplayName
-        print(homeViewModel.userRoomID)
-        print(homeViewModel.userDisplayName)
-
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -129,6 +131,29 @@ class HomeViewController: UIViewController {
                 }
             }
         }
+    }
+    
+    @IBAction func appearanceSwitchPressed(_ sender: UISwitch) {
+        if sender.isOn {
+            homeViewModel.setAppearance(.light)
+        } else {
+            homeViewModel.setAppearance(.dark)
+        }
+        setUIAppearance(style: homeViewModel.getAppearance())
+    }
+    
+    func setUIAppearance(style: UIUserInterfaceStyle) {
+        if style == .light {
+            appearanceSwitch.setOn(true, animated: false)
+            appearanceImageXConstraint.constant = 11
+            switchImage.image = UIImage(systemName: "sun.min.fill")
+        } else {
+            appearanceSwitch.setOn(false, animated: false)
+            appearanceImageXConstraint.constant = -9
+            switchImage.image = UIImage(systemName: "moon.fill")
+        }
+        overrideUserInterfaceStyle = style
+        appearanceSwitch.overrideUserInterfaceStyle = style
     }
     
     func startActivityIndicator() {
@@ -231,6 +256,8 @@ extension HomeViewController: ViewModelDelegate {
                 localizedDescription = error.localizedDescription
             case let .authenticationError(error):
                 localizedDescription = error.localizedDescription
+            case .roomIsFull:
+                localizedDescription = error.localizedDescription
         }
         
         if !localizedDescription.isEmpty {
@@ -241,5 +268,6 @@ extension HomeViewController: ViewModelDelegate {
                 actionStyles: [.cancel],
                 actions: [{_ in }])
         }
+        print(error)
     }
 }

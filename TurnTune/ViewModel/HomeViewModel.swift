@@ -53,7 +53,7 @@ class HomeViewModel: ViewModel {
                 memberDataAccess.getMember(authService.currentUserID) { [self] member in
                     if let member = member {
                         completion(member)
-                    } else {
+                    } else if room.memberCount < 10 {
                         let member = Member(
                             userID: userDefaults.userID,
                             displayName: userDefaults.displayName,
@@ -62,6 +62,8 @@ class HomeViewModel: ViewModel {
                         memberDataAccess.addMember(member) {
                             completion(member)
                         }
+                    } else {
+                        delegate?.viewModel(self, error: .roomIsFull)
                     }
                 }
             }
@@ -106,16 +108,32 @@ class HomeViewModel: ViewModel {
     
     func connectMusicPlayerService(completion: @escaping () -> Void) {
         spotifyCredentialsDataAccess.getSpotifyCredentials { [self] credentials in
-            spotifyMusicPlayerService = SpotifyMusicPlayerService(credentials: credentials)
-            spotifyMusicPlayerService!.delegate = self
-            spotifyMusicPlayerService!.initiateSession { [self] in
-                spotifyMusicPlayerService!.isCurrentUserProfilePremium { isPremium in
-                    if isPremium {
-                        completion()
+            DispatchQueue.main.async {
+                spotifyMusicPlayerService = SpotifyMusicPlayerService(credentials: credentials)
+                spotifyMusicPlayerService!.delegate = self
+                spotifyMusicPlayerService!.initiateSession { [self] in
+                    spotifyMusicPlayerService!.isCurrentUserProfilePremium { isPremium in
+                        if isPremium {
+                            completion()
+                        }
                     }
                 }
             }
         }
+    }
+    
+    func setAppearance(_ style: UIUserInterfaceStyle) {
+        userDefaults.appearance = style.rawValue
+    }
+    
+    func getAppearance() -> UIUserInterfaceStyle {
+        if userDefaults.appearance == 1 {
+            return .light
+        }
+        if userDefaults.appearance == 2 {
+            return .dark
+        }
+        return .unspecified
     }
 
     private func isNameValid(name: String) -> Bool {

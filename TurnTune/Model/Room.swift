@@ -17,11 +17,13 @@ struct Room: FirestoreDocument {
     var roomID: String
     var host: Member
     var queueMode: String
+    var memberCount: Int
     
     init() {
         roomID = ""
         host = Member()
         queueMode = "fair"
+        self.memberCount = 0
     }
     
     init(_ roomID: String, host: Member) {
@@ -29,5 +31,6 @@ struct Room: FirestoreDocument {
         self.host = host
         self.documentID = roomID
         self.queueMode = "fair"
+        self.memberCount = 0
     }
 }

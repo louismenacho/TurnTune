@@ -15,6 +15,7 @@ enum ViewModelError: Error {
     case musicPlayerError(error: MusicPlayerError)
     case musicBrowserError(error: MusicBrowserError)
     case authenticationError(error: AuthenticationError)
+    case roomIsFull
 }
 
 extension ViewModelError: LocalizedError {
@@ -32,7 +33,8 @@ extension ViewModelError: LocalizedError {
                 return error.localizedDescription
             case let .authenticationError(error):
                 return error.localizedDescription
-
+            case .roomIsFull:
+                return "Room is full"
         }
     }
 }

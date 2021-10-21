@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="3uh-Jl-gVg">
-    <device id="retina5_9" orientation="portrait" appearance="dark"/>
+    <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
@@ -801,12 +801,47 @@
                             <outletCollection property="gestureRecognizers" destination="FaH-Ay-neA" appends="YES" id="Rbw-UX-GEh"/>
                         </connections>
                     </view>
-                    <navigationItem key="navigationItem" id="CeK-bo-bMf"/>
+                    <navigationItem key="navigationItem" id="CeK-bo-bMf">
+                        <barButtonItem key="rightBarButtonItem" id="x7b-sL-iNQ">
+                            <view key="customView" contentMode="scaleToFill" ambiguous="YES" id="ayX-KF-sWp">
+                                <rect key="frame" x="310" y="5.6666666666666679" width="49" height="33"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OU5-VJ-fKn">
+                                        <rect key="frame" x="0.0" y="0.0" width="51" height="31"/>
+                                        <color key="onTintColor" systemColor="quaternarySystemFillColor"/>
+                                        <connections>
+                                            <action selector="appearanceSwitchPressed:" destination="IfM-oT-BRZ" eventType="valueChanged" id="IHj-7o-7HL"/>
+                                        </connections>
+                                    </switch>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sun.min.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="tBt-Iu-tBp">
+                                        <rect key="frame" x="25.666666666666671" y="6.6666666666666643" width="20" height="18.333333333333336"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="20" id="0lB-a7-JgX"/>
+                                            <constraint firstAttribute="height" constant="20" id="LMk-6L-mnR"/>
+                                        </constraints>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="OU5-VJ-fKn" firstAttribute="top" secondItem="ayX-KF-sWp" secondAttribute="top" id="7tn-RT-8SA"/>
+                                    <constraint firstItem="OU5-VJ-fKn" firstAttribute="leading" secondItem="ayX-KF-sWp" secondAttribute="leading" id="FTW-OH-o6M"/>
+                                    <constraint firstItem="tBt-Iu-tBp" firstAttribute="centerX" secondItem="OU5-VJ-fKn" secondAttribute="centerX" constant="11" id="QbT-XD-Xm9"/>
+                                    <constraint firstAttribute="height" constant="33" id="aPu-ae-mE9"/>
+                                    <constraint firstAttribute="width" constant="51" id="k4S-5Z-Maf"/>
+                                    <constraint firstItem="tBt-Iu-tBp" firstAttribute="centerY" secondItem="OU5-VJ-fKn" secondAttribute="centerY" id="xDf-aJ-kdK"/>
+                                </constraints>
+                            </view>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
+                        <outlet property="appearanceImageXConstraint" destination="QbT-XD-Xm9" id="fTH-Yy-jlZ"/>
+                        <outlet property="appearanceSwitch" destination="OU5-VJ-fKn" id="b7p-b2-SNe"/>
                         <outlet property="containerCenterYConstraint" destination="9Gb-I8-vUX" id="Ti3-zH-6Ig"/>
                         <outlet property="displayNameTextField" destination="ehc-LM-ZHh" id="3JL-xy-y2C"/>
                         <outlet property="roomIDTextField" destination="dxk-AQ-Kkc" id="qum-dt-1ts"/>
                         <outlet property="stackViewContainerCenterXConstraint" destination="02b-T7-q8I" id="7Pu-Zb-BuX"/>
+                        <outlet property="switchImage" destination="tBt-Iu-tBp" id="p3T-iq-Dtd"/>
                         <segue destination="4CS-Lz-P0e" kind="show" identifier="PlayerViewController" id="jWP-FP-vDg"/>
                     </connections>
                 </viewController>
@@ -1020,8 +1055,12 @@
         <image name="pause.circle" catalog="system" width="128" height="121"/>
         <image name="play.circle" catalog="system" width="128" height="121"/>
         <image name="plus.circle" catalog="system" width="128" height="121"/>
+        <image name="sun.min.fill" catalog="system" width="128" height="121"/>
         <systemColor name="linkColor">
             <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="quaternarySystemFillColor">
+            <color red="0.45490196078431372" green="0.45490196078431372" blue="0.50196078431372548" alpha="0.080000000000000002" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="secondaryLabelColor">
             <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
