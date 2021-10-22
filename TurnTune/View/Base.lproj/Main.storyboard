@@ -785,14 +785,41 @@
                                     <constraint firstAttribute="trailing" secondItem="Of8-Kr-VVB" secondAttribute="trailing" id="wMA-bB-Ry4"/>
                                 </constraints>
                             </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dCB-IU-SZY">
+                                <rect key="frame" x="308" y="50.666666666666657" width="51" height="31"/>
+                                <subviews>
+                                    <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iVb-7m-e8R">
+                                        <rect key="frame" x="0.0" y="0.0" width="51" height="31"/>
+                                        <color key="onTintColor" systemColor="quaternarySystemFillColor"/>
+                                    </switch>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sun.min.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="iEy-aV-Fwj">
+                                        <rect key="frame" x="25.666666666666686" y="6.6666666666666696" width="20" height="18.333333333333336"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="20" id="STw-t6-ced"/>
+                                            <constraint firstAttribute="height" constant="20" id="zwa-pl-eZn"/>
+                                        </constraints>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="iEy-aV-Fwj" firstAttribute="centerX" secondItem="dCB-IU-SZY" secondAttribute="centerX" constant="10" id="0kn-yW-lZ7"/>
+                                    <constraint firstItem="iEy-aV-Fwj" firstAttribute="centerY" secondItem="dCB-IU-SZY" secondAttribute="centerY" id="SYe-yx-eFv"/>
+                                    <constraint firstItem="iVb-7m-e8R" firstAttribute="leading" secondItem="dCB-IU-SZY" secondAttribute="leading" id="h7E-wR-mFJ"/>
+                                    <constraint firstAttribute="height" constant="31" id="szY-ML-964"/>
+                                    <constraint firstItem="iVb-7m-e8R" firstAttribute="top" secondItem="dCB-IU-SZY" secondAttribute="top" id="vOI-yL-QZk"/>
+                                    <constraint firstAttribute="width" constant="51" id="wfV-5u-Plx"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Nyl-If-AH1"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="XIH-ei-2Sm" firstAttribute="width" secondItem="Nyl-If-AH1" secondAttribute="width" multiplier="2:3" id="0Ld-Hg-FlU"/>
+                            <constraint firstItem="dCB-IU-SZY" firstAttribute="top" secondItem="ZNm-KE-Uc6" secondAttribute="top" constant="50.666666666666657" id="4Qv-Z0-PCQ"/>
                             <constraint firstItem="XIH-ei-2Sm" firstAttribute="centerY" secondItem="Nyl-If-AH1" secondAttribute="centerY" id="9Gb-I8-vUX"/>
                             <constraint firstItem="2Fy-wO-r2g" firstAttribute="top" secondItem="Nyl-If-AH1" secondAttribute="top" constant="-52" id="AI0-hi-MVT"/>
+                            <constraint firstItem="dCB-IU-SZY" firstAttribute="trailing" secondItem="ZNm-KE-Uc6" secondAttribute="trailingMargin" id="CNH-bB-cQR"/>
                             <constraint firstItem="XIH-ei-2Sm" firstAttribute="top" secondItem="2Fy-wO-r2g" secondAttribute="bottom" id="aTi-sn-2J6"/>
                             <constraint firstItem="XIH-ei-2Sm" firstAttribute="centerX" secondItem="ZNm-KE-Uc6" secondAttribute="centerX" id="vWc-lm-hsd"/>
                             <constraint firstItem="2Fy-wO-r2g" firstAttribute="centerX" secondItem="ZNm-KE-Uc6" secondAttribute="centerX" id="xq3-Yo-Zm9"/>
@@ -802,46 +829,20 @@
                         </connections>
                     </view>
                     <navigationItem key="navigationItem" id="CeK-bo-bMf">
-                        <barButtonItem key="rightBarButtonItem" id="x7b-sL-iNQ">
-                            <view key="customView" contentMode="scaleToFill" ambiguous="YES" id="ayX-KF-sWp">
-                                <rect key="frame" x="310" y="5.6666666666666679" width="49" height="33"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <subviews>
-                                    <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OU5-VJ-fKn">
-                                        <rect key="frame" x="0.0" y="0.0" width="51" height="31"/>
-                                        <color key="onTintColor" systemColor="quaternarySystemFillColor"/>
-                                        <connections>
-                                            <action selector="appearanceSwitchPressed:" destination="IfM-oT-BRZ" eventType="valueChanged" id="IHj-7o-7HL"/>
-                                        </connections>
-                                    </switch>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sun.min.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="tBt-Iu-tBp">
-                                        <rect key="frame" x="25.666666666666671" y="6.6666666666666643" width="20" height="18.333333333333336"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="20" id="0lB-a7-JgX"/>
-                                            <constraint firstAttribute="height" constant="20" id="LMk-6L-mnR"/>
-                                        </constraints>
-                                    </imageView>
-                                </subviews>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <constraints>
-                                    <constraint firstItem="OU5-VJ-fKn" firstAttribute="top" secondItem="ayX-KF-sWp" secondAttribute="top" id="7tn-RT-8SA"/>
-                                    <constraint firstItem="OU5-VJ-fKn" firstAttribute="leading" secondItem="ayX-KF-sWp" secondAttribute="leading" id="FTW-OH-o6M"/>
-                                    <constraint firstItem="tBt-Iu-tBp" firstAttribute="centerX" secondItem="OU5-VJ-fKn" secondAttribute="centerX" constant="11" id="QbT-XD-Xm9"/>
-                                    <constraint firstAttribute="height" constant="33" id="aPu-ae-mE9"/>
-                                    <constraint firstAttribute="width" constant="51" id="k4S-5Z-Maf"/>
-                                    <constraint firstItem="tBt-Iu-tBp" firstAttribute="centerY" secondItem="OU5-VJ-fKn" secondAttribute="centerY" id="xDf-aJ-kdK"/>
-                                </constraints>
-                            </view>
+                        <barButtonItem key="rightBarButtonItem" title="             " id="ZvI-a1-SnB">
+                            <connections>
+                                <action selector="appearanceSwitchPressed:" destination="IfM-oT-BRZ" id="Tjs-YT-D01"/>
+                            </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="appearanceImageXConstraint" destination="QbT-XD-Xm9" id="fTH-Yy-jlZ"/>
-                        <outlet property="appearanceSwitch" destination="OU5-VJ-fKn" id="b7p-b2-SNe"/>
+                        <outlet property="appearanceImageXConstraint" destination="0kn-yW-lZ7" id="46a-JS-cLG"/>
+                        <outlet property="appearanceSwitch" destination="iVb-7m-e8R" id="vhn-VN-a79"/>
+                        <outlet property="appearanceSwitchImage" destination="iEy-aV-Fwj" id="jeE-rY-6ix"/>
                         <outlet property="containerCenterYConstraint" destination="9Gb-I8-vUX" id="Ti3-zH-6Ig"/>
                         <outlet property="displayNameTextField" destination="ehc-LM-ZHh" id="3JL-xy-y2C"/>
                         <outlet property="roomIDTextField" destination="dxk-AQ-Kkc" id="qum-dt-1ts"/>
                         <outlet property="stackViewContainerCenterXConstraint" destination="02b-T7-q8I" id="7Pu-Zb-BuX"/>
-                        <outlet property="switchImage" destination="tBt-Iu-tBp" id="p3T-iq-Dtd"/>
                         <segue destination="4CS-Lz-P0e" kind="show" identifier="PlayerViewController" id="jWP-FP-vDg"/>
                     </connections>
                 </viewController>
@@ -1032,10 +1033,10 @@
             <size key="intrinsicContentSize" width="92" height="33"/>
         </designable>
         <designable name="dxk-AQ-Kkc">
-            <size key="intrinsicContentSize" width="84.666666666666671" height="22"/>
+            <size key="intrinsicContentSize" width="64.666666666666671" height="22"/>
         </designable>
         <designable name="ehc-LM-ZHh">
-            <size key="intrinsicContentSize" width="124.66666666666667" height="22"/>
+            <size key="intrinsicContentSize" width="104.66666666666667" height="22"/>
         </designable>
         <designable name="gtM-vG-iNH">
             <size key="intrinsicContentSize" width="36" height="33"/>

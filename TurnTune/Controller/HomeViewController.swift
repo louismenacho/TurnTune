@@ -22,8 +22,8 @@ class HomeViewController: UIViewController {
         padding: view.frame.width/2 - 30
     )
     
-    @IBOutlet weak var switchImage: UIImageView!
     @IBOutlet weak var appearanceSwitch: UISwitch!
+    @IBOutlet weak var appearanceSwitchImage: UIImageView!
     @IBOutlet weak var displayNameTextField: HomeViewTextField!
     @IBOutlet weak var roomIDTextField: HomeViewTextField!
     @IBOutlet weak var containerCenterYConstraint: NSLayoutConstraint!
@@ -133,27 +133,17 @@ class HomeViewController: UIViewController {
         }
     }
     
-    @IBAction func appearanceSwitchPressed(_ sender: UISwitch) {
-        if sender.isOn {
-            homeViewModel.setAppearance(.light)
-        } else {
-            homeViewModel.setAppearance(.dark)
-        }
+    @IBAction func appearanceSwitchPressed(_ sender: UIBarButtonItem) {
+        homeViewModel.setAppearance(appearanceSwitch.isOn ? .dark : .light)
         setUIAppearance(style: homeViewModel.getAppearance())
     }
-    
+        
     func setUIAppearance(style: UIUserInterfaceStyle) {
-        if style == .light {
-            appearanceSwitch.setOn(true, animated: false)
-            appearanceImageXConstraint.constant = 11
-            switchImage.image = UIImage(systemName: "sun.min.fill")
-        } else {
-            appearanceSwitch.setOn(false, animated: false)
-            appearanceImageXConstraint.constant = -9
-            switchImage.image = UIImage(systemName: "moon.fill")
-        }
+        let isLightMode = style == .light
+        appearanceSwitch.setOn(isLightMode, animated: true)
+        appearanceSwitchImage.image = UIImage(systemName: isLightMode ? "sun.min.fill" : "moon.fill")
+        appearanceImageXConstraint.constant = isLightMode ? 10 : -10
         overrideUserInterfaceStyle = style
-        appearanceSwitch.overrideUserInterfaceStyle = style
     }
     
     func startActivityIndicator() {
