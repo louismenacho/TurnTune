@@ -45,6 +45,10 @@ class HomeViewModel: ViewModel {
     func joinRoom(roomID: String, as displayName: String, completion: @escaping (Member) -> Void) {
         authService.signIn { [self] in
             roomDataAccess.getRoom(roomID) { [self] room in
+                guard let room = room else {
+                    delegate?.viewModel(self, error: .roomNotFound)
+                    return
+                }
                 userDefaults.roomID = roomID
                 userDefaults.userID = authService.currentUserID
                 userDefaults.displayName = displayName

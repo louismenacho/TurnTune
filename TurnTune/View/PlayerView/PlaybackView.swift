@@ -29,6 +29,7 @@ class PlaybackView: UIView {
         }
     }
     
+    @IBOutlet weak var startQueueButton: UIButton!
     @IBOutlet weak var logoButton: UIButton!
     @IBOutlet weak var albumImageView: UIImageView!
     @IBOutlet weak var songLabel: UILabel!
@@ -37,13 +38,12 @@ class PlaybackView: UIView {
     @IBOutlet weak var rewindButton: UIButton!
     @IBOutlet weak var playPauseButton: UIButton!
     @IBOutlet weak var playNextButton: UIButton!
-    @IBOutlet weak var startQueueButton: HomeViewButton!
     
     @IBAction func logoButtonPressed(_ sender: UIButton) {
         delegate?.playbackView(startQueueButtonPressedFor: self)
     }
     
-    @IBAction func startQueueButtonPressed(_ sender: HomeViewButton) {
+    @IBAction func startQueueButtonPressed(_ sender: UIButton) {
         delegate?.playbackView(startQueueButtonPressedFor: self)
     }
     

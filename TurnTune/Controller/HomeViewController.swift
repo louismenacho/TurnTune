@@ -248,6 +248,8 @@ extension HomeViewController: ViewModelDelegate {
                 localizedDescription = error.localizedDescription
             case .roomIsFull:
                 localizedDescription = error.localizedDescription
+            case .roomNotFound:
+                localizedDescription = error.localizedDescription
         }
         
         if !localizedDescription.isEmpty {

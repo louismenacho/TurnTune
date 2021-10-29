@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="3uh-Jl-gVg">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="3uh-Jl-gVg">
     <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="Stack View standard spacing" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -293,6 +293,19 @@
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="165"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
+                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="T87-Ci-wRL">
+                                            <rect key="frame" x="187.66666666666666" y="82.666666666666671" width="0.0" height="0.0"/>
+                                            <subviews>
+                                                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4vC-07-F5L">
+                                                    <rect key="frame" x="0.0" y="0.0" width="102" height="0.0"/>
+                                                    <state key="normal" title="Button"/>
+                                                    <buttonConfiguration key="configuration" style="filled" title="Start Queue" cornerStyle="capsule"/>
+                                                    <connections>
+                                                        <action selector="startQueueButtonPressed:" destination="evn-nV-Qa8" eventType="touchUpInside" id="M3u-Rc-wEw"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                        </stackView>
                                         <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="WwB-Ba-pW0">
                                             <rect key="frame" x="20" y="20" width="335" height="125"/>
                                             <subviews>
@@ -391,34 +404,6 @@
                                                                 <constraint firstItem="b4h-CI-7h7" firstAttribute="centerX" secondItem="zLW-vb-YXD" secondAttribute="centerX" id="qAm-qR-VdG"/>
                                                             </constraints>
                                                         </view>
-                                                        <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jeV-RU-Jr3">
-                                                            <rect key="frame" x="0.0" y="125" width="202" height="0.0"/>
-                                                            <subviews>
-                                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RDH-5a-0fg" customClass="HomeViewButton" customModule="TurnTune" customModuleProvider="target">
-                                                                    <rect key="frame" x="-24" y="-24" width="250" height="48"/>
-                                                                    <color key="backgroundColor" systemColor="linkColor"/>
-                                                                    <constraints>
-                                                                        <constraint firstAttribute="height" constant="48" id="ena-u5-uva"/>
-                                                                    </constraints>
-                                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleTitle3"/>
-                                                                    <state key="normal" title="Start Queue">
-                                                                        <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                    </state>
-                                                                    <userDefinedRuntimeAttributes>
-                                                                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                                                            <real key="value" value="24"/>
-                                                                        </userDefinedRuntimeAttribute>
-                                                                    </userDefinedRuntimeAttributes>
-                                                                    <connections>
-                                                                        <action selector="startQueueButtonPressed:" destination="evn-nV-Qa8" eventType="touchUpInside" id="nFE-5c-IJR"/>
-                                                                    </connections>
-                                                                </button>
-                                                            </subviews>
-                                                            <constraints>
-                                                                <constraint firstItem="RDH-5a-0fg" firstAttribute="centerY" secondItem="jeV-RU-Jr3" secondAttribute="centerY" id="RdQ-bJ-zsM"/>
-                                                                <constraint firstItem="RDH-5a-0fg" firstAttribute="centerX" secondItem="jeV-RU-Jr3" secondAttribute="centerX" id="gAn-vf-GKA"/>
-                                                            </constraints>
-                                                        </view>
                                                     </subviews>
                                                     <constraints>
                                                         <constraint firstItem="zLW-vb-YXD" firstAttribute="leading" secondItem="MqK-hT-Ysk" secondAttribute="leading" id="6UM-uD-iiV"/>
@@ -437,10 +422,11 @@
                                     <constraints>
                                         <constraint firstItem="WwB-Ba-pW0" firstAttribute="leading" secondItem="evn-nV-Qa8" secondAttribute="leading" constant="20" id="4SW-Yk-CiH"/>
                                         <constraint firstItem="WwB-Ba-pW0" firstAttribute="top" secondItem="evn-nV-Qa8" secondAttribute="top" constant="20" symbolic="YES" id="6ww-Uj-6VS"/>
-                                        <constraint firstItem="RDH-5a-0fg" firstAttribute="width" secondItem="evn-nV-Qa8" secondAttribute="width" multiplier="2:3" id="AZb-G6-V76"/>
                                         <constraint firstAttribute="bottom" secondItem="WwB-Ba-pW0" secondAttribute="bottom" constant="20" symbolic="YES" id="BwM-ak-bM4"/>
                                         <constraint firstAttribute="trailing" secondItem="WwB-Ba-pW0" secondAttribute="trailing" constant="20" id="KwE-fk-tei"/>
                                         <constraint firstItem="prs-hl-KSD" firstAttribute="width" secondItem="evn-nV-Qa8" secondAttribute="width" multiplier="1:3" id="QgZ-qe-5J6"/>
+                                        <constraint firstItem="T87-Ci-wRL" firstAttribute="centerX" secondItem="evn-nV-Qa8" secondAttribute="centerX" id="YpV-rR-k3z"/>
+                                        <constraint firstItem="T87-Ci-wRL" firstAttribute="centerY" secondItem="evn-nV-Qa8" secondAttribute="centerY" id="mmF-Vz-Kkb"/>
                                     </constraints>
                                     <connections>
                                         <outlet property="albumImageView" destination="prs-hl-KSD" id="xg9-nQ-Y40"/>
@@ -451,7 +437,7 @@
                                         <outlet property="playPauseButton" destination="aFo-dJ-wRn" id="4B7-sq-30v"/>
                                         <outlet property="rewindButton" destination="Y9m-6K-G20" id="VSI-vQ-M5p"/>
                                         <outlet property="songLabel" destination="gwA-c2-KSM" id="VET-7e-GMY"/>
-                                        <outlet property="startQueueButton" destination="RDH-5a-0fg" id="hG3-IQ-DvV"/>
+                                        <outlet property="startQueueButton" destination="4vC-07-F5L" id="QPn-g5-nZz"/>
                                     </connections>
                                 </view>
                                 <prototypes>
@@ -1029,14 +1015,11 @@
         <designable name="Ohm-3k-bR1">
             <size key="intrinsicContentSize" width="32" height="33"/>
         </designable>
-        <designable name="RDH-5a-0fg">
-            <size key="intrinsicContentSize" width="92" height="33"/>
-        </designable>
         <designable name="dxk-AQ-Kkc">
-            <size key="intrinsicContentSize" width="64.666666666666671" height="22"/>
+            <size key="intrinsicContentSize" width="84.666666666666671" height="22"/>
         </designable>
         <designable name="ehc-LM-ZHh">
-            <size key="intrinsicContentSize" width="104.66666666666667" height="22"/>
+            <size key="intrinsicContentSize" width="124.66666666666667" height="22"/>
         </designable>
         <designable name="gtM-vG-iNH">
             <size key="intrinsicContentSize" width="36" height="33"/>

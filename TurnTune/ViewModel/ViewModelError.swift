@@ -16,6 +16,7 @@ enum ViewModelError: Error {
     case musicBrowserError(error: MusicBrowserError)
     case authenticationError(error: AuthenticationError)
     case roomIsFull
+    case roomNotFound
 }
 
 extension ViewModelError: LocalizedError {
@@ -35,6 +36,8 @@ extension ViewModelError: LocalizedError {
                 return error.localizedDescription
             case .roomIsFull:
                 return "Room is full"
+            case .roomNotFound:
+                return "Room does not exist"
         }
     }
 }
