@@ -9,7 +9,7 @@ import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-struct PlayerState: Equatable, FirestoreDocument {
+struct PlayerState: FirestoreDocument {
     
     @DocumentID var documentID: String? = "state"
     var dateAdded: Timestamp?

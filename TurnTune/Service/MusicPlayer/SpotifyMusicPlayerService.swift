@@ -53,12 +53,12 @@ class SpotifyMusicPlayerService: NSObject, MusicPlayerServiceable {
     }
     
     func handleOpenURL(_ url: URL) {
-        sessionManager.application(UIApplication.shared, open: url, options: [:])
+        DispatchQueue.main.async { [self] in
+            sessionManager.application(UIApplication.shared, open: url, options: [:])
+        }
     }
     
     func connect() {
-        print("checking connect status")
-        print("appRemote isConnected: \(appRemote.isConnected)")
         if !appRemote.isConnected && appRemote.connectionParameters.accessToken != nil {
             print("attempting connect")
             appRemote.connect()
@@ -129,7 +129,6 @@ extension SpotifyMusicPlayerService: SPTSessionManagerDelegate {
         playerAPI.auth = .bearer(token: session.accessToken)
         userProfileAPI.auth = .bearer(token: session.accessToken)
         appRemote.connectionParameters.accessToken = session.accessToken
-        connect()
         initiateCompletion?()
     }
     
@@ -138,7 +137,6 @@ extension SpotifyMusicPlayerService: SPTSessionManagerDelegate {
         playerAPI.auth = .bearer(token: session.accessToken)
         userProfileAPI.auth = .bearer(token: session.accessToken)
         appRemote.connectionParameters.accessToken = session.accessToken
-        connect()
         initiateCompletion?()
     }
     
@@ -182,6 +180,14 @@ extension SpotifyMusicPlayerService: SPTAppRemoteDelegate {
 extension SpotifyMusicPlayerService: SPTAppRemotePlayerStateDelegate {
     
     func playerStateDidChange(_ playerState: SPTAppRemotePlayerState) {
+        if playerState.isPaused {
+            print("track.name \(playerState.track.name)")
+            print("isPaused \(playerState.isPaused)")
+            print("playbackPosition \(playerState.playbackPosition)")
+            print("contextURI \(playerState.contextURI)")
+            print("contextTitle \(playerState.contextTitle)")
+        }
         playerStateDidChange?(playerState)
+        print("")
     }
 }

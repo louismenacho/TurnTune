@@ -25,13 +25,9 @@ class PlayerViewModel {
         self.queueDataAccess.delegate = self
         
         musicPlayerService?.playerStateChangeListener { [self] newPlayerState in
-            if playerState != newPlayerState {
-                if newPlayerState.didFinish {
-                    playNextSong()
-                } else {
-                    print("updating player state")
-                    updatePlayerState(newPlayerState)
-                }
+            print("musicPlayerService listener called")
+            if newPlayerState.didFinish {
+                playNextSong()
             }
         }
     }
@@ -54,12 +50,6 @@ class PlayerViewModel {
         queueDataAccess.queueChangeListener(queueMode: .fair, didPlayFlag: true) { [self] queueHistory in
             self.history = queueHistory.reversed()
             completion(queueHistory)
-        }
-    }
-    
-    func updatePlayerState(_ playerState: PlayerState, completion: (() -> Void)? = nil) {
-        playerStateDataAccess.updatePlayerState(playerState) {
-            completion?()
         }
     }
     
@@ -98,10 +88,28 @@ class PlayerViewModel {
     
     // MARK: - Host Methods
     
-    func play(_ items: [QueueItem]? = nil, position: Int = 0, completion: (() -> Void)? = nil ) {
-        musicPlayerService?.startPlayback(songs: items?.compactMap { $0.song }, position: position) {
-            print("playing \(items?.compactMap { $0.song.name } ?? [])")
+    func updatePlayerState(_ playerState: PlayerState, completion: (() -> Void)? = nil) {
+        playerStateDataAccess.updatePlayerState(playerState) {
             completion?()
+        }
+    }
+    
+    func play(_ items: [QueueItem]? = nil, position: Int = 0, completion: (() -> Void)? = nil ) {
+        musicPlayerService?.startPlayback(songs: items?.compactMap { $0.song }, position: position) { [self] in
+            if let items = items {
+                print("playing \(items.compactMap { $0.song.name })")
+                playerState.queueItem = items[0]
+                playerState.isPaused = false
+                updatePlayerState(playerState) {
+                    completion?()
+                }
+            } else {
+                print("resuming playback")
+                playerState.isPaused = false
+                updatePlayerState(playerState)  {
+                    completion?()
+                }
+            }
         }
     }
     
@@ -109,7 +117,9 @@ class PlayerViewModel {
         guard let nextQueueItem = queue.first else {
             return
         }
+        print("playing next song")
         play([nextQueueItem]) { [self] in
+            print("played next song")
             removeFromQueue(nextQueueItem) {
                 completion?()
             }
@@ -117,8 +127,11 @@ class PlayerViewModel {
     }
     
     func pause(completion: (() -> Void)? = nil) {
-        musicPlayerService?.pausePlayback {
-            completion?()
+        musicPlayerService?.pausePlayback { [self] in
+            playerState.isPaused = true
+            updatePlayerState(playerState) {
+                completion?()
+            }
         }
     }
     
@@ -127,6 +140,11 @@ class PlayerViewModel {
             return
         }
         musicPlayerService?.initiateSession(playing: firstItem.song) { [self] in
+            playerState.queueItem = firstItem
+            playerState.isPaused = false
+            updatePlayerState(playerState) {
+                completion?()
+            }
             removeFromQueue(firstItem) {
                 completion?()
             }

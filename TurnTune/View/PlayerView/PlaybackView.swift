@@ -23,6 +23,7 @@ class PlaybackView: UIView {
             albumImageView.sd_setImage(with: URL(string: playerState.queueItem.song.artworkURL), placeholderImage: UIImage(systemName: "photo.fill"))
             songLabel.text = playerState.queueItem.song.name
             artistLabel.text = playerState.queueItem.song.artist
+            memberLabel.text = "Added by "+playerState.queueItem.addedBy.displayName
             
             let imageName = playerState.isPaused ? "play.circle" : "pause.circle"
             playPauseButton.setImage(UIImage(systemName: imageName), for: .normal)

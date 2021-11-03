@@ -80,6 +80,7 @@ class PlayerViewController: UIViewController {
         searchController.searchBar.delegate = searchViewController
         searchController.searchBar.autocapitalizationType = .none
         searchController.searchBar.placeholder = "Search songs"
+        searchController.searchBar.setValue("Done", forKey: "cancelButtonText")
         return searchController
     }
 

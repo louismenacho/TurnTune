@@ -325,8 +325,8 @@
                                                         <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="2lE-iU-9YJ">
                                                             <rect key="frame" x="0.0" y="0.0" width="202" height="83.333333333333329"/>
                                                             <subviews>
-                                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="xkd-wu-VP3">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="166" height="51"/>
+                                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="xkd-wu-VP3">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="166" height="47.333333333333336"/>
                                                                     <subviews>
                                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Warm Fuzzy Feeling" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gwA-c2-KSM">
                                                                             <rect key="frame" x="0.0" y="0.0" width="166" height="17"/>
@@ -341,7 +341,7 @@
                                                                             <nil key="highlightedColor"/>
                                                                         </label>
                                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Added by Louis" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h2Q-A0-eWe">
-                                                                            <rect key="frame" x="0.0" y="34" width="166" height="17"/>
+                                                                            <rect key="frame" x="0.0" y="34" width="166" height="13.333333333333336"/>
                                                                             <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
                                                                             <color key="textColor" systemColor="tertiaryLabelColor"/>
                                                                             <nil key="highlightedColor"/>
@@ -570,6 +570,7 @@
                                 <connections>
                                     <outlet property="albumImageView" destination="Mnh-rV-7VU" id="jfp-EO-Fh3"/>
                                     <outlet property="artistLabel" destination="1tK-2z-8mT" id="UMp-jt-bZ2"/>
+                                    <outlet property="memberLabel" destination="MLg-Vs-T66" id="gGl-Lo-1qU"/>
                                     <outlet property="playPauseButton" destination="4mF-tN-l2v" id="yFP-Ez-fW6"/>
                                     <outlet property="songLabel" destination="cQE-Yo-rA5" id="bu6-yT-N1X"/>
                                     <outletCollection property="gestureRecognizers" destination="rr6-mo-DtL" appends="YES" id="GcT-y6-9CQ"/>
@@ -879,6 +880,12 @@
                                                                 <color key="textColor" systemColor="secondaryLabelColor"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
+                                                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Added by Louis" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Ki-BE-ohH">
+                                                                <rect key="frame" x="89.666666666666686" y="79.333333333333314" width="80.666666666666686" height="0.0"/>
+                                                                <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                                                <color key="textColor" systemColor="tertiaryLabelColor"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
                                                         </subviews>
                                                     </stackView>
                                                 </subviews>
@@ -975,6 +982,7 @@
                         <connections>
                             <outlet property="albumImageView" destination="2zv-Jv-2tU" id="6Bh-bo-jWn"/>
                             <outlet property="artistLabel" destination="zOV-ay-0on" id="OKW-0r-J12"/>
+                            <outlet property="memberLabel" destination="8Ki-BE-ohH" id="IZ3-2m-JC7"/>
                             <outlet property="playNextButton" destination="Xhr-Rb-NEa" id="T7i-Da-Rcu"/>
                             <outlet property="playPauseButton" destination="zVl-z8-2VF" id="FKA-a7-oJm"/>
                             <outlet property="rewindButton" destination="RBU-ra-AFw" id="NPw-jr-7Tc"/>
