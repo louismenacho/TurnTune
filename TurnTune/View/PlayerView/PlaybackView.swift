@@ -27,6 +27,12 @@ class PlaybackView: UIView {
             
             let imageName = playerState.isPaused ? "play.circle" : "pause.circle"
             playPauseButton.setImage(UIImage(systemName: imageName), for: .normal)
+            
+            startQueueButton.isHidden = playerState.isPlayingQueue
+            playbackViewStack.isHidden = !playerState.isPlayingQueue
+            
+            let buttonTitle = playerState.hasHistory ? "Resume Queue" : "Start Queue"
+            startQueueButton.setTitle(buttonTitle, for: .normal)
         }
     }
     
@@ -39,6 +45,8 @@ class PlaybackView: UIView {
     @IBOutlet weak var rewindButton: UIButton!
     @IBOutlet weak var playPauseButton: UIButton!
     @IBOutlet weak var playNextButton: UIButton!
+    @IBOutlet weak var playbackViewStack: UIStackView!
+    
     
     @IBAction func logoButtonPressed(_ sender: UIButton) {
         delegate?.playbackView(startQueueButtonPressedFor: self)

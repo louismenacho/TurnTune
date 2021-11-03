@@ -435,6 +435,7 @@
                                         <outlet property="memberLabel" destination="h2Q-A0-eWe" id="PbA-8p-HKu"/>
                                         <outlet property="playNextButton" destination="wtS-l6-B2y" id="USC-l2-6bF"/>
                                         <outlet property="playPauseButton" destination="aFo-dJ-wRn" id="4B7-sq-30v"/>
+                                        <outlet property="playbackViewStack" destination="WwB-Ba-pW0" id="ZsS-Ez-uP6"/>
                                         <outlet property="rewindButton" destination="Y9m-6K-G20" id="VSI-vQ-M5p"/>
                                         <outlet property="songLabel" destination="gwA-c2-KSM" id="VET-7e-GMY"/>
                                         <outlet property="startQueueButton" destination="4vC-07-F5L" id="QPn-g5-nZz"/>
@@ -504,6 +505,19 @@
                             <view clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mk5-3R-P8E" customClass="PlaybackView" customModule="TurnTune" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="698" width="375" height="114"/>
                                 <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="1Em-GL-3Hl">
+                                        <rect key="frame" x="187" y="57" width="0.0" height="0.0"/>
+                                        <subviews>
+                                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="k8I-1q-cKa">
+                                                <rect key="frame" x="0.0" y="0.0" width="102" height="0.0"/>
+                                                <state key="normal" title="Button"/>
+                                                <buttonConfiguration key="configuration" style="filled" title="Start Queue" cornerStyle="capsule"/>
+                                                <connections>
+                                                    <action selector="startQueueButtonPressed:" destination="evn-nV-Qa8" eventType="touchUpInside" id="XV6-fL-zdk"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                    </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="wd9-Jw-zBA">
                                         <rect key="frame" x="20" y="20" width="335" height="60"/>
                                         <subviews>
@@ -572,7 +586,9 @@
                                     <outlet property="artistLabel" destination="1tK-2z-8mT" id="UMp-jt-bZ2"/>
                                     <outlet property="memberLabel" destination="MLg-Vs-T66" id="gGl-Lo-1qU"/>
                                     <outlet property="playPauseButton" destination="4mF-tN-l2v" id="yFP-Ez-fW6"/>
+                                    <outlet property="playbackViewStack" destination="wd9-Jw-zBA" id="acx-F8-0bB"/>
                                     <outlet property="songLabel" destination="cQE-Yo-rA5" id="bu6-yT-N1X"/>
+                                    <outlet property="startQueueButton" destination="k8I-1q-cKa" id="9Nf-2A-Amr"/>
                                     <outletCollection property="gestureRecognizers" destination="rr6-mo-DtL" appends="YES" id="GcT-y6-9CQ"/>
                                 </connections>
                             </view>
@@ -860,13 +876,13 @@
                                         </constraints>
                                     </imageView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="LjK-0R-czt">
-                                        <rect key="frame" x="55" y="303" width="185" height="381"/>
+                                        <rect key="frame" x="55" y="303" width="185" height="373"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iWL-y3-iBT">
-                                                <rect key="frame" x="0.0" y="0.0" width="185" height="186.66666666666666"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="185" height="182.66666666666666"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="yEk-pd-nkM">
-                                                        <rect key="frame" x="-37.333333333333343" y="55.666666666666679" width="260" height="75.333333333333314"/>
+                                                        <rect key="frame" x="-37.333333333333343" y="53.666666666666679" width="260" height="75.333333333333314"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Warm Fuzzy Feeling" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FiJ-l4-Zop">
                                                                 <rect key="frame" x="0.0" y="0.0" width="260" height="33.666666666666664"/>
@@ -896,10 +912,10 @@
                                                 </constraints>
                                             </view>
                                             <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="uRl-jJ-vKm">
-                                                <rect key="frame" x="0.0" y="194.66666666666663" width="185" height="186.33333333333337"/>
+                                                <rect key="frame" x="0.0" y="190.66666666666663" width="185" height="182.33333333333337"/>
                                                 <subviews>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RBU-ra-AFw">
-                                                        <rect key="frame" x="0.0" y="77.333333333333371" width="35" height="31.666666666666671"/>
+                                                        <rect key="frame" x="0.0" y="75.333333333333371" width="35" height="31.666666666666671"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" secondItem="RBU-ra-AFw" secondAttribute="height" multiplier="1:0.9" id="Yb8-pA-E9k"/>
                                                         </constraints>
@@ -910,7 +926,7 @@
                                                         </connections>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zVl-z8-2VF">
-                                                        <rect key="frame" x="55" y="55.666666666666742" width="75" height="75"/>
+                                                        <rect key="frame" x="55" y="53.666666666666742" width="75" height="75"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="75" id="ntq-xi-DV9"/>
                                                             <constraint firstAttribute="width" secondItem="zVl-z8-2VF" secondAttribute="height" multiplier="1:1" id="q1H-tH-M3S"/>
@@ -923,7 +939,7 @@
                                                         </connections>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Xhr-Rb-NEa">
-                                                        <rect key="frame" x="150" y="77.333333333333371" width="35" height="31.666666666666671"/>
+                                                        <rect key="frame" x="150" y="75.333333333333371" width="35" height="31.666666666666671"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" secondItem="Xhr-Rb-NEa" secondAttribute="height" multiplier="1:0.9" id="z1P-ff-huj"/>
                                                         </constraints>
@@ -939,6 +955,19 @@
                                                     <constraint firstItem="RBU-ra-AFw" firstAttribute="width" secondItem="zVl-z8-2VF" secondAttribute="width" multiplier="35:75" id="geR-tc-lmg"/>
                                                 </constraints>
                                             </stackView>
+                                        </subviews>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="fB0-tc-GYE">
+                                        <rect key="frame" x="147.66666666666666" y="684" width="0.0" height="0.0"/>
+                                        <subviews>
+                                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="h4U-31-zUH">
+                                                <rect key="frame" x="0.0" y="0.0" width="102" height="0.0"/>
+                                                <state key="normal" title="Button"/>
+                                                <buttonConfiguration key="configuration" style="filled" title="Start Queue" cornerStyle="capsule"/>
+                                                <connections>
+                                                    <action selector="startQueueButtonPressed:" destination="evn-nV-Qa8" eventType="touchUpInside" id="cEp-p3-f23"/>
+                                                </connections>
+                                            </button>
                                         </subviews>
                                     </stackView>
                                 </subviews>
@@ -985,8 +1014,10 @@
                             <outlet property="memberLabel" destination="8Ki-BE-ohH" id="IZ3-2m-JC7"/>
                             <outlet property="playNextButton" destination="Xhr-Rb-NEa" id="T7i-Da-Rcu"/>
                             <outlet property="playPauseButton" destination="zVl-z8-2VF" id="FKA-a7-oJm"/>
+                            <outlet property="playbackViewStack" destination="NmX-uI-G68" id="mFI-30-R4z"/>
                             <outlet property="rewindButton" destination="RBU-ra-AFw" id="NPw-jr-7Tc"/>
                             <outlet property="songLabel" destination="FiJ-l4-Zop" id="oAO-f6-e2Z"/>
+                            <outlet property="startQueueButton" destination="h4U-31-zUH" id="KGm-b2-NdZ"/>
                         </connections>
                     </view>
                     <connections>

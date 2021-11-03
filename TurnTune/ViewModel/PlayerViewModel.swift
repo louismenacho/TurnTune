@@ -27,8 +27,13 @@ class PlayerViewModel {
         musicPlayerService?.playerStateChangeListener { [self] newPlayerState in
             print("musicPlayerService listener called")
             if newPlayerState.didFinish {
-                playNextSong()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [self] in
+                    playNextSong()
+                }
             }
+            playerState.isPaused = !newPlayerState.isPlayingQueue
+            playerState.isPlayingQueue = newPlayerState.isPlayingQueue
+            updatePlayerState(playerState)
         }
     }
     
@@ -142,6 +147,7 @@ class PlayerViewModel {
         musicPlayerService?.initiateSession(playing: firstItem.song) { [self] in
             playerState.queueItem = firstItem
             playerState.isPaused = false
+            playerState.hasHistory = true
             updatePlayerState(playerState) {
                 completion?()
             }

@@ -187,6 +187,13 @@ extension SpotifyMusicPlayerService: SPTAppRemotePlayerStateDelegate {
             print("contextURI \(playerState.contextURI)")
             print("contextTitle \(playerState.contextTitle)")
         }
+        if !playerState.contextURI.absoluteString.isEmpty {
+            print("track.name \(playerState.track.name)")
+            print("isPaused \(playerState.isPaused)")
+            print("playbackPosition \(playerState.playbackPosition)")
+            print("contextURI \(playerState.contextURI)")
+            print("contextTitle \(playerState.contextTitle)")
+        }
         playerStateDidChange?(playerState)
         print("")
     }

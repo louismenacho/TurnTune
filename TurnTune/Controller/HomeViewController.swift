@@ -100,6 +100,9 @@ class HomeViewController: UIViewController {
     }
         
     @IBAction func joinButtonPressed(_ sender: HomeViewButton) {
+        if displayNameTextField.text!.isEmpty || roomIDTextField.text!.isEmpty {
+            return
+        }
         startActivityIndicator()
         homeViewModel.joinRoom(roomID: roomIDTextField.text!, as: displayNameTextField.text!) { [self] member in
             homeViewModel.connectMusicBrowserService()
@@ -120,6 +123,9 @@ class HomeViewController: UIViewController {
     }
     
     @IBAction func connectSpotifyButtonPressed(_ sender: HomeViewButton) {
+        if displayNameTextField.text!.isEmpty {
+            return
+        }
         let displayName = displayNameTextField.text!
         startActivityIndicator()
         homeViewModel.connectMusicPlayerService { [self] in

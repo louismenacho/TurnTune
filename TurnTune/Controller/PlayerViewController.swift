@@ -64,7 +64,7 @@ class PlayerViewController: UIViewController {
         playerViewModel.queueChangeListener { queue in
             print("queueDidChange")
             self.tableView.reloadSections([0], with: .automatic)
-        }
+        }        
     }
     
     override func viewWillDisappear(_ animated: Bool) {

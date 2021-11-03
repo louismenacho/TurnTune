@@ -18,12 +18,15 @@ struct PlayerState: FirestoreDocument {
     var position: Int
     var isPaused: Bool
     var didFinish: Bool
+    var isPlayingQueue: Bool
+    var hasHistory: Bool = false
     
     init() {
         queueItem = QueueItem()
         position = 0
         isPaused = true
         didFinish = false
+        isPlayingQueue = false
     }
     
     init(from spotifyPlayerState: SPTAppRemotePlayerState) {
@@ -32,6 +35,7 @@ struct PlayerState: FirestoreDocument {
         position = spotifyPlayerState.playbackPosition
         isPaused = spotifyPlayerState.isPaused
         didFinish = spotifyPlayerState.isPaused && spotifyPlayerState.playbackPosition == 0
+        isPlayingQueue = spotifyPlayerState.contextTitle.isEmpty
     }
     
     static func == (lhs: PlayerState, rhs: PlayerState) -> Bool {
