@@ -41,7 +41,7 @@ extension MusicPlayerError: LocalizedError {
             case .spotify(let code):
                 switch code {
                     case .authorizationFailed:
-                        return ""
+                        return "authorization failed"
                     case .renewSessionFailed:
                         return ""
                     case .jsonFailed:

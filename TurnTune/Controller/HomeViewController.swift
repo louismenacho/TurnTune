@@ -232,6 +232,9 @@ extension HomeViewController: ViewModelDelegate {
             case let .dataAccessError(error):
                 localizedDescription = error.localizedDescription
             case let .musicPlayerError(error):
+                if error.localizedDescription == "authorization failed" {
+                    localizedDescription = error.localizedDescription
+                }
                 if case .spotifyAppNotInstalled = error {
                     presentAlert(
                         title: error.localizedDescription,
