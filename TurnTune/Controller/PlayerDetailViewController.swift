@@ -70,4 +70,7 @@ extension PlayerDetailViewController: PlaybackViewDelegate {
     
     func playbackView(startQueueButtonPressedFor playbackView: PlaybackView) {
     }
+    
+    func playbackView(resumeQueueButtonPressedFor playbackView: PlaybackView) {
+    }
 }

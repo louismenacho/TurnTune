@@ -12,6 +12,7 @@ protocol PlaybackViewDelegate: AnyObject {
     func playbackView(playPauseButtonPressedFor playbackView: PlaybackView)
     func playbackView(playNextButtonPressedFor playbackView: PlaybackView)
     func playbackView(startQueueButtonPressedFor playbackView: PlaybackView)
+    func playbackView(resumeQueueButtonPressedFor playbackView: PlaybackView)
 }
 
 class PlaybackView: UIView {
@@ -53,7 +54,14 @@ class PlaybackView: UIView {
     }
     
     @IBAction func startQueueButtonPressed(_ sender: UIButton) {
-        delegate?.playbackView(startQueueButtonPressedFor: self)
+        let titleLabel = startQueueButton.titleLabel!.text
+        if titleLabel == "Start Queue" {
+            print("starting queue")
+            delegate?.playbackView(startQueueButtonPressedFor: self)
+        } else if titleLabel == "Resume Queue" {
+            print("resuming queue")
+            delegate?.playbackView(resumeQueueButtonPressedFor: self)
+        }
     }
     
     @IBAction func rewindButtonPressed(_ sender: UIButton) {

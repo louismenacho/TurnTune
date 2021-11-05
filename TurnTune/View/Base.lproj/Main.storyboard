@@ -364,22 +364,18 @@
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zLW-vb-YXD">
                                                             <rect key="frame" x="0.0" y="83.333333333333329" width="202" height="41.666666666666671"/>
                                                             <subviews>
-                                                                <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" alignment="center" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="b4h-CI-7h7">
+                                                                <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="b4h-CI-7h7">
                                                                     <rect key="frame" x="33.666666666666657" y="0.0" width="134.66666666666666" height="41.666666666666664"/>
                                                                     <subviews>
-                                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Y9m-6K-G20">
-                                                                            <rect key="frame" x="0.0" y="10" width="19.666666666666668" height="22"/>
+                                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Y9m-6K-G20">
+                                                                            <rect key="frame" x="0.0" y="10" width="41.666666666666664" height="22"/>
                                                                             <state key="normal" image="backward.end.fill" catalog="system"/>
                                                                             <connections>
                                                                                 <action selector="rewindButtonPressed:" destination="evn-nV-Qa8" eventType="touchUpInside" id="Olk-0B-mbd"/>
                                                                             </connections>
                                                                         </button>
                                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aFo-dJ-wRn">
-                                                                            <rect key="frame" x="47.333333333333343" y="1" width="40" height="40"/>
-                                                                            <constraints>
-                                                                                <constraint firstAttribute="width" constant="40" id="5uo-zu-bzy"/>
-                                                                                <constraint firstAttribute="width" secondItem="aFo-dJ-wRn" secondAttribute="height" multiplier="1:1" id="JDe-ud-efH"/>
-                                                                            </constraints>
+                                                                            <rect key="frame" x="46.666666666666686" y="1" width="41.666666666666657" height="39.666666666666664"/>
                                                                             <state key="normal" image="pause.circle" catalog="system">
                                                                                 <preferredSymbolConfiguration key="preferredSymbolConfiguration" weight="light"/>
                                                                             </state>
@@ -387,14 +383,19 @@
                                                                                 <action selector="playPauseButtonPressed:" destination="evn-nV-Qa8" eventType="touchUpInside" id="Qkd-Bz-Pub"/>
                                                                             </connections>
                                                                         </button>
-                                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wtS-l6-B2y">
-                                                                            <rect key="frame" x="115.00000000000003" y="10" width="19.666666666666657" height="22"/>
+                                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wtS-l6-B2y">
+                                                                            <rect key="frame" x="93.000000000000028" y="10" width="41.666666666666657" height="22"/>
                                                                             <state key="normal" image="forward.end.fill" catalog="system"/>
                                                                             <connections>
                                                                                 <action selector="playNextButtonPressed:" destination="evn-nV-Qa8" eventType="touchUpInside" id="3IY-jh-yAs"/>
                                                                             </connections>
                                                                         </button>
                                                                     </subviews>
+                                                                    <constraints>
+                                                                        <constraint firstItem="aFo-dJ-wRn" firstAttribute="centerX" secondItem="b4h-CI-7h7" secondAttribute="centerX" id="Njc-4i-ThK"/>
+                                                                        <constraint firstItem="aFo-dJ-wRn" firstAttribute="height" secondItem="b4h-CI-7h7" secondAttribute="height" multiplier="0.952" id="OZ3-gh-bPE"/>
+                                                                        <constraint firstItem="aFo-dJ-wRn" firstAttribute="width" secondItem="b4h-CI-7h7" secondAttribute="height" multiplier="1:1" id="omX-ZH-n8x"/>
+                                                                    </constraints>
                                                                 </stackView>
                                                             </subviews>
                                                             <constraints>

@@ -13,18 +13,18 @@ protocol APIClient {
 }
 
 extension APIClient {
-    func request<Response: Decodable>(_ endpoint: Endpoint, auth: HTTPAuthorization? = nil, completion: @escaping (Result<Response, HTTPError>) -> Void) {
+    func request<Response: Decodable>(_ endpoint: Endpoint, auth: HTTPAuthorization? = nil, completion: ((Result<Response, HTTPError>) -> Void)? = nil, emptyCompletion: ((Result<Void, HTTPError>) -> Void)? = nil) {
         var apiRequest = endpoint.request
         apiRequest.auth = auth ?? self.auth
         
         URLSession.shared.dataTask(with: apiRequest.asURLRequest) { (data, response, error) in
             if let error = error {
-                completion(.failure(.client(error: error)))
+                completion?(.failure(.client(error: error)))
                 return
             }
 
             guard let data = data, let response = response as? HTTPURLResponse else {
-                completion(.failure(HTTPError.noResponse))
+                completion?(.failure(HTTPError.noResponse))
                 return
             }
     
@@ -34,19 +34,19 @@ extension APIClient {
                 let httpError = HTTPError.status(code: statusCode, description: statusDescription)
                 debug(apiRequest.asURLRequest)
                 debug(data)
-                completion(.failure(httpError))
+                completion?(.failure(httpError))
                 return
             }
             
             do {
                 if response.statusCode == 204 {
-                    completion(.success("" as! Response))
+                    emptyCompletion?(.success(()))
                 } else {
                     let responseData = try JSONDecoder().decode(Response.self, from: data)
-                    completion(.success(responseData))
+                    completion?(.success(responseData))
                 }
             } catch {
-                completion(.failure(.decode(error: error)))
+                completion?(.failure(.decode(error: error)))
             }
         }
         .resume()

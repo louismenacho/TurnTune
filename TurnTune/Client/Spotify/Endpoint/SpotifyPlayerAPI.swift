@@ -8,6 +8,7 @@
 import Foundation
 
 enum SpotifyPlayerAPI: SpotifyAPIEndpoint {
+    case playerState
     case currentlyPlayingTrack
     case recentlyPlayedTracks(limit: Int)
     case startPlayback(uris: [String]? = nil, position: Int = 0)
@@ -19,6 +20,9 @@ enum SpotifyPlayerAPI: SpotifyAPIEndpoint {
         var apiRequest = APIRequest(baseURL: "https://api.spotify.com/v1/me/player")
         
         switch self {
+            case .playerState:
+                apiRequest.method = .get
+
             case .currentlyPlayingTrack:
                 apiRequest.method = .get
                 apiRequest.path =   "/currently-playing"

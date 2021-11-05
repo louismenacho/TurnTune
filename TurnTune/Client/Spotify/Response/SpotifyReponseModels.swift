@@ -370,3 +370,81 @@ class JSONNull: Codable, Hashable {
         hasher.combine(0)
     }
 }
+
+// MARK: - PlayerStateResponse
+struct PlayerStateResponse: Codable {
+    var device: Device?
+    var shuffleState: Bool?
+    var repeatState: String?
+    var timestamp: Int?
+    var context: Context?
+    var progressMS: Int
+    var item: Item?
+    var currentlyPlayingType: String?
+    var actions: Actions?
+    var isPlaying: Bool?
+    
+    enum CodingKeys: String, CodingKey {
+        case device
+        case shuffleState = "shuffle_state"
+        case repeatState = "repeat_state"
+        case timestamp, context
+        case progressMS = "progress_ms"
+        case item
+        case currentlyPlayingType = "currently_playing_type"
+        case actions
+        case isPlaying = "is_playing"
+    }
+}
+
+// MARK: - Device
+struct Device: Codable {
+    var id: String?
+    var isActive, isPrivateSession, isRestricted: Bool?
+    var name, type: String?
+    var volumePercent: Int?
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case isActive = "is_active"
+        case isPrivateSession = "is_private_session"
+        case isRestricted = "is_restricted"
+        case name, type
+        case volumePercent = "volume_percent"
+    }
+}
+
+// MARK: - Item
+struct Item: Codable {
+    var album: Album?
+    var artists: [Artist]?
+    var availableMarkets: [String]?
+    var discNumber, durationMS: Int?
+    var explicit: Bool?
+    var externalIDS: ExternalIDS?
+    var externalUrls: ExternalUrls?
+    var href: String?
+    var id: String?
+    var isLocal: Bool?
+    var name: String?
+    var popularity: Int?
+    var previewURL: String?
+    var trackNumber: Int?
+    var type, uri: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case album, artists
+        case availableMarkets = "available_markets"
+        case discNumber = "disc_number"
+        case durationMS = "duration_ms"
+        case explicit
+        case externalIDS = "external_ids"
+        case externalUrls = "external_urls"
+        case href, id
+        case isLocal = "is_local"
+        case name, popularity
+        case previewURL = "preview_url"
+        case trackNumber = "track_number"
+        case type, uri
+    }
+}

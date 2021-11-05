@@ -52,7 +52,11 @@ class SpotifyMusicPlayerService: NSObject, MusicPlayerServiceable {
         sessionManager.renewSession()
     }
     
-    func handleOpenURL(_ url: URL) {
+    func handleOpenURL(_ url: URL?) {
+        guard let url = url else {
+            delegate?.musicPlayerServiceable(error: .initiate(error: nil))
+            return
+        }
         DispatchQueue.main.async { [self] in
             sessionManager.application(UIApplication.shared, open: url, options: [:])
         }
@@ -72,7 +76,8 @@ class SpotifyMusicPlayerService: NSObject, MusicPlayerServiceable {
     }
         
     func startPlayback(songs: [Song]? = nil, position: Int = 0, completion: (() -> Void)?) {
-        playerAPI.request(.startPlayback(uris: songs?.compactMap { $0.spotifyURI }, position: position)) { [self] (result: Result<String, HTTPError>) in
+        playerAPI.request(.startPlayback(uris: songs?.compactMap { $0.spotifyURI }, position: position)) { (result: Result<String, HTTPError>) in
+        } emptyCompletion: { [self] (result: Result<Void, HTTPError>) in
             switch result {
                 case let .failure(error):
                     delegate?.musicPlayerServiceable(error: .startPlayback(error: error))
@@ -83,7 +88,8 @@ class SpotifyMusicPlayerService: NSObject, MusicPlayerServiceable {
     }
     
     func pausePlayback(completion: (() -> Void)?) {
-        playerAPI.request(.pausePlayback) { [self] (result: Result<String, HTTPError>) in
+        playerAPI.request(.pausePlayback) { (result: Result<String, HTTPError>) in
+        } emptyCompletion: { [self] (result: Result<Void, HTTPError>) in
             switch result {
                 case let .failure(error):
                     delegate?.musicPlayerServiceable(error: .pausePlayback(error: error))
@@ -94,7 +100,8 @@ class SpotifyMusicPlayerService: NSObject, MusicPlayerServiceable {
     }
     
     func rewindPlayback(completion: (() -> Void)?) {
-        playerAPI.request(.seek(position: 0)) { [self] (result: Result<String, HTTPError>) in
+        playerAPI.request(.seek(position: 100)) { (result: Result<String, HTTPError>) in
+        } emptyCompletion: { [self] (result: Result<Void, HTTPError>) in
             switch result {
                 case let .failure(error):
                     delegate?.musicPlayerServiceable(error: .rewindPlayback(error: error))
@@ -120,6 +127,24 @@ class SpotifyMusicPlayerService: NSObject, MusicPlayerServiceable {
             completion(PlayerState(from: playerState))
         }
     }
+    
+    func getPlayerState(completion: @escaping (PlayerStateResponse?) -> Void) {
+        playerAPI.request(.playerState) { [self] (result: Result<PlayerStateResponse?, HTTPError>) in
+            switch result {
+                case let .failure(error):
+                    delegate?.musicPlayerServiceable(error: .getPlayerState(error: error))
+                case let .success(playerStateResponse):
+                    completion(playerStateResponse)
+            }
+        } emptyCompletion: { [self] (result: Result<Void, HTTPError>) in
+            switch result {
+                case let .failure(error):
+                    delegate?.musicPlayerServiceable(error: .getPlayerState(error: error))
+                case .success:
+                    completion(nil)
+            }
+        }
+    }
 }
 
 extension SpotifyMusicPlayerService: SPTSessionManagerDelegate {
@@ -143,10 +168,12 @@ extension SpotifyMusicPlayerService: SPTSessionManagerDelegate {
     func sessionManager(manager: SPTSessionManager, didFailWith error: Error) {
         print("SPTSession didFailWith error")
         if let error = error as NSError? {
-            if !sessionManager.isSpotifyAppInstalled, case .authorizationFailed = SPTErrorCode(rawValue: UInt(error.code)) {
-                delegate?.musicPlayerServiceable(error: .spotifyAppNotInstalled)
-            } else {
-                delegate?.musicPlayerServiceable(error: .spotify(code: SPTErrorCode(rawValue: UInt(error.code)) ?? .unknown))
+            DispatchQueue.main.async { [self] in
+                if !sessionManager.isSpotifyAppInstalled {
+                    delegate?.musicPlayerServiceable(error: .spotifyAppNotInstalled)
+                } else {
+                    delegate?.musicPlayerServiceable(error: .spotify(code: SPTErrorCode(rawValue: UInt(error.code)) ?? .unknown))
+                }
             }
         }
     }
@@ -181,20 +208,23 @@ extension SpotifyMusicPlayerService: SPTAppRemotePlayerStateDelegate {
     
     func playerStateDidChange(_ playerState: SPTAppRemotePlayerState) {
         if playerState.isPaused {
+            print("playstate is paused")
             print("track.name \(playerState.track.name)")
             print("isPaused \(playerState.isPaused)")
             print("playbackPosition \(playerState.playbackPosition)")
             print("contextURI \(playerState.contextURI)")
             print("contextTitle \(playerState.contextTitle)")
+            print("")
         }
         if !playerState.contextURI.absoluteString.isEmpty {
+            print("playerstate hass no context")
             print("track.name \(playerState.track.name)")
             print("isPaused \(playerState.isPaused)")
             print("playbackPosition \(playerState.playbackPosition)")
             print("contextURI \(playerState.contextURI)")
             print("contextTitle \(playerState.contextTitle)")
+            print("")
         }
         playerStateDidChange?(playerState)
-        print("")
     }
 }

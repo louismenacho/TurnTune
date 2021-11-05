@@ -8,11 +8,12 @@
 import Foundation
 
 enum MusicPlayerError: Error {
-    case initiate(error: Error)
+    case initiate(error: Error?)
     case startPlayback(error: HTTPError)
     case pausePlayback(error: HTTPError)
     case rewindPlayback(error: HTTPError)
     case currentUserProfile(error: HTTPError)
+    case getPlayerState(error: HTTPError)
     case currentUserIsNotPremium
     case spotifyAppNotInstalled
     
@@ -36,6 +37,8 @@ extension MusicPlayerError: LocalizedError {
                 return "Coult not get current user profile"
             case .currentUserIsNotPremium:
                 return "Current user does not have a premium account"
+            case .getPlayerState:
+                return "Could not get player state"
             case .spotifyAppNotInstalled:
                 return "Spotify app is not installed"
             case .spotify(let code):
