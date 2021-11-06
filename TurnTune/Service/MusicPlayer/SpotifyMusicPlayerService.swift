@@ -13,6 +13,7 @@ class SpotifyMusicPlayerService: NSObject, MusicPlayerServiceable {
     
     private var initiateCompletion: (() -> Void)?
     private var playerStateDidChange: ((SPTAppRemotePlayerState) -> Void)?
+    private var connectionStatusDidChange: ((Bool) -> Void)?
 
     private var config: SPTConfiguration
     private(set) var appRemote: SPTAppRemote
@@ -100,7 +101,7 @@ class SpotifyMusicPlayerService: NSObject, MusicPlayerServiceable {
     }
     
     func rewindPlayback(completion: (() -> Void)?) {
-        playerAPI.request(.seek(position: 100)) { (result: Result<String, HTTPError>) in
+        playerAPI.request(.seek(position: 1000)) { (result: Result<String, HTTPError>) in
         } emptyCompletion: { [self] (result: Result<Void, HTTPError>) in
             switch result {
                 case let .failure(error):
@@ -127,6 +128,13 @@ class SpotifyMusicPlayerService: NSObject, MusicPlayerServiceable {
             completion(PlayerState(from: playerState))
         }
     }
+    
+    func connectionStatusChangeListener(completion: @escaping (Bool) -> Void) {
+        connectionStatusDidChange = { isConnected in
+            completion(isConnected)
+        }
+    }
+
     
     func getPlayerState(completion: @escaping (PlayerStateResponse?) -> Void) {
         playerAPI.request(.playerState) { [self] (result: Result<PlayerStateResponse?, HTTPError>) in
@@ -187,6 +195,7 @@ extension SpotifyMusicPlayerService: SPTAppRemoteDelegate {
         appRemote.playerAPI?.setShuffle(false)
         appRemote.playerAPI?.setRepeatMode(.off)
         appRemote.playerAPI?.subscribe()
+        connectionStatusDidChange?(true)
     }
     
     func appRemote(_ appRemote: SPTAppRemote, didFailConnectionAttemptWithError error: Error?) {
@@ -201,6 +210,7 @@ extension SpotifyMusicPlayerService: SPTAppRemoteDelegate {
         if let error = error as NSError? {
             delegate?.musicPlayerServiceable(error: .spotifyAppRemote(code: SPTAppRemoteErrorCode(rawValue: error.code) ?? .unknownError))
         }
+        connectionStatusDidChange?(false)
     }
 }
 

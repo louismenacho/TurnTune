@@ -28,12 +28,17 @@ class PlaybackView: UIView {
             
             let imageName = playerState.isPaused ? "play.circle" : "pause.circle"
             playPauseButton.setImage(UIImage(systemName: imageName), for: .normal)
-            
-            startQueueButton.isHidden = playerState.isPlayingQueue
-            playbackViewStack.isHidden = !playerState.isPlayingQueue
-            
+        
             let buttonTitle = playerState.hasHistory ? "Resume Queue" : "Start Queue"
             startQueueButton.setTitle(buttonTitle, for: .normal)
+            
+            if playerState.isConnected {
+                startQueueButton.isHidden = playerState.isPlayingQueue
+                playbackViewStack.isHidden = !playerState.isPlayingQueue
+            } else {
+                startQueueButton.isHidden = false
+                playbackViewStack.isHidden = true
+            }
         }
     }
     

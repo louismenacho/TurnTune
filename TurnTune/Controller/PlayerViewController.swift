@@ -173,7 +173,7 @@ extension PlayerViewController: PlaybackViewDelegate {
     }
     
     func playbackView(resumeQueueButtonPressedFor playbackView: PlaybackView) {
-        
+        playerViewModel.resumeQueue()
     }
 }
 

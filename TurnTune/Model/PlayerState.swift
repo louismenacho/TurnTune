@@ -20,6 +20,7 @@ struct PlayerState: FirestoreDocument {
     var didFinish: Bool
     var isPlayingQueue: Bool
     var hasHistory: Bool = false
+    var isConnected: Bool = false
     
     init() {
         queueItem = QueueItem()
@@ -36,6 +37,7 @@ struct PlayerState: FirestoreDocument {
         isPaused = spotifyPlayerState.isPaused
         didFinish = spotifyPlayerState.isPaused && spotifyPlayerState.playbackPosition == 0
         isPlayingQueue = spotifyPlayerState.contextTitle.isEmpty
+        isConnected = true
     }
     
     static func == (lhs: PlayerState, rhs: PlayerState) -> Bool {

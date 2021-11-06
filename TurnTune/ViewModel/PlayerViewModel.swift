@@ -24,14 +24,20 @@ class PlayerViewModel {
         self.playerStateDataAccess.delegate = self
         self.queueDataAccess.delegate = self
         
+        musicPlayerService?.connectionStatusChangeListener{ [self] isConnected in
+            print("musicPLayerService connection status changed: \(isConnected)")
+            playerState.isConnected = isConnected
+            updatePlayerState(playerState)
+        }
+        
         musicPlayerService?.playerStateChangeListener { [self] newPlayerState in
-            print("musicPlayerService listener called")
+            print("musicPlayerService player state changed")
             if newPlayerState.didFinish {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [self] in
                     playNextSong()
                 }
             }
-            playerState.isPaused = !newPlayerState.isPlayingQueue
+            playerState.isPaused = newPlayerState.isPaused
             playerState.isPlayingQueue = newPlayerState.isPlayingQueue
             updatePlayerState(playerState)
         }
@@ -157,10 +163,16 @@ class PlayerViewModel {
         }
     }
     
-    func rewindSong(completion: (() -> Void)? = nil) {
-        musicPlayerService?.rewindPlayback {
-            completion?()
+    func resumeQueue(completion: (() -> Void)? = nil) {
+        musicPlayerService?.initiateSession { [self] in
+            play([playerState.queueItem], position: playerState.position) {
+                completion?()
+            }
         }
+    }
+    
+    func rewindSong(completion: (() -> Void)? = nil) {
+        play([playerState.queueItem])
     }
     
 }

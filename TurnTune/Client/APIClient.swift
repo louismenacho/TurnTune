@@ -40,6 +40,8 @@ extension APIClient {
             
             do {
                 if response.statusCode == 204 {
+                    debug(apiRequest.asURLRequest)
+                    debug(data)
                     emptyCompletion?(.success(()))
                 } else {
                     let responseData = try JSONDecoder().decode(Response.self, from: data)
