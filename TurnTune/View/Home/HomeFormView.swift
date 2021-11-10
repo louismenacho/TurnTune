@@ -8,11 +8,11 @@
 import UIKit
 
 protocol HomeFormViewDelegate: AnyObject {
-    func homeFormView(_ homeFormView: HomeFormView, selectedSegmentDidChange selectedSegmentIndex: Int)
-    func homeFormView(_ homeFormView: HomeFormView, displayNameTextFieldDidChange text: String?)
-    func homeFormView(_ homeFormView: HomeFormView, roomCodeTextFieldDidChange text: String?)
-    func homeFormView(_ homeFormView: HomeFormView, joinButtonPressed button: UIButton)
-    func homeFormView(_ homeFormView: HomeFormView, spotifyButtonPressed button: UIButton)
+    func formView(_ formView: HomeFormView, selectedSegmentDidChange selectedSegmentIndex: Int)
+    func formView(_ formView: HomeFormView, displayNameTextFieldDidChange text: String?)
+    func formView(_ formView: HomeFormView, roomCodeTextFieldDidChange text: String?)
+    func formView(_ formView: HomeFormView, joinButtonPressed button: UIButton)
+    func formView(_ formView: HomeFormView, spotifyButtonPressed button: UIButton)
 }
 
 class HomeFormView: UIStackView {
@@ -38,22 +38,23 @@ class HomeFormView: UIStackView {
         } else {
             showCreateRoomOptions()
         }
+        delegate?.formView(self, selectedSegmentDidChange: sender.selectedSegmentIndex)
     }
     
     @IBAction func displayNameTextFieldDidChange(_ sender: UITextField) {
-        delegate?.homeFormView(self, displayNameTextFieldDidChange: sender.text)
+        delegate?.formView(self, displayNameTextFieldDidChange: sender.text)
     }
     
     @IBAction func roomCodeTextFieldDidChange(_ sender: UITextField) {
-        delegate?.homeFormView(self, roomCodeTextFieldDidChange: sender.text)
+        delegate?.formView(self, roomCodeTextFieldDidChange: sender.text)
     }
     
     @IBAction func joinButtonPressed(_ sender: UIButton) {
-        delegate?.homeFormView(self, joinButtonPressed: sender)
+        delegate?.formView(self, joinButtonPressed: sender)
     }
     
     @IBAction func spotifyButtonPressed(_ sender: UIButton) {
-        delegate?.homeFormView(self, spotifyButtonPressed: sender)
+        delegate?.formView(self, spotifyButtonPressed: sender)
     }
     
     private func showJoinRoomOptions() {
