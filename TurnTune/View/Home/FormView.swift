@@ -1,5 +1,5 @@
 //
-//  HomeFormView.swift
+//  SessionFormView.swift
 //  TurnTune
 //
 //  Created by Louis Menacho on 11/10/21.
@@ -7,17 +7,17 @@
 
 import UIKit
 
-protocol HomeFormViewDelegate: AnyObject {
-    func formView(_ formView: HomeFormView, selectedSegmentDidChange selectedSegmentIndex: Int)
-    func formView(_ formView: HomeFormView, displayNameTextFieldDidChange text: String?)
-    func formView(_ formView: HomeFormView, roomCodeTextFieldDidChange text: String?)
-    func formView(_ formView: HomeFormView, joinButtonPressed button: UIButton)
-    func formView(_ formView: HomeFormView, spotifyButtonPressed button: UIButton)
+protocol SessionFormViewDelegate: AnyObject {
+    func sessionFormView(_ sessionFormView: SessionFormView, selectedSegmentDidChange selectedSegmentIndex: Int)
+    func sessionFormView(_ sessionFormView: SessionFormView, displayNameTextFieldDidChange text: String?)
+    func sessionFormView(_ sessionFormView: SessionFormView, roomCodeTextFieldDidChange text: String?)
+    func sessionFormView(_ sessionFormView: SessionFormView, joinButtonPressed button: UIButton)
+    func sessionFormView(_ sessionFormView: SessionFormView, spotifyButtonPressed button: UIButton)
 }
 
-class HomeFormView: UIStackView {
+class SessionFormView: UIStackView {
     
-    var delegate: HomeFormViewDelegate?
+    weak var delegate: SessionFormViewDelegate?
     
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     @IBOutlet weak var displayNameTextField: UITextField!
@@ -38,23 +38,23 @@ class HomeFormView: UIStackView {
         } else {
             showCreateRoomOptions()
         }
-        delegate?.formView(self, selectedSegmentDidChange: sender.selectedSegmentIndex)
+        delegate?.sessionFormView(self, selectedSegmentDidChange: sender.selectedSegmentIndex)
     }
     
     @IBAction func displayNameTextFieldDidChange(_ sender: UITextField) {
-        delegate?.formView(self, displayNameTextFieldDidChange: sender.text)
+        delegate?.sessionFormView(self, displayNameTextFieldDidChange: sender.text)
     }
     
     @IBAction func roomCodeTextFieldDidChange(_ sender: UITextField) {
-        delegate?.formView(self, roomCodeTextFieldDidChange: sender.text)
+        delegate?.sessionFormView(self, roomCodeTextFieldDidChange: sender.text)
     }
     
     @IBAction func joinButtonPressed(_ sender: UIButton) {
-        delegate?.formView(self, joinButtonPressed: sender)
+        delegate?.sessionFormView(self, joinButtonPressed: sender)
     }
     
     @IBAction func spotifyButtonPressed(_ sender: UIButton) {
-        delegate?.formView(self, spotifyButtonPressed: sender)
+        delegate?.sessionFormView(self, spotifyButtonPressed: sender)
     }
     
     private func showJoinRoomOptions() {
@@ -80,7 +80,7 @@ class HomeFormView: UIStackView {
     }
 }
 
-extension HomeFormView: UITextFieldDelegate {
+extension SessionFormView: UITextFieldDelegate {
     
     func textView(_ textView: UITextField, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if textView == displayNameTextField {

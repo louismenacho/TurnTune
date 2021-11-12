@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9515B338273B901100CADB77 /* HomeFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9515B337273B901100CADB77 /* HomeFormView.swift */; };
+		9515B338273B901100CADB77 /* FormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9515B337273B901100CADB77 /* FormView.swift */; };
 		95C7715225944C1E00EDF930 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C7715125944C1E00EDF930 /* AppDelegate.swift */; };
 		95C7715425944C1E00EDF930 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C7715325944C1E00EDF930 /* SceneDelegate.swift */; };
 		95C7715925944C1E00EDF930 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 95C7715725944C1E00EDF930 /* Main.storyboard */; };
@@ -45,7 +45,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		9515B337273B901100CADB77 /* HomeFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFormView.swift; sourceTree = "<group>"; };
+		9515B337273B901100CADB77 /* FormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormView.swift; sourceTree = "<group>"; };
 		958B33DD25CBAE47002B8F7E /* TurnTune-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TurnTune-Bridging-Header.h"; sourceTree = "<group>"; };
 		95C7714E25944C1E00EDF930 /* TurnTune.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TurnTune.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		95C7715125944C1E00EDF930 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -93,30 +93,9 @@
 		9515B336273B8EC000CADB77 /* Home */ = {
 			isa = PBXGroup;
 			children = (
-				9515B337273B901100CADB77 /* HomeFormView.swift */,
+				9515B337273B901100CADB77 /* FormView.swift */,
 			);
 			path = Home;
-			sourceTree = "<group>";
-		};
-		95A4045E25C3EB7900F10E36 /* Service */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Service;
-			sourceTree = "<group>";
-		};
-		95A9EBD8273BB114005ED956 /* Repository */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Repository;
-			sourceTree = "<group>";
-		};
-		95A9EBD9273BB132005ED956 /* Client */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Client;
 			sourceTree = "<group>";
 		};
 		95C7714525944C1E00EDF930 = {
@@ -142,11 +121,6 @@
 				95C7715125944C1E00EDF930 /* AppDelegate.swift */,
 				95C7715325944C1E00EDF930 /* SceneDelegate.swift */,
 				958B33DD25CBAE47002B8F7E /* TurnTune-Bridging-Header.h */,
-				95A9EBD9273BB132005ED956 /* Client */,
-				95A9EBD8273BB114005ED956 /* Repository */,
-				95A4045E25C3EB7900F10E36 /* Service */,
-				95C7716B2597ED8D00EDF930 /* Model */,
-				95C7716A2597ED8500EDF930 /* ViewModel */,
 				95C771682597ED6900EDF930 /* Controller */,
 				95C771692597ED8300EDF930 /* View */,
 				95C7715A25944C1F00EDF930 /* Assets.xcassets */,
@@ -172,20 +146,6 @@
 				95C7715725944C1E00EDF930 /* Main.storyboard */,
 			);
 			path = View;
-			sourceTree = "<group>";
-		};
-		95C7716A2597ED8500EDF930 /* ViewModel */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = ViewModel;
-			sourceTree = "<group>";
-		};
-		95C7716B2597ED8D00EDF930 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -277,7 +237,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				95D9747025B41CB9000286C9 /* HomeViewController.swift in Sources */,
-				9515B338273B901100CADB77 /* HomeFormView.swift in Sources */,
+				9515B338273B901100CADB77 /* FormView.swift in Sources */,
 				95C7715225944C1E00EDF930 /* AppDelegate.swift in Sources */,
 				95C7715425944C1E00EDF930 /* SceneDelegate.swift in Sources */,
 			);

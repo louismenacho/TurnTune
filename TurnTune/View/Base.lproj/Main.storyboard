@@ -10,6 +10,25 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
+        <!--Navigation Controller-->
+        <scene sceneID="U5R-Nw-g9o">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="yQQ-Ce-9vZ" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" id="4r1-dC-djB"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="H3K-OM-kbi">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="VDe-u4-SFH" kind="relationship" relationship="rootViewController" id="BFB-3u-Bzg"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="9NR-Xk-TOW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="300" y="0.0"/>
+        </scene>
         <!--Home View Controller-->
         <scene sceneID="WSY-a8-HKG">
             <objects>
@@ -18,7 +37,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="24P-eW-RD1" userLabel="Home Form View" customClass="HomeFormView" customModule="TurnTune" customModuleProvider="target">
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="24P-eW-RD1" userLabel="Form View" customClass="SessionFormView" customModule="TurnTune" customModuleProvider="target">
                                 <rect key="frame" x="94.5" y="347" width="225" height="202"/>
                                 <subviews>
                                     <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="SPj-Ph-Btn">
@@ -35,17 +54,11 @@
                                         <rect key="frame" x="0.0" y="42" width="225" height="34"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                                         <textInputTraits key="textInputTraits"/>
-                                        <connections>
-                                            <action selector="displayNameTextFieldDIdChange:" destination="24P-eW-RD1" eventType="editingDidEnd" id="x39-HJ-ieE"/>
-                                        </connections>
                                     </textField>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="ROOM CODE" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="IGV-r3-OhW">
                                         <rect key="frame" x="0.0" y="84" width="225" height="34"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                                         <textInputTraits key="textInputTraits"/>
-                                        <connections>
-                                            <action selector="roomCodeTextFieldDIdChange:" destination="24P-eW-RD1" eventType="editingDidEnd" id="RQz-cC-Joz"/>
-                                        </connections>
                                     </textField>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ESe-3I-JJh">
                                         <rect key="frame" x="0.0" y="126" width="225" height="34"/>
@@ -65,7 +78,6 @@
                                         <state key="normal" title="CONTINUE WITH SPOTIFY"/>
                                         <connections>
                                             <action selector="spotifyButtonPressed:" destination="24P-eW-RD1" eventType="touchUpInside" id="ehf-U4-wAw"/>
-                                            <action selector="spotifyButtonPressed:" destination="Z8s-gY-Lta" eventType="touchUpInside" id="xeu-g9-cXU"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -87,33 +99,12 @@
                     </view>
                     <navigationItem key="navigationItem" id="JXL-uF-Cfz"/>
                     <connections>
-                        <outlet property="nameTextField" destination="5Ck-0Q-jYu" id="tKx-m5-tmY"/>
-                        <outlet property="roomCodeTextField" destination="IGV-r3-OhW" id="VMU-TL-x0B"/>
+                        <outlet property="sessionFormView" destination="24P-eW-RD1" id="e05-53-djW"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Myc-Sa-j0j" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-                <exit id="Z8s-gY-Lta" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="1009" y="0.0"/>
-        </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="U5R-Nw-g9o">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="yQQ-Ce-9vZ" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationItem key="navigationItem" id="4r1-dC-djB"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="H3K-OM-kbi">
-                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="VDe-u4-SFH" kind="relationship" relationship="rootViewController" id="BFB-3u-Bzg"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="9NR-Xk-TOW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="300" y="0.0"/>
         </scene>
     </scenes>
     <resources>
