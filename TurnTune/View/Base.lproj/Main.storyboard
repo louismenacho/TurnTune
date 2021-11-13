@@ -97,22 +97,55 @@
                             <constraint firstItem="24P-eW-RD1" firstAttribute="centerY" secondItem="5GN-ZT-OWp" secondAttribute="centerY" id="9qz-gz-dVj"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="JXL-uF-Cfz"/>
+                    <navigationItem key="navigationItem" id="JXL-uF-Cfz">
+                        <barButtonItem key="rightBarButtonItem" id="ngY-lp-PLc">
+                            <view key="customView" contentMode="scaleToFill" id="y5E-Vd-bw7" customClass="SwitchControl" customModule="TurnTune" customModuleProvider="target">
+                                <rect key="frame" x="343" y="6.5" width="51" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sun.min.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="efD-uU-UvH">
+                                        <rect key="frame" x="22" y="2.5" width="27" height="26"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="27" id="0WJ-oE-Pcw"/>
+                                            <constraint firstAttribute="height" constant="27" id="7Bd-Sn-kWj"/>
+                                        </constraints>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemFillColor"/>
+                                <constraints>
+                                    <constraint firstItem="efD-uU-UvH" firstAttribute="centerY" secondItem="y5E-Vd-bw7" secondAttribute="centerY" id="NwJ-h4-QgY"/>
+                                    <constraint firstItem="efD-uU-UvH" firstAttribute="centerX" secondItem="y5E-Vd-bw7" secondAttribute="centerX" constant="10" id="VaQ-3L-CHH"/>
+                                    <constraint firstAttribute="height" constant="31" id="hFS-og-qeT"/>
+                                    <constraint firstAttribute="width" constant="51" id="opt-Y7-SZU"/>
+                                </constraints>
+                                <connections>
+                                    <outlet property="centerXConstraint" destination="VaQ-3L-CHH" id="4gp-bR-2qW"/>
+                                    <outlet property="thumbImageView" destination="efD-uU-UvH" id="qdC-Tu-nEb"/>
+                                </connections>
+                            </view>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
+                        <outlet property="appearanceSwitch" destination="y5E-Vd-bw7" id="pvO-gc-Ry4"/>
                         <outlet property="sessionFormView" destination="24P-eW-RD1" id="e05-53-djW"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Myc-Sa-j0j" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1009" y="0.0"/>
+            <point key="canvasLocation" x="1008.6956521739131" y="0.0"/>
         </scene>
     </scenes>
     <resources>
+        <image name="sun.min.fill" catalog="system" width="128" height="121"/>
         <systemColor name="linkColor">
             <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemFillColor">
+            <color red="0.47058823529411764" green="0.47058823529411764" blue="0.50196078431372548" alpha="0.20000000000000001" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

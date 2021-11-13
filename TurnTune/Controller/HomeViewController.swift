@@ -10,11 +10,21 @@ import UIKit
 
 class HomeViewController: UIViewController {
         
+    @IBOutlet weak var appearanceSwitch: SwitchControl!
     @IBOutlet weak var sessionFormView: SessionFormView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        appearanceSwitch.delegate = self
         sessionFormView.delegate = self
+    }
+}
+
+extension HomeViewController: SwitchControlDelegate {
+    func switchControl(_ switchControl: SwitchControl, didToggle isOn: Bool) {
+        UIApplication.shared.windows.forEach { window in
+            window.overrideUserInterfaceStyle = isOn ? .light : .dark
+        }
     }
 }
 
