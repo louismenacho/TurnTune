@@ -20,15 +20,12 @@ class SwitchControl: UIControl {
     @IBOutlet weak var thumbImageView: UIImageView!
     @IBOutlet weak var centerXConstraint: NSLayoutConstraint!
     
-    override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
-        return true
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        print("touchesBegan")
     }
     
-    override func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
-        false
-    }
-    
-    override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        print("touchesEnded")
         toggle()
     }
     

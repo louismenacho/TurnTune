@@ -16,8 +16,8 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="yQQ-Ce-9vZ" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="4r1-dC-djB"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="H3K-OM-kbi">
-                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="H3K-OM-kbi">
+                        <rect key="frame" x="0.0" y="44" width="414" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -38,7 +38,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="24P-eW-RD1" userLabel="Form View" customClass="SessionFormView" customModule="TurnTune" customModuleProvider="target">
-                                <rect key="frame" x="94.5" y="347" width="225" height="202"/>
+                                <rect key="frame" x="94.5" y="400" width="225" height="202"/>
                                 <subviews>
                                     <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="SPj-Ph-Btn">
                                         <rect key="frame" x="0.0" y="0.0" width="225" height="35"/>
@@ -89,13 +89,37 @@
                                     <outlet property="spotifyButton" destination="FyT-mT-mFK" id="4wc-yx-rjp"/>
                                 </connections>
                             </stackView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mZ1-CY-pE1">
+                                <rect key="frame" x="87" y="88" width="240" height="304"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="TurnTune" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3CT-NQ-9UE">
+                                        <rect key="frame" x="60.5" y="133.5" width="119.5" height="37"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleTitle0"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstItem="3CT-NQ-9UE" firstAttribute="centerY" secondItem="mZ1-CY-pE1" secondAttribute="centerY" id="1yy-m5-8Rh"/>
+                                    <constraint firstItem="3CT-NQ-9UE" firstAttribute="centerX" secondItem="mZ1-CY-pE1" secondAttribute="centerX" id="ch0-yF-TGX"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="iPe-PM-CZS"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="24P-eW-RD1" firstAttribute="centerX" secondItem="5GN-ZT-OWp" secondAttribute="centerX" id="3aQ-L6-Rad"/>
-                            <constraint firstItem="24P-eW-RD1" firstAttribute="centerY" secondItem="5GN-ZT-OWp" secondAttribute="centerY" id="9qz-gz-dVj"/>
+                            <constraint firstItem="mZ1-CY-pE1" firstAttribute="width" secondItem="24P-eW-RD1" secondAttribute="width" multiplier="1.06667" id="5Q4-fa-0qO"/>
+                            <constraint firstItem="24P-eW-RD1" firstAttribute="centerY" secondItem="iPe-PM-CZS" secondAttribute="centerY" id="9qz-gz-dVj"/>
+                            <constraint firstItem="24P-eW-RD1" firstAttribute="top" secondItem="mZ1-CY-pE1" secondAttribute="bottom" constant="8" symbolic="YES" id="VNY-ga-UUX"/>
+                            <constraint firstItem="mZ1-CY-pE1" firstAttribute="centerX" secondItem="5GN-ZT-OWp" secondAttribute="centerX" id="VxL-3F-eoI"/>
+                            <constraint firstItem="mZ1-CY-pE1" firstAttribute="top" secondItem="iPe-PM-CZS" secondAttribute="top" constant="-52" id="uLa-Hc-opH"/>
                         </constraints>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="Hwj-98-ni9" appends="YES" id="TVb-X2-dFo"/>
+                        </connections>
                     </view>
                     <navigationItem key="navigationItem" id="JXL-uF-Cfz">
                         <barButtonItem key="rightBarButtonItem" id="ngY-lp-PLc">
@@ -129,9 +153,15 @@
                     <connections>
                         <outlet property="appearanceSwitch" destination="y5E-Vd-bw7" id="pvO-gc-Ry4"/>
                         <outlet property="sessionFormView" destination="24P-eW-RD1" id="e05-53-djW"/>
+                        <outlet property="sessionFormViewCenterY" destination="9qz-gz-dVj" id="x1H-By-aF1"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Myc-Sa-j0j" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="Hwj-98-ni9">
+                    <connections>
+                        <action selector="viewTapped:" destination="VDe-u4-SFH" id="ZGH-jC-qR8"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="1008.6956521739131" y="0.0"/>
         </scene>
