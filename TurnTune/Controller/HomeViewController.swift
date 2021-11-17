@@ -11,14 +11,24 @@ import UIKit
 class HomeViewController: UIViewController {
         
     @IBOutlet weak var appearanceSwitch: SwitchControl!
-    @IBOutlet weak var sessionFormView: SessionFormView!
-    @IBOutlet weak var sessionFormViewCenterY: NSLayoutConstraint!
+    @IBOutlet weak var formView: SessionFormView!
+    @IBOutlet weak var formViewCenterYConstraint: NSLayoutConstraint!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         appearanceSwitch.delegate = self
-        sessionFormView.delegate = self
+        formView.delegate = self
         addKeyboardObserver()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.navigationBar.prefersLargeTitles = true
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "PlaylistViewController" {
+            
+        }
     }
     
     private func addKeyboardObserver() {
@@ -30,7 +40,7 @@ class HomeViewController: UIViewController {
         if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
             let keyboardRect = keyboardFrame.cgRectValue
             UIView.animate(withDuration: 0.1) { [self] in
-                sessionFormViewCenterY.constant = -(keyboardRect.height - 34)/2
+                formViewCenterYConstraint.constant = -(keyboardRect.height - 34)/2
                 view.layoutIfNeeded()
             }
         }
@@ -38,7 +48,7 @@ class HomeViewController: UIViewController {
     
     @objc func keyboardWillHide(_ notification: Notification) {
         UIView.animate(withDuration: 0.1) { [self] in
-            sessionFormViewCenterY.constant = 0
+            formViewCenterYConstraint.constant = 0
             view.layoutIfNeeded()
         }
     }
@@ -72,10 +82,10 @@ extension HomeViewController: SessionFormViewDelegate {
     }
     
     func sessionFormView(_ sessionFormView: SessionFormView, joinButtonPressed button: UIButton) {
-        
+        performSegue(withIdentifier: "PlaylistViewController", sender: self)
     }
     
     func sessionFormView(_ sessionFormView: SessionFormView, spotifyButtonPressed button: UIButton) {
-        
+        performSegue(withIdentifier: "PlaylistViewController", sender: self)
     }
 }

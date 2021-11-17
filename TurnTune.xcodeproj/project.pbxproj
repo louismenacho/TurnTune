@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		9515B338273B901100CADB77 /* FormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9515B337273B901100CADB77 /* FormView.swift */; };
+		9584F29E2741F6010018FBFB /* PlaylistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9584F29D2741F6010018FBFB /* PlaylistViewController.swift */; };
+		9584F2A12741FCFA0018FBFB /* PlaylistTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9584F2A02741FCFA0018FBFB /* PlaylistTableViewCell.swift */; };
 		958CDBFD273F484B00001DB9 /* SwitchControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958CDBFC273F484B00001DB9 /* SwitchControl.swift */; };
 		95C7715225944C1E00EDF930 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C7715125944C1E00EDF930 /* AppDelegate.swift */; };
 		95C7715425944C1E00EDF930 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C7715325944C1E00EDF930 /* SceneDelegate.swift */; };
@@ -47,6 +49,8 @@
 
 /* Begin PBXFileReference section */
 		9515B337273B901100CADB77 /* FormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormView.swift; sourceTree = "<group>"; };
+		9584F29D2741F6010018FBFB /* PlaylistViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistViewController.swift; sourceTree = "<group>"; };
+		9584F2A02741FCFA0018FBFB /* PlaylistTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistTableViewCell.swift; sourceTree = "<group>"; };
 		958B33DD25CBAE47002B8F7E /* TurnTune-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TurnTune-Bridging-Header.h"; sourceTree = "<group>"; };
 		958CDBFC273F484B00001DB9 /* SwitchControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchControl.swift; sourceTree = "<group>"; };
 		95C7714E25944C1E00EDF930 /* TurnTune.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TurnTune.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -92,13 +96,21 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		9515B336273B8EC000CADB77 /* Home */ = {
+		9515B336273B8EC000CADB77 /* HomeView */ = {
 			isa = PBXGroup;
 			children = (
 				9515B337273B901100CADB77 /* FormView.swift */,
 				958CDBFC273F484B00001DB9 /* SwitchControl.swift */,
 			);
-			path = Home;
+			path = HomeView;
+			sourceTree = "<group>";
+		};
+		9584F29F2741F6080018FBFB /* PlaylistView */ = {
+			isa = PBXGroup;
+			children = (
+				9584F2A02741FCFA0018FBFB /* PlaylistTableViewCell.swift */,
+			);
+			path = PlaylistView;
 			sourceTree = "<group>";
 		};
 		95C7714525944C1E00EDF930 = {
@@ -137,6 +149,7 @@
 			isa = PBXGroup;
 			children = (
 				95D9746F25B41CB9000286C9 /* HomeViewController.swift */,
+				9584F29D2741F6010018FBFB /* PlaylistViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -144,7 +157,8 @@
 		95C771692597ED8300EDF930 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				9515B336273B8EC000CADB77 /* Home */,
+				9515B336273B8EC000CADB77 /* HomeView */,
+				9584F29F2741F6080018FBFB /* PlaylistView */,
 				95C7715C25944C1F00EDF930 /* LaunchScreen.storyboard */,
 				95C7715725944C1E00EDF930 /* Main.storyboard */,
 			);
@@ -241,6 +255,8 @@
 			files = (
 				95D9747025B41CB9000286C9 /* HomeViewController.swift in Sources */,
 				958CDBFD273F484B00001DB9 /* SwitchControl.swift in Sources */,
+				9584F2A12741FCFA0018FBFB /* PlaylistTableViewCell.swift in Sources */,
+				9584F29E2741F6010018FBFB /* PlaylistViewController.swift in Sources */,
 				9515B338273B901100CADB77 /* FormView.swift in Sources */,
 				95C7715225944C1E00EDF930 /* AppDelegate.swift in Sources */,
 				95C7715425944C1E00EDF930 /* SceneDelegate.swift in Sources */,
