@@ -174,14 +174,20 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="insetGrouped" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="0Xu-eY-TYh">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="0Xu-eY-TYh">
                                 <rect key="frame" x="0.0" y="88" width="414" height="808"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <view key="tableHeaderView" contentMode="scaleToFill" id="19t-lk-zRE">
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="1"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                </view>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="PlaylistTableViewCell" textLabel="qGP-dF-JMV" detailTextLabel="2uP-wQ-f5t" imageView="c5F-F9-Mix" style="IBUITableViewCellStyleSubtitle" id="o2p-U7-f2o" customClass="PlaylistTableViewCell" customModule="TurnTune" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="49.5" width="374" height="51"/>
+                                        <rect key="frame" x="0.0" y="50.5" width="414" height="51"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="o2p-U7-f2o" id="fPn-Mv-yE8">
-                                            <rect key="frame" x="0.0" y="0.0" width="374" height="51"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="51"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="qGP-dF-JMV">
@@ -203,18 +209,65 @@
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </imageView>
                                             </subviews>
+                                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Xa8-Ro-42t">
+                                <rect key="frame" x="0.0" y="813" width="414" height="83"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kBb-a9-hEN">
+                                        <rect key="frame" x="20" y="20" width="374" height="39"/>
+                                        <subviews>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="bottom" translatesAutoresizingMaskIntoConstraints="NO" id="LV6-iy-mUj">
+                                                <rect key="frame" x="0.0" y="0.0" width="374" height="39"/>
+                                                <subviews>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LG5-04-eov">
+                                                        <rect key="frame" x="335" y="0.0" width="39" height="39"/>
+                                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                        <state key="normal" image="play.circle.fill" catalog="system"/>
+                                                    </button>
+                                                </subviews>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstItem="LG5-04-eov" firstAttribute="width" secondItem="LV6-iy-mUj" secondAttribute="height" multiplier="1:1" id="iXo-sr-VCB"/>
+                                                </constraints>
+                                            </stackView>
+                                        </subviews>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstItem="LV6-iy-mUj" firstAttribute="leading" secondItem="kBb-a9-hEN" secondAttribute="leading" id="J8L-gR-bnC"/>
+                                            <constraint firstItem="LV6-iy-mUj" firstAttribute="top" secondItem="kBb-a9-hEN" secondAttribute="top" id="Tjt-s0-LqQ"/>
+                                            <constraint firstAttribute="trailing" secondItem="LV6-iy-mUj" secondAttribute="trailing" id="ZZh-6S-4yZ"/>
+                                            <constraint firstAttribute="bottom" secondItem="LV6-iy-mUj" secondAttribute="bottom" id="dfV-rN-8d9"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="83" id="BHv-0M-Szl"/>
+                                    <constraint firstAttribute="trailing" secondItem="kBb-a9-hEN" secondAttribute="trailing" constant="20" symbolic="YES" id="QbQ-4r-x2D"/>
+                                    <constraint firstItem="kBb-a9-hEN" firstAttribute="leading" secondItem="Xa8-Ro-42t" secondAttribute="leading" constant="20" symbolic="YES" id="VAN-5n-Aac"/>
+                                    <constraint firstAttribute="bottom" secondItem="kBb-a9-hEN" secondAttribute="bottom" constant="24" id="fHM-C6-MAG"/>
+                                    <constraint firstItem="kBb-a9-hEN" firstAttribute="centerX" secondItem="Xa8-Ro-42t" secondAttribute="centerX" id="fk4-ID-Mek"/>
+                                    <constraint firstItem="kBb-a9-hEN" firstAttribute="top" secondItem="Xa8-Ro-42t" secondAttribute="top" constant="20" id="hcN-Cx-QsI"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="hLa-Z2-dCI"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstAttribute="bottom" secondItem="Xa8-Ro-42t" secondAttribute="bottom" id="5bI-hF-3Kv"/>
+                            <constraint firstItem="Xa8-Ro-42t" firstAttribute="leading" secondItem="hLa-Z2-dCI" secondAttribute="leading" id="7IM-YM-wKU"/>
                             <constraint firstItem="0Xu-eY-TYh" firstAttribute="trailing" secondItem="hLa-Z2-dCI" secondAttribute="trailing" id="8q1-Ko-waH"/>
                             <constraint firstItem="0Xu-eY-TYh" firstAttribute="leading" secondItem="hLa-Z2-dCI" secondAttribute="leading" id="BFQ-NY-RNz"/>
+                            <constraint firstAttribute="bottom" secondItem="0Xu-eY-TYh" secondAttribute="bottom" id="EKz-iY-h1U"/>
+                            <constraint firstAttribute="bottom" secondItem="Xa8-Ro-42t" secondAttribute="bottom" id="T1w-HA-qdp"/>
                             <constraint firstItem="0Xu-eY-TYh" firstAttribute="top" secondItem="hLa-Z2-dCI" secondAttribute="top" id="T8l-zO-dpr"/>
-                            <constraint firstAttribute="bottom" secondItem="0Xu-eY-TYh" secondAttribute="bottom" id="Xcg-64-gNF"/>
+                            <constraint firstItem="Xa8-Ro-42t" firstAttribute="trailing" secondItem="hLa-Z2-dCI" secondAttribute="trailing" id="Xu8-Kh-gF9"/>
+                            <constraint firstItem="Xa8-Ro-42t" firstAttribute="trailing" secondItem="hLa-Z2-dCI" secondAttribute="trailing" id="jHy-sO-BWb"/>
+                            <constraint firstItem="Xa8-Ro-42t" firstAttribute="leading" secondItem="hLa-Z2-dCI" secondAttribute="leading" id="l93-X3-IkS"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="ezd-wJ-Y27">
@@ -291,6 +344,7 @@
     <resources>
         <image name="ellipsis" catalog="system" width="128" height="37"/>
         <image name="image" width="128" height="128"/>
+        <image name="play.circle.fill" catalog="system" width="128" height="121"/>
         <image name="sun.min.fill" catalog="system" width="128" height="121"/>
         <systemColor name="linkColor">
             <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
