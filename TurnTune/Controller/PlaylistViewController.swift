@@ -35,6 +35,10 @@ class PlaylistViewController: UIViewController {
         searchController.searchBar.setValue("Done", forKey: "cancelButtonText")
         return searchController
     }
+    
+    @IBAction func sessionDetailsButtonPressed(_ sender: UIBarButtonItem) {
+        performSegue(withIdentifier: "SessionDetailsViewController", sender: self)
+    }
 }
 
 extension PlaylistViewController: UISearchControllerDelegate {
