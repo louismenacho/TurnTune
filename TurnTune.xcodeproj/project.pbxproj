@@ -15,6 +15,10 @@
 		9584F2A72747750A0018FBFB /* RoomDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9584F2A62747750A0018FBFB /* RoomDetailsViewController.swift */; };
 		958CDBFD273F484B00001DB9 /* SwitchControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958CDBFC273F484B00001DB9 /* SwitchControl.swift */; };
 		95C6C68C27494E9300C590DB /* RoomDetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C6C68B27494E9300C590DB /* RoomDetailsTableViewCell.swift */; };
+		95C6C68F274CA46A00C590DB /* FirestoreRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C6C68E274CA46A00C590DB /* FirestoreRepository.swift */; };
+		95C6C694274CA5EA00C590DB /* RemoteRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C6C693274CA5EA00C590DB /* RemoteRepository.swift */; };
+		95C6C696274CA60F00C590DB /* FirestoreDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C6C695274CA60F00C590DB /* FirestoreDocument.swift */; };
+		95C6C698274CAC9400C590DB /* RepositoryError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C6C697274CAC9400C590DB /* RepositoryError.swift */; };
 		95C7715225944C1E00EDF930 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C7715125944C1E00EDF930 /* AppDelegate.swift */; };
 		95C7715425944C1E00EDF930 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C7715325944C1E00EDF930 /* SceneDelegate.swift */; };
 		95C7715925944C1E00EDF930 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 95C7715725944C1E00EDF930 /* Main.storyboard */; };
@@ -61,6 +65,10 @@
 		958B33DD25CBAE47002B8F7E /* TurnTune-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TurnTune-Bridging-Header.h"; sourceTree = "<group>"; };
 		958CDBFC273F484B00001DB9 /* SwitchControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchControl.swift; sourceTree = "<group>"; };
 		95C6C68B27494E9300C590DB /* RoomDetailsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomDetailsTableViewCell.swift; sourceTree = "<group>"; };
+		95C6C68E274CA46A00C590DB /* FirestoreRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirestoreRepository.swift; sourceTree = "<group>"; };
+		95C6C693274CA5EA00C590DB /* RemoteRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteRepository.swift; sourceTree = "<group>"; };
+		95C6C695274CA60F00C590DB /* FirestoreDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirestoreDocument.swift; sourceTree = "<group>"; };
+		95C6C697274CAC9400C590DB /* RepositoryError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RepositoryError.swift; sourceTree = "<group>"; };
 		95C7714E25944C1E00EDF930 /* TurnTune.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TurnTune.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		95C7715125944C1E00EDF930 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		95C7715325944C1E00EDF930 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -137,6 +145,24 @@
 			path = RoomDetailView;
 			sourceTree = "<group>";
 		};
+		95C6C68D274CA45100C590DB /* Repository */ = {
+			isa = PBXGroup;
+			children = (
+				95C6C693274CA5EA00C590DB /* RemoteRepository.swift */,
+				95C6C68E274CA46A00C590DB /* FirestoreRepository.swift */,
+				95C6C697274CAC9400C590DB /* RepositoryError.swift */,
+			);
+			path = Repository;
+			sourceTree = "<group>";
+		};
+		95C6C692274CA51E00C590DB /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				95C6C695274CA60F00C590DB /* FirestoreDocument.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		95C7714525944C1E00EDF930 = {
 			isa = PBXGroup;
 			children = (
@@ -160,6 +186,8 @@
 				95C7715125944C1E00EDF930 /* AppDelegate.swift */,
 				95C7715325944C1E00EDF930 /* SceneDelegate.swift */,
 				958B33DD25CBAE47002B8F7E /* TurnTune-Bridging-Header.h */,
+				95C6C68D274CA45100C590DB /* Repository */,
+				95C6C692274CA51E00C590DB /* Model */,
 				95C771682597ED6900EDF930 /* Controller */,
 				95C771692597ED8300EDF930 /* View */,
 				95C7715A25944C1F00EDF930 /* Assets.xcassets */,
@@ -284,14 +312,18 @@
 				9584F2A52744DB080018FBFB /* SearchTableViewCell.swift in Sources */,
 				95C6C68C27494E9300C590DB /* RoomDetailsTableViewCell.swift in Sources */,
 				95D9747025B41CB9000286C9 /* HomeViewController.swift in Sources */,
+				95C6C694274CA5EA00C590DB /* RemoteRepository.swift in Sources */,
 				958CDBFD273F484B00001DB9 /* SwitchControl.swift in Sources */,
 				9584F2A32744CD130018FBFB /* SearchViewController.swift in Sources */,
 				9584F2A72747750A0018FBFB /* RoomDetailsViewController.swift in Sources */,
 				9584F2A12741FCFA0018FBFB /* PlaylistTableViewCell.swift in Sources */,
+				95C6C68F274CA46A00C590DB /* FirestoreRepository.swift in Sources */,
 				9584F29E2741F6010018FBFB /* PlaylistViewController.swift in Sources */,
 				9515B338273B901100CADB77 /* FormView.swift in Sources */,
 				95C7715225944C1E00EDF930 /* AppDelegate.swift in Sources */,
+				95C6C696274CA60F00C590DB /* FirestoreDocument.swift in Sources */,
 				95C7715425944C1E00EDF930 /* SceneDelegate.swift in Sources */,
+				95C6C698274CAC9400C590DB /* RepositoryError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
