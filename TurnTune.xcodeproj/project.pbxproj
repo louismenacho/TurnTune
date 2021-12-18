@@ -25,6 +25,13 @@
 		95C7715B25944C1F00EDF930 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 95C7715A25944C1F00EDF930 /* Assets.xcassets */; };
 		95C7715E25944C1F00EDF930 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 95C7715C25944C1F00EDF930 /* LaunchScreen.storyboard */; };
 		95C7716D2597F07100EDF930 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 95C7716C2597F07100EDF930 /* GoogleService-Info.plist */; };
+		95D02669276D98D1004BCD7B /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D02668276D98D1004BCD7B /* APIClient.swift */; };
+		95D0266B276D9903004BCD7B /* APIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D0266A276D9903004BCD7B /* APIEndpoint.swift */; };
+		95D0266D276D9909004BCD7B /* APIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D0266C276D9909004BCD7B /* APIRequest.swift */; };
+		95D02672276D9B03004BCD7B /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D0266F276D9B03004BCD7B /* HTTPMethod.swift */; };
+		95D02674276D9B03004BCD7B /* HTTPAuthorization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D02671276D9B03004BCD7B /* HTTPAuthorization.swift */; };
+		95D02679276D9FFB004BCD7B /* UserDefaultsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D02678276D9FFB004BCD7B /* UserDefaultsRepository.swift */; };
+		95D0267D276DA099004BCD7B /* UserDefaultsProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D0267C276DA099004BCD7B /* UserDefaultsProperty.swift */; };
 		95D9747025B41CB9000286C9 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D9746F25B41CB9000286C9 /* HomeViewController.swift */; };
 		95DDD0E4273B9D3100B47135 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 95DDD0E3273B9D3100B47135 /* FirebaseAnalytics */; };
 		95DDD0E6273B9D3100B47135 /* FirebaseAnalyticsSwift-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = 95DDD0E5273B9D3100B47135 /* FirebaseAnalyticsSwift-Beta */; };
@@ -77,6 +84,13 @@
 		95C7715D25944C1F00EDF930 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		95C7715F25944C1F00EDF930 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		95C7716C2597F07100EDF930 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		95D02668276D98D1004BCD7B /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		95D0266A276D9903004BCD7B /* APIEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEndpoint.swift; sourceTree = "<group>"; };
+		95D0266C276D9909004BCD7B /* APIRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRequest.swift; sourceTree = "<group>"; };
+		95D0266F276D9B03004BCD7B /* HTTPMethod.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
+		95D02671276D9B03004BCD7B /* HTTPAuthorization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPAuthorization.swift; sourceTree = "<group>"; };
+		95D02678276D9FFB004BCD7B /* UserDefaultsRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaultsRepository.swift; sourceTree = "<group>"; };
+		95D0267C276DA099004BCD7B /* UserDefaultsProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaultsProperty.swift; sourceTree = "<group>"; };
 		95D9746F25B41CB9000286C9 /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		95E62FB2273B99CC0032F115 /* SpotifyiOS.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = SpotifyiOS.xcframework; path = "../../Downloads/ios-sdk-master/SpotifyiOS.xcframework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -148,8 +162,8 @@
 		95C6C68D274CA45100C590DB /* Repository */ = {
 			isa = PBXGroup;
 			children = (
-				95C6C693274CA5EA00C590DB /* RemoteRepository.swift */,
-				95C6C68E274CA46A00C590DB /* FirestoreRepository.swift */,
+				95D02677276D9FC8004BCD7B /* Local */,
+				95D02676276D9FA4004BCD7B /* Remote */,
 				95C6C697274CAC9400C590DB /* RepositoryError.swift */,
 			);
 			path = Repository;
@@ -158,7 +172,7 @@
 		95C6C692274CA51E00C590DB /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				95C6C695274CA60F00C590DB /* FirestoreDocument.swift */,
+				95D0267A276DA024004BCD7B /* Firestore */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -186,6 +200,7 @@
 				95C7715125944C1E00EDF930 /* AppDelegate.swift */,
 				95C7715325944C1E00EDF930 /* SceneDelegate.swift */,
 				958B33DD25CBAE47002B8F7E /* TurnTune-Bridging-Header.h */,
+				95D02667276D974F004BCD7B /* Client */,
 				95C6C68D274CA45100C590DB /* Repository */,
 				95C6C692274CA51E00C590DB /* Model */,
 				95C771682597ED6900EDF930 /* Controller */,
@@ -219,6 +234,44 @@
 				95C7715725944C1E00EDF930 /* Main.storyboard */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		95D02667276D974F004BCD7B /* Client */ = {
+			isa = PBXGroup;
+			children = (
+				95D02668276D98D1004BCD7B /* APIClient.swift */,
+				95D0266A276D9903004BCD7B /* APIEndpoint.swift */,
+				95D0266C276D9909004BCD7B /* APIRequest.swift */,
+				95D0266F276D9B03004BCD7B /* HTTPMethod.swift */,
+				95D02671276D9B03004BCD7B /* HTTPAuthorization.swift */,
+			);
+			path = Client;
+			sourceTree = "<group>";
+		};
+		95D02676276D9FA4004BCD7B /* Remote */ = {
+			isa = PBXGroup;
+			children = (
+				95C6C693274CA5EA00C590DB /* RemoteRepository.swift */,
+				95C6C68E274CA46A00C590DB /* FirestoreRepository.swift */,
+			);
+			path = Remote;
+			sourceTree = "<group>";
+		};
+		95D02677276D9FC8004BCD7B /* Local */ = {
+			isa = PBXGroup;
+			children = (
+				95D0267C276DA099004BCD7B /* UserDefaultsProperty.swift */,
+				95D02678276D9FFB004BCD7B /* UserDefaultsRepository.swift */,
+			);
+			path = Local;
+			sourceTree = "<group>";
+		};
+		95D0267A276DA024004BCD7B /* Firestore */ = {
+			isa = PBXGroup;
+			children = (
+				95C6C695274CA60F00C590DB /* FirestoreDocument.swift */,
+			);
+			path = Firestore;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -309,20 +362,27 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				95D02672276D9B03004BCD7B /* HTTPMethod.swift in Sources */,
 				9584F2A52744DB080018FBFB /* SearchTableViewCell.swift in Sources */,
 				95C6C68C27494E9300C590DB /* RoomDetailsTableViewCell.swift in Sources */,
 				95D9747025B41CB9000286C9 /* HomeViewController.swift in Sources */,
+				95D02669276D98D1004BCD7B /* APIClient.swift in Sources */,
 				95C6C694274CA5EA00C590DB /* RemoteRepository.swift in Sources */,
 				958CDBFD273F484B00001DB9 /* SwitchControl.swift in Sources */,
 				9584F2A32744CD130018FBFB /* SearchViewController.swift in Sources */,
 				9584F2A72747750A0018FBFB /* RoomDetailsViewController.swift in Sources */,
+				95D0267D276DA099004BCD7B /* UserDefaultsProperty.swift in Sources */,
 				9584F2A12741FCFA0018FBFB /* PlaylistTableViewCell.swift in Sources */,
 				95C6C68F274CA46A00C590DB /* FirestoreRepository.swift in Sources */,
 				9584F29E2741F6010018FBFB /* PlaylistViewController.swift in Sources */,
 				9515B338273B901100CADB77 /* FormView.swift in Sources */,
 				95C7715225944C1E00EDF930 /* AppDelegate.swift in Sources */,
 				95C6C696274CA60F00C590DB /* FirestoreDocument.swift in Sources */,
+				95D0266B276D9903004BCD7B /* APIEndpoint.swift in Sources */,
 				95C7715425944C1E00EDF930 /* SceneDelegate.swift in Sources */,
+				95D0266D276D9909004BCD7B /* APIRequest.swift in Sources */,
+				95D02679276D9FFB004BCD7B /* UserDefaultsRepository.swift in Sources */,
+				95D02674276D9B03004BCD7B /* HTTPAuthorization.swift in Sources */,
 				95C6C698274CAC9400C590DB /* RepositoryError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
