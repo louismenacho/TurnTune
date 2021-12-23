@@ -9,6 +9,8 @@
 import UIKit
 
 class HomeViewController: UIViewController {
+    
+    var vm = HomeViewModel()
         
     @IBOutlet weak var appearanceSwitch: SwitchControl!
     @IBOutlet weak var formView: SessionFormView!
@@ -19,6 +21,7 @@ class HomeViewController: UIViewController {
         appearanceSwitch.delegate = self
         formView.delegate = self
         addKeyboardObserver()
+        vm.prepareSpotifyCredentials()
     }
     
     override func viewWillAppear(_ animated: Bool) {
