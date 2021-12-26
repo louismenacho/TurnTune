@@ -8,6 +8,8 @@
 import UIKit
 
 class PlaylistViewController: UIViewController {
+    
+    var vm: PlaylistViewModel!
 
     @IBOutlet weak var tableView: UITableView!
     

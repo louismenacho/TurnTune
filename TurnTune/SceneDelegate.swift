@@ -11,6 +11,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
+    var spotifySessionManager: SPTSessionManager?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -48,16 +49,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-        guard
-            let url = URLContexts.first?.url,
-            let rootViewController = window?.rootViewController,
-            let homeViewController = rootViewController.children.first as? HomeViewController,
-            let spotifySessionManager = homeViewController.vm.spotifySessionManager
-        else {
-            print("Spotify session manager unable to parse token from open URL")
+        guard let url = URLContexts.first?.url else {
+            print("Invalid open URL")
             return
         }
-        spotifySessionManager.application(UIApplication.shared, open: url, options: [:])
+        guard let sessionManager = spotifySessionManager else {
+            print("Spotify session manager is nil")
+            return
+        }
+        sessionManager.application(UIApplication.shared, open: url, options: [:])
     }
 
 }

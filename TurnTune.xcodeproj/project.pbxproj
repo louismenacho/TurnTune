@@ -15,6 +15,7 @@
 		9584F2A32744CD130018FBFB /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9584F2A22744CD130018FBFB /* SearchViewController.swift */; };
 		9584F2A52744DB080018FBFB /* SearchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9584F2A42744DB080018FBFB /* SearchTableViewCell.swift */; };
 		9584F2A72747750A0018FBFB /* RoomDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9584F2A62747750A0018FBFB /* RoomDetailsViewController.swift */; };
+		958949C92778284200F3C8E3 /* PlaylistViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958949C82778284200F3C8E3 /* PlaylistViewModel.swift */; };
 		958CDBFD273F484B00001DB9 /* SwitchControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958CDBFC273F484B00001DB9 /* SwitchControl.swift */; };
 		95C6C68C27494E9300C590DB /* RoomDetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C6C68B27494E9300C590DB /* RoomDetailsTableViewCell.swift */; };
 		95C6C68F274CA46A00C590DB /* FirestoreRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C6C68E274CA46A00C590DB /* FirestoreRepository.swift */; };
@@ -83,6 +84,7 @@
 		9584F2A22744CD130018FBFB /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		9584F2A42744DB080018FBFB /* SearchTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTableViewCell.swift; sourceTree = "<group>"; };
 		9584F2A62747750A0018FBFB /* RoomDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomDetailsViewController.swift; sourceTree = "<group>"; };
+		958949C82778284200F3C8E3 /* PlaylistViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistViewModel.swift; sourceTree = "<group>"; };
 		958B33DD25CBAE47002B8F7E /* TurnTune-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TurnTune-Bridging-Header.h"; sourceTree = "<group>"; };
 		958CDBFC273F484B00001DB9 /* SwitchControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchControl.swift; sourceTree = "<group>"; };
 		95C6C68B27494E9300C590DB /* RoomDetailsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomDetailsTableViewCell.swift; sourceTree = "<group>"; };
@@ -329,6 +331,7 @@
 			isa = PBXGroup;
 			children = (
 				954AE28827743D60007CD15C /* HomeViewModel.swift */,
+				958949C82778284200F3C8E3 /* PlaylistViewModel.swift */,
 				954AE28A27743F89007CD15C /* SearchViewModel.swift */,
 			);
 			path = ViewModel;
@@ -439,6 +442,7 @@
 				95D0267D276DA099004BCD7B /* UserDefaultsProperty.swift in Sources */,
 				95D02697276DA1DF004BCD7B /* SpotifySearchAPI.swift in Sources */,
 				9584F2A12741FCFA0018FBFB /* PlaylistTableViewCell.swift in Sources */,
+				958949C92778284200F3C8E3 /* PlaylistViewModel.swift in Sources */,
 				95C6C68F274CA46A00C590DB /* FirestoreRepository.swift in Sources */,
 				9584F29E2741F6010018FBFB /* PlaylistViewController.swift in Sources */,
 				95D02696276DA1DF004BCD7B /* SpotifyAccountsAPI.swift in Sources */,

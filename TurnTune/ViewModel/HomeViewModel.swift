@@ -8,10 +8,18 @@
 import Foundation
 
 class HomeViewModel: NSObject {
+
+    private var userProfileAPI = SpotifyAPIClient<SpotifyUserProfileAPI>()
     
     private var spotifyInitiateSessionCompletion: ((Result<SPTSession, Error>) -> Void)?
     
-    var spotifySessionManager: SPTSessionManager?
+    var spotifySessionManager: SPTSessionManager? {
+        willSet {
+            let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+            sceneDelegate?.spotifySessionManager = newValue
+        }
+    }
+    
     var spotifyScope: SPTScope = [
         .appRemoteControl,
         .userReadCurrentlyPlaying,
@@ -20,8 +28,6 @@ class HomeViewModel: NSObject {
         .userModifyPlaybackState,
         .userReadPrivate
     ]
-    
-    private var userProfileAPI = SpotifyAPIClient<SpotifyUserProfileAPI>()
     
     func getSpotifyConfig(completion: @escaping (Result<SPTConfiguration, RepositoryError>) -> Void) {
         FirestoreRepository<SpotifyCredentials>(collectionPath: "spotify").get(id: "credentials") { result in
@@ -34,11 +40,14 @@ class HomeViewModel: NSObject {
         }
     }
     
-    func initiateSpotifySession(_ config: SPTConfiguration, completion: @escaping (Result<SPTSession, Error>) -> Void) {
-        spotifySessionManager = SPTSessionManager(configuration: config, delegate: self)
+    func initiateSpotifySession(_ configuration: SPTConfiguration, completion: @escaping (Result<SPTSession, Error>) -> Void) {
+        spotifySessionManager = SPTSessionManager(configuration: configuration, delegate: self)
         spotifySessionManager!.initiateSession(with: spotifyScope, options: .clientOnly)
         spotifyInitiateSessionCompletion = { result in
-            completion(result)
+            completion( result.flatMap { session in
+                self.userProfileAPI.auth = .bearer(token: session.accessToken)
+                return .success(session)
+            })
         }
     }
     
@@ -55,7 +64,6 @@ extension HomeViewModel: SPTSessionManagerDelegate {
     
     func sessionManager(manager: SPTSessionManager, didInitiate session: SPTSession) {
         print("SPTSession didInitiate")
-        userProfileAPI.auth = .bearer(token: session.accessToken)
         spotifyInitiateSessionCompletion?(.success(session))
     }
     
