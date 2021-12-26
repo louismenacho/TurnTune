@@ -21,7 +21,6 @@ class HomeViewController: UIViewController {
         appearanceSwitch.delegate = self
         formView.delegate = self
         addKeyboardObserver()
-        vm.prepareSpotifyCredentials()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -89,6 +88,28 @@ extension HomeViewController: SessionFormViewDelegate {
     }
     
     func sessionFormView(_ sessionFormView: SessionFormView, spotifyButtonPressed button: UIButton) {
-        performSegue(withIdentifier: "PlaylistViewController", sender: self)
+        vm.getSpotifyConfig { result in
+            switch result {
+            case .failure(let error): print(error)
+            case .success(let configuration):
+                self.vm.initiateSpotifySession(configuration) { result in
+                    switch result {
+                    case .failure(let error): print(error)
+                    case .success:
+                        self.vm.isCurrentUserProfilePremium { result in
+                            switch result {
+                            case let .failure(error): print(error)
+                            case let .success(isPremium):
+                                if isPremium {
+                                    DispatchQueue.main.async {
+                                        self.performSegue(withIdentifier: "PlaylistViewController", sender: self)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

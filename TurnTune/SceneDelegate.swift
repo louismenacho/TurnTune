@@ -47,6 +47,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        guard
+            let url = URLContexts.first?.url,
+            let rootViewController = window?.rootViewController,
+            let homeViewController = rootViewController.children.first as? HomeViewController,
+            let spotifySessionManager = homeViewController.vm.spotifySessionManager
+        else {
+            print("Spotify session manager unable to parse token from open URL")
+            return
+        }
+        spotifySessionManager.application(UIApplication.shared, open: url, options: [:])
+    }
 
 }
 

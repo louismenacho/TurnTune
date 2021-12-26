@@ -12,7 +12,7 @@ protocol RemoteRepository {
     associatedtype Query
     
     // read
-    func get(id: String, completion: @escaping (Result<Object?, RepositoryError>) -> Void)
+    func get(id: String, completion: @escaping (Result<Object, RepositoryError>) -> Void)
     func list(_ query: Query?, completion: @escaping (Result<[Object], RepositoryError>) -> Void)
     
     // write

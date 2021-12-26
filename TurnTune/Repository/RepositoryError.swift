@@ -12,4 +12,5 @@ enum RepositoryError: Error {
     case writeError(_ error: Error)
     case encodingError(_ error: Error)
     case decodingError(_ error: Error)
+    case notFound
 }

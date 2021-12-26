@@ -18,21 +18,19 @@ class FirestoreRepository<Object: FirestoreDocument>: RemoteRepository {
         collectionReference = Firestore.firestore().collection(collectionPath)
     }
     
-    func get(id: String, completion: @escaping (Result<Object?, RepositoryError>) -> Void) {
+    func get(id: String, completion: @escaping (Result<Object, RepositoryError>) -> Void) {
         collectionReference.document(id).getDocument { documentSnapshot, error in
             if let error = error {
                 completion(.failure(.readError(error)))
                 return
             }
-            
-            guard let document = documentSnapshot else {
-                completion(.success(nil))
-                return
-            }
                         
             do {
-                let data = try document.data(as: Object.self)
-                completion(.success(data))
+                if let data = try documentSnapshot?.data(as: Object.self) {
+                    completion(.success(data))
+                } else {
+                    completion(.failure(.notFound))
+                }
             } catch {
                 completion(.failure(.decodingError(error)))
             }
@@ -116,21 +114,19 @@ class FirestoreRepository<Object: FirestoreDocument>: RemoteRepository {
         }
     }
     
-    func addListener(id: String, completion: @escaping (Result<Object?, RepositoryError>) -> Void) {
+    func addListener(id: String, completion: @escaping (Result<Object, RepositoryError>) -> Void) {
         collectionListener = collectionReference.document(id).addSnapshotListener { documentSnapshot, error in
             if let error = error {
                 completion(.failure(.readError(error)))
                 return
             }
             
-            guard let document = documentSnapshot else {
-                completion(.success(nil))
-                return
-            }
-            
             do {
-                let data = try document.data(as: Object.self)
-                completion(.success(data))
+                if let data = try documentSnapshot?.data(as: Object.self) {
+                    completion(.success(data))
+                } else {
+                    completion(.failure(.notFound))
+                }
             } catch {
                 completion(.failure(.decodingError(error)))
             }
