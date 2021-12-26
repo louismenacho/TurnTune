@@ -11,11 +11,14 @@ class SearchViewModel {
     
     var searchAPI = SpotifyAPIClient<SpotifySearchAPI>()
     
+    init(_ session: SPTSession) {
+        searchAPI.auth = .bearer(token: session.accessToken)
+    }
+    
     func search(query: String, completion: @escaping (Result<SearchResponse, ClientError>) -> Void) {
         searchAPI.request(.search(query: query, type: "track", limit: 50)) { (result: Result<SearchResponse?, ClientError>) in
             if let response = try? result.get() {
                 completion(.success(response))
-                print(response.tracks.items.map { $0.name })
                 return
             }
             if case let .failure(error) = result {

@@ -25,10 +25,16 @@ class PlaylistViewController: UIViewController {
         navigationController?.navigationBar.prefersLargeTitles = false
     }
     
-    private func prepareSearchController() -> UISearchController {
+    private func prepareSearchController() -> UISearchController? {
         guard let searchViewController = storyboard?.instantiateViewController(identifier: "SearchViewController") as? SearchViewController else {
             fatalError("Could not instantiate SearchViewController")
         }
+        guard let session = vm.spotifySessionManager.session else {
+            print("Spotify session is nil on prepareSearchController")
+            return nil
+        }
+        searchViewController.vm = SearchViewModel(session)
+        
         let searchController = UISearchController(searchResultsController: searchViewController)
         searchController.delegate = self
         searchController.searchBar.delegate = searchViewController
