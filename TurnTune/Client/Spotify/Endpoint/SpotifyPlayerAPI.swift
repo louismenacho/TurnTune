@@ -46,7 +46,7 @@ enum SpotifyPlayerAPI: SpotifyAPIEndpoint {
                 apiRequest.method = .post
                 apiRequest.path =   "/queue"
                 apiRequest.header = ["Content-Type": "application/json"]
-                apiRequest.body =   ["uri": uri]
+                apiRequest.params =   ["uri": uri]
                 
             case .seek(let position):
                 apiRequest.method = .put

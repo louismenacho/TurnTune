@@ -55,12 +55,24 @@ extension SearchViewController: UITableViewDataSource {
 extension SearchViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        vm.searchResult[indexPath.row].isAdded = true
         let generator = UIImpactFeedbackGenerator(style: .heavy)
         generator.impactOccurred()
+        vm.enqueueSong(at: indexPath.row) { result in
+            if case .failure(let error) = result {
+                DispatchQueue.main.async {
+                    tableView.deselectRow(at: indexPath, animated: true)
+                    tableView.reloadData()
+                }
+                print(error)
+            }
+        }
         tableView.reloadData()
     }
     
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        return vm.searchResult[indexPath.row].isAdded ? nil : indexPath
+    }
+        
     func tableView(_ tableView: UITableView, willDeselectRowAt indexPath: IndexPath) -> IndexPath? {
         return nil
     }
