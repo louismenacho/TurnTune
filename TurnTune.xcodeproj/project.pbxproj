@@ -16,6 +16,10 @@
 		9584F2A52744DB080018FBFB /* SearchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9584F2A42744DB080018FBFB /* SearchTableViewCell.swift */; };
 		9584F2A72747750A0018FBFB /* RoomDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9584F2A62747750A0018FBFB /* RoomDetailsViewController.swift */; };
 		958949C92778284200F3C8E3 /* PlaylistViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958949C82778284200F3C8E3 /* PlaylistViewModel.swift */; };
+		958949CB2779677A00F3C8E3 /* SearchResultItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958949CA2779677A00F3C8E3 /* SearchResultItem.swift */; };
+		958949CD2779679400F3C8E3 /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958949CC2779679400F3C8E3 /* Song.swift */; };
+		958949D02779821B00F3C8E3 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 958949CF2779821B00F3C8E3 /* SDWebImage */; };
+		958949D22779821B00F3C8E3 /* SDWebImageMapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 958949D12779821B00F3C8E3 /* SDWebImageMapKit */; };
 		958CDBFD273F484B00001DB9 /* SwitchControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958CDBFC273F484B00001DB9 /* SwitchControl.swift */; };
 		95C6C68C27494E9300C590DB /* RoomDetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C6C68B27494E9300C590DB /* RoomDetailsTableViewCell.swift */; };
 		95C6C68F274CA46A00C590DB /* FirestoreRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C6C68E274CA46A00C590DB /* FirestoreRepository.swift */; };
@@ -85,6 +89,8 @@
 		9584F2A42744DB080018FBFB /* SearchTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTableViewCell.swift; sourceTree = "<group>"; };
 		9584F2A62747750A0018FBFB /* RoomDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomDetailsViewController.swift; sourceTree = "<group>"; };
 		958949C82778284200F3C8E3 /* PlaylistViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistViewModel.swift; sourceTree = "<group>"; };
+		958949CA2779677A00F3C8E3 /* SearchResultItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultItem.swift; sourceTree = "<group>"; };
+		958949CC2779679400F3C8E3 /* Song.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Song.swift; sourceTree = "<group>"; };
 		958B33DD25CBAE47002B8F7E /* TurnTune-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TurnTune-Bridging-Header.h"; sourceTree = "<group>"; };
 		958CDBFC273F484B00001DB9 /* SwitchControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchControl.swift; sourceTree = "<group>"; };
 		95C6C68B27494E9300C590DB /* RoomDetailsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomDetailsTableViewCell.swift; sourceTree = "<group>"; };
@@ -136,7 +142,9 @@
 				95DDD0F4273B9D3100B47135 /* FirebaseFirestoreSwift-Beta in Frameworks */,
 				95DDD0EE273B9D3100B47135 /* FirebaseDatabaseSwift-Beta in Frameworks */,
 				95DDD0F6273B9D3100B47135 /* FirebaseFunctions in Frameworks */,
+				958949D02779821B00F3C8E3 /* SDWebImage in Frameworks */,
 				95DDD0EA273B9D3100B47135 /* FirebaseAuthCombine-Community in Frameworks */,
+				958949D22779821B00F3C8E3 /* SDWebImageMapKit in Frameworks */,
 				95DDD0F8273B9D3100B47135 /* FirebaseFunctionsCombine-Community in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -199,6 +207,8 @@
 		95C6C692274CA51E00C590DB /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				958949CC2779679400F3C8E3 /* Song.swift */,
+				958949CA2779677A00F3C8E3 /* SearchResultItem.swift */,
 				95D0269E276EDD09004BCD7B /* SpotifyCredentials.swift */,
 			);
 			path = Model;
@@ -366,6 +376,8 @@
 				95DDD0F3273B9D3100B47135 /* FirebaseFirestoreSwift-Beta */,
 				95DDD0F5273B9D3100B47135 /* FirebaseFunctions */,
 				95DDD0F7273B9D3100B47135 /* FirebaseFunctionsCombine-Community */,
+				958949CF2779821B00F3C8E3 /* SDWebImage */,
+				958949D12779821B00F3C8E3 /* SDWebImageMapKit */,
 			);
 			productName = TurnTune;
 			productReference = 95C7714E25944C1E00EDF930 /* TurnTune.app */;
@@ -396,6 +408,7 @@
 			mainGroup = 95C7714525944C1E00EDF930;
 			packageReferences = (
 				95DDD0E2273B9D3100B47135 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				958949CE2779821B00F3C8E3 /* XCRemoteSwiftPackageReference "SDWebImage" */,
 			);
 			productRefGroup = 95C7714F25944C1E00EDF930 /* Products */;
 			projectDirPath = "";
@@ -430,6 +443,7 @@
 				9584F2A52744DB080018FBFB /* SearchTableViewCell.swift in Sources */,
 				95C6C68C27494E9300C590DB /* RoomDetailsTableViewCell.swift in Sources */,
 				95D02699276DA1DF004BCD7B /* SpotifyPlayerAPI.swift in Sources */,
+				958949CB2779677A00F3C8E3 /* SearchResultItem.swift in Sources */,
 				95D9747025B41CB9000286C9 /* HomeViewController.swift in Sources */,
 				95D02698276DA1DF004BCD7B /* SpotfiyRecommendationsAPI.swift in Sources */,
 				95D02669276D98D1004BCD7B /* APIClient.swift in Sources */,
@@ -460,6 +474,7 @@
 				95D02674276D9B03004BCD7B /* HTTPAuthorization.swift in Sources */,
 				95D0269C276DCE43004BCD7B /* ClientError.swift in Sources */,
 				95C6C698274CAC9400C590DB /* RepositoryError.swift in Sources */,
+				958949CD2779679400F3C8E3 /* Song.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -673,6 +688,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		958949CE2779821B00F3C8E3 /* XCRemoteSwiftPackageReference "SDWebImage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImage";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
 		95DDD0E2273B9D3100B47135 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
@@ -684,6 +707,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		958949CF2779821B00F3C8E3 /* SDWebImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 958949CE2779821B00F3C8E3 /* XCRemoteSwiftPackageReference "SDWebImage" */;
+			productName = SDWebImage;
+		};
+		958949D12779821B00F3C8E3 /* SDWebImageMapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 958949CE2779821B00F3C8E3 /* XCRemoteSwiftPackageReference "SDWebImage" */;
+			productName = SDWebImageMapKit;
+		};
 		95DDD0E3273B9D3100B47135 /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 95DDD0E2273B9D3100B47135 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

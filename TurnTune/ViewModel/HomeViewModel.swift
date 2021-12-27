@@ -27,21 +27,21 @@ class HomeViewModel: NSObject {
     func initSpotifyConfig(completion: @escaping (Result<Void, RepositoryError>) -> Void) {
         FirestoreRepository<SpotifyCredentials>(collectionPath: "spotify").get(id: "credentials") { result in
             completion( result.flatMap { credentials in
-                let configuration = SPTConfiguration(clientID: credentials.clientID, redirectURL: URL(string: credentials.redirectURL)!)
-                configuration.tokenSwapURL = URL(string: credentials.tokenSwapURL)
-                configuration.tokenRefreshURL = URL(string: credentials.tokenRefreshURL)
-                self.spotifyConfig = configuration
+                let config = SPTConfiguration(clientID: credentials.clientID, redirectURL: URL(string: credentials.redirectURL)!)
+                config.tokenSwapURL = URL(string: credentials.tokenSwapURL)
+                config.tokenRefreshURL = URL(string: credentials.tokenRefreshURL)
+                self.spotifyConfig = config
                 return .success(())
             })
         }
     }
     
     func initSpotifySession(completion: @escaping (Result<Void, Error>) -> Void) {
-        guard let configuration = spotifyConfig else {
+        guard let config = spotifyConfig else {
             print("Could not initiate Spotify session, Spotify config is nil")
             return
         }
-        let spotifySessionManager = SPTSessionManager(configuration: configuration, delegate: self)
+        let spotifySessionManager = SPTSessionManager(configuration: config, delegate: self)
         self.spotifySessionManager = spotifySessionManager
         
         DispatchQueue.main.async {

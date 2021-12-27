@@ -13,8 +13,8 @@ class PlaylistViewModel: NSObject {
     
     init(_ spotifySessionManager: SPTSessionManager) {
         self.spotifySessionManager = spotifySessionManager
-        let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
-        sceneDelegate?.spotifySessionManager = spotifySessionManager
+        super.init()
+        self.spotifySessionManager.delegate = self
     }
     
 }
@@ -22,6 +22,10 @@ class PlaylistViewModel: NSObject {
 extension PlaylistViewModel: SPTSessionManagerDelegate {
     
     func sessionManager(manager: SPTSessionManager, didInitiate session: SPTSession) {
+        
+    }
+    
+    func sessionManager(manager: SPTSessionManager, didRenew session: SPTSession) {
         
     }
     

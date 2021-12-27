@@ -29,12 +29,12 @@ class HomeViewController: UIViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "PlaylistViewController" {
-            guard let sessionManager = vm.spotifySessionManager else {
+            guard let spotifySessionManager = vm.spotifySessionManager else {
                 print("Spotify session manager is nil on performing segue")
                 return
             }
             let vc = segue.destination as! PlaylistViewController
-            vc.vm = PlaylistViewModel(sessionManager)
+            vc.vm = PlaylistViewModel(spotifySessionManager)
         }
     }
     

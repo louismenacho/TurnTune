@@ -6,11 +6,18 @@
 //
 
 import UIKit
+import SDWebImage
 
 class SearchTableViewCell: UITableViewCell {
-
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
+    
+    var searchResultItem = SearchResultItem() {
+        didSet {
+            imageView?.sd_setImage(with: URL(string: searchResultItem.song.artworkURL), placeholderImage: UIImage(systemName: "photo.fill"))
+            textLabel?.text = searchResultItem.song.name
+            detailTextLabel?.text = searchResultItem.song.artist
+        
+            textLabel!.isEnabled = !searchResultItem.isAdded
+            detailTextLabel!.isEnabled = !searchResultItem.isAdded
+        }
     }
 }

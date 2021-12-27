@@ -26,21 +26,21 @@ class PlaylistViewController: UIViewController {
     }
     
     private func prepareSearchController() -> UISearchController? {
-        guard let searchViewController = storyboard?.instantiateViewController(identifier: "SearchViewController") as? SearchViewController else {
-            fatalError("Could not instantiate SearchViewController")
-        }
         guard let session = vm.spotifySessionManager.session else {
             print("Spotify session is nil on prepareSearchController")
             return nil
         }
+        print("session: \(session.accessToken)")
+        
+        let searchViewController = storyboard?.instantiateViewController(identifier: "SearchViewController") as! SearchViewController
         searchViewController.vm = SearchViewModel(session)
         
         let searchController = UISearchController(searchResultsController: searchViewController)
-        searchController.delegate = self
-        searchController.searchBar.delegate = searchViewController
-        searchController.searchBar.autocapitalizationType = .none
+        searchController.searchResultsUpdater = searchViewController
         searchController.searchBar.placeholder = "Search songs"
+        searchController.searchBar.autocapitalizationType = .none
         searchController.searchBar.setValue("Done", forKey: "cancelButtonText")
+        searchController.delegate = self
         return searchController
     }
     
