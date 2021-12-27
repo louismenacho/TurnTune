@@ -93,25 +93,14 @@ extension HomeViewController: SessionFormViewDelegate {
     }
     
     func sessionFormView(_ sessionFormView: SessionFormView, spotifyButtonPressed button: UIButton) {
-        vm.getSpotifyConfig { result in
+        vm.spotifyButtonPressedAction { result in
             switch result {
-            case .failure(let error): print(error)
-            case .success(let configuration):
-                self.vm.initiateSpotifySession(configuration) { result in
-                    switch result {
-                    case .failure(let error): print(error)
-                    case .success:
-                        self.vm.isCurrentUserProfilePremium { result in
-                            switch result {
-                            case let .failure(error): print(error)
-                            case let .success(isPremium):
-                                if isPremium {
-                                    DispatchQueue.main.async {
-                                        self.performSegue(withIdentifier: "PlaylistViewController", sender: self)
-                                    }
-                                }
-                            }
-                        }
+            case let .failure(error):
+                print(error)
+            case let .success(isPremium):
+                if isPremium {
+                    DispatchQueue.main.async {
+                        self.performSegue(withIdentifier: "PlaylistViewController", sender: self)
                     }
                 }
             }
