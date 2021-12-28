@@ -8,6 +8,8 @@
 import Foundation
 
 class PlaylistViewModel: NSObject {
+    
+    var playlist = [Song]()
 
     var session: Session
     var playlistRepository: FirestoreRepository<Song>
@@ -26,6 +28,19 @@ class PlaylistViewModel: NSObject {
             if let error = error {
                 completion(.failure(error))
             } else {
+                completion(.success(()))
+            }
+        }
+    }
+    
+    func playlistChangeListener(completion: @escaping (Result<Void, RepositoryError>) -> Void) {
+        let query = playlistRepository.collectionReference.order(by: "dateAdded", descending: true)
+        playlistRepository.addListener(query) { result in
+            switch result {
+            case let .failure(error):
+                completion(.failure(error))
+            case let .success(songs):
+                self.playlist = songs
                 completion(.success(()))
             }
         }

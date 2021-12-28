@@ -24,6 +24,16 @@ class PlaylistViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.prefersLargeTitles = false
         navigationItem.title = vm.session.code
+        vm.playlistChangeListener { result in
+            switch result {
+            case .failure(let error):
+                print(error)
+            case .success:
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
+        }
     }
     
     private func prepareSearchController() -> UISearchController? {
@@ -59,16 +69,14 @@ extension PlaylistViewController: UISearchControllerDelegate {
 extension PlaylistViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        15
+        vm.playlist.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "PlaylistTableViewCell", for: indexPath) as? PlaylistTableViewCell else {
             return UITableViewCell()
         }
-        cell.textLabel?.text = "Track Title"
-        cell.detailTextLabel?.text = "Artist Name"
-        cell.imageView?.image = UIImage(systemName: "photo")
+        cell.song = vm.playlist[indexPath.row]
         return cell
     }
 }

@@ -6,11 +6,15 @@
 //
 
 import UIKit
+import SDWebImage
 
 class PlaylistTableViewCell: UITableViewCell {
 
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
+    var song = Song() {
+        didSet {
+            imageView?.sd_setImage(with: URL(string: song.artworkURL), placeholderImage: UIImage(systemName: "photo.fill"))
+            textLabel?.text = song.name
+            detailTextLabel?.text = song.artist
+        }
     }
 }
