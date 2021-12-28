@@ -9,7 +9,7 @@ import Foundation
 
 enum ClientError: Error {
     case requestFailed(_ error: Error)
-    case badResponse(code: Int, description: String)
     case decodingError(_ error: Error)
+    case badResponse(code: Int, description: String, json: AnyObject)
     case noResponse
 }

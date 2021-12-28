@@ -55,8 +55,6 @@ extension SearchViewController: UITableViewDataSource {
 extension SearchViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let generator = UIImpactFeedbackGenerator(style: .heavy)
-        generator.impactOccurred()
         vm.enqueueSong(at: indexPath.row) { result in
             if case .failure(let error) = result {
                 DispatchQueue.main.async {
@@ -66,6 +64,8 @@ extension SearchViewController: UITableViewDelegate {
                 print(error)
             }
         }
+        let generator = UIImpactFeedbackGenerator(style: .heavy)
+        generator.impactOccurred()
         tableView.reloadData()
     }
     

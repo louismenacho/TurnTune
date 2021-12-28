@@ -31,7 +31,7 @@ extension APIClient {
             guard 200...299 ~= response.statusCode else {
                 let statusCode = response.statusCode
                 let statusDescription = HTTPURLResponse.localizedString(forStatusCode: statusCode)
-                completion(.failure(.badResponse(code: statusCode, description: statusDescription)))
+                completion(.failure(.badResponse(code: statusCode, description: statusDescription, json: json(from: data))))
                 return
             }
             
@@ -49,6 +49,15 @@ extension APIClient {
             }
         }
         .resume()
+    }
+    
+    func json(from data: Data) -> AnyObject {
+        if let json = try? JSONSerialization.jsonObject(with: data, options: .mutableContainers),
+           let jsonData = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) {
+            return String(decoding: jsonData, as: UTF8.self) as AnyObject
+        } else {
+            return "json data malformed" as AnyObject
+        }
     }
 }
 
