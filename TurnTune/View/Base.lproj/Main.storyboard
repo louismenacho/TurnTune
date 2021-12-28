@@ -166,7 +166,7 @@
             </objects>
             <point key="canvasLocation" x="1008.6956521739131" y="0.0"/>
         </scene>
-        <!--ABCD-->
+        <!--Playlist View Controller-->
         <scene sceneID="v8T-S6-VBc">
             <objects>
                 <viewController id="oO9-CS-oMz" customClass="PlaylistViewController" customModule="TurnTune" customModuleProvider="target" sceneMemberID="viewController">
@@ -270,7 +270,7 @@
                             <constraint firstItem="Xa8-Ro-42t" firstAttribute="leading" secondItem="hLa-Z2-dCI" secondAttribute="leading" id="l93-X3-IkS"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="ABCD" id="ezd-wJ-Y27">
+                    <navigationItem key="navigationItem" id="ezd-wJ-Y27">
                         <barButtonItem key="rightBarButtonItem" image="ellipsis" catalog="system" id="PRN-hh-h0O">
                             <connections>
                                 <action selector="settingsButtonPressed:" destination="oO9-CS-oMz" id="cp2-Aj-h3e"/>
@@ -296,7 +296,7 @@
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" dataMode="prototypes" style="grouped" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Inw-Q0-7d7">
                                 <rect key="frame" x="0.0" y="44" width="414" height="852"/>
-                                <color key="backgroundColor" red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <view key="tableHeaderView" contentMode="scaleToFill" id="PgY-3g-O32">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="35"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>

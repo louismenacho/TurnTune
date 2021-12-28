@@ -34,7 +34,7 @@ class PlaylistViewModel: NSObject {
     }
     
     func playlistChangeListener(completion: @escaping (Result<Void, RepositoryError>) -> Void) {
-        let query = playlistRepository.collectionReference.order(by: "dateAdded", descending: true)
+        let query = playlistRepository.collectionReference.order(by: "dateAdded")
         playlistRepository.addListener(query) { result in
             switch result {
             case let .failure(error):
