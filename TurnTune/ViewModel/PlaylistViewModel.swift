@@ -9,9 +9,11 @@ import Foundation
 
 class PlaylistViewModel: NSObject {
 
+    var session: Session
     var spotifySessionManager: SPTSessionManager
     
-    init(_ spotifySessionManager: SPTSessionManager) {
+    init(_ session: Session, _ spotifySessionManager: SPTSessionManager) {
+        self.session = session
         self.spotifySessionManager = spotifySessionManager
         super.init()
         self.spotifySessionManager.delegate = self

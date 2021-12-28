@@ -29,12 +29,16 @@ class HomeViewController: UIViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "PlaylistViewController" {
+            guard let session = vm.session else {
+                print("Session is nil on performing segue")
+                return
+            }
             guard let spotifySessionManager = vm.spotifySessionManager else {
                 print("Spotify session manager is nil on performing segue")
                 return
             }
             let vc = segue.destination as! PlaylistViewController
-            vc.vm = PlaylistViewModel(spotifySessionManager)
+            vc.vm = PlaylistViewModel(session, spotifySessionManager)
         }
     }
     
@@ -93,15 +97,18 @@ extension HomeViewController: SessionFormViewDelegate {
     }
     
     func sessionFormView(_ sessionFormView: SessionFormView, spotifyButtonPressed button: UIButton) {
-        vm.spotifyButtonPressedAction { result in
+        vm.createRoom { [self] result in
             switch result {
-            case let .failure(error):
-                print(error)
-            case let .success(isPremium):
-                if isPremium {
-                    DispatchQueue.main.async {
-                        self.performSegue(withIdentifier: "PlaylistViewController", sender: self)
-                    }
+            case .failure(let error):
+                if let clientError = error as? ClientError {
+                    print(clientError)
+                }
+                if let repositoryError = error as? RepositoryError {
+                    print(repositoryError)
+                }
+            case .success:
+                DispatchQueue.main.async {
+                    self.performSegue(withIdentifier: "PlaylistViewController", sender: self)
                 }
             }
         }

@@ -14,7 +14,6 @@ struct Song: FirestoreDocument {
     
     @DocumentID var documentID: String?
     var dateAdded: Timestamp?
-    
     var name: String
     var artist: String
     var album: String

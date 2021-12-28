@@ -20,6 +20,8 @@
 		958949CD2779679400F3C8E3 /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958949CC2779679400F3C8E3 /* Song.swift */; };
 		958949D02779821B00F3C8E3 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 958949CF2779821B00F3C8E3 /* SDWebImage */; };
 		958949D22779821B00F3C8E3 /* SDWebImageMapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 958949D12779821B00F3C8E3 /* SDWebImageMapKit */; };
+		958949D6277A3D0900F3C8E3 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958949D5277A3D0900F3C8E3 /* Session.swift */; };
+		958949D8277A3DC400F3C8E3 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958949D7277A3DC400F3C8E3 /* User.swift */; };
 		958CDBFD273F484B00001DB9 /* SwitchControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958CDBFC273F484B00001DB9 /* SwitchControl.swift */; };
 		95C6C68C27494E9300C590DB /* RoomDetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C6C68B27494E9300C590DB /* RoomDetailsTableViewCell.swift */; };
 		95C6C68F274CA46A00C590DB /* FirestoreRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C6C68E274CA46A00C590DB /* FirestoreRepository.swift */; };
@@ -91,6 +93,8 @@
 		958949C82778284200F3C8E3 /* PlaylistViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistViewModel.swift; sourceTree = "<group>"; };
 		958949CA2779677A00F3C8E3 /* SearchResultItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultItem.swift; sourceTree = "<group>"; };
 		958949CC2779679400F3C8E3 /* Song.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Song.swift; sourceTree = "<group>"; };
+		958949D5277A3D0900F3C8E3 /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
+		958949D7277A3DC400F3C8E3 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		958B33DD25CBAE47002B8F7E /* TurnTune-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TurnTune-Bridging-Header.h"; sourceTree = "<group>"; };
 		958CDBFC273F484B00001DB9 /* SwitchControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchControl.swift; sourceTree = "<group>"; };
 		95C6C68B27494E9300C590DB /* RoomDetailsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomDetailsTableViewCell.swift; sourceTree = "<group>"; };
@@ -207,6 +211,8 @@
 		95C6C692274CA51E00C590DB /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				958949D5277A3D0900F3C8E3 /* Session.swift */,
+				958949D7277A3DC400F3C8E3 /* User.swift */,
 				958949CC2779679400F3C8E3 /* Song.swift */,
 				958949CA2779677A00F3C8E3 /* SearchResultItem.swift */,
 				95D0269E276EDD09004BCD7B /* SpotifyCredentials.swift */,
@@ -464,10 +470,12 @@
 				95C7715225944C1E00EDF930 /* AppDelegate.swift in Sources */,
 				954AE28B27743F89007CD15C /* SearchViewModel.swift in Sources */,
 				95D02695276DA1DF004BCD7B /* SpotifyUserProfileAPI.swift in Sources */,
+				958949D8277A3DC400F3C8E3 /* User.swift in Sources */,
 				95C6C696274CA60F00C590DB /* FirestoreDocument.swift in Sources */,
 				95D0266B276D9903004BCD7B /* APIEndpoint.swift in Sources */,
 				95C7715425944C1E00EDF930 /* SceneDelegate.swift in Sources */,
 				95D0269A276DA1DF004BCD7B /* SpotifyAPIClient.swift in Sources */,
+				958949D6277A3D0900F3C8E3 /* Session.swift in Sources */,
 				95D0266D276D9909004BCD7B /* APIRequest.swift in Sources */,
 				95D02679276D9FFB004BCD7B /* UserDefaultsRepository.swift in Sources */,
 				954AE28927743D60007CD15C /* HomeViewModel.swift in Sources */,

@@ -6,16 +6,19 @@
 //
 
 import Foundation
+import FirebaseAuth
+import FirebaseFirestore
 
 class HomeViewModel: NSObject {
-
-    private var userProfileAPI = SpotifyAPIClient<SpotifyUserProfileAPI>()
     
-    private var spotifyInitiateSessionCompletion: ((Result<SPTSession, Error>) -> Void)?
-    
-    var spotifyConfig: SPTConfiguration?
+    var session: Session?
     var spotifySessionManager: SPTSessionManager?
-    var spotifyScope: SPTScope = [
+
+    private var spotifyUserProfileAPI = SpotifyAPIClient<SpotifyUserProfileAPI>()
+    private var spotifyInitiateSessionCompletion: ((Result<SPTSession, Error>) -> Void)?
+    private var spotifyConfig: SPTConfiguration?
+    private var spotifyUserSubscription: String = ""
+    private var spotifyScope: SPTScope = [
         .appRemoteControl,
         .userReadCurrentlyPlaying,
         .userReadRecentlyPlayed,
@@ -24,7 +27,7 @@ class HomeViewModel: NSObject {
         .userReadPrivate
     ]
     
-    func initSpotifyConfig(completion: @escaping (Result<Void, RepositoryError>) -> Void) {
+    private func initSpotifyConfig(completion: @escaping (Result<Void, RepositoryError>) -> Void) {
         FirestoreRepository<SpotifyCredentials>(collectionPath: "spotify").get(id: "credentials") { result in
             completion( result.flatMap { credentials in
                 let config = SPTConfiguration(clientID: credentials.clientID, redirectURL: URL(string: credentials.redirectURL)!)
@@ -36,7 +39,7 @@ class HomeViewModel: NSObject {
         }
     }
     
-    func initSpotifySession(completion: @escaping (Result<Void, Error>) -> Void) {
+    private func initSpotifySession(completion: @escaping (Result<Void, Error>) -> Void) {
         guard let config = spotifyConfig else {
             print("Could not initiate Spotify session, Spotify config is nil")
             return
@@ -52,21 +55,86 @@ class HomeViewModel: NSObject {
         
         spotifyInitiateSessionCompletion = { result in
             completion( result.flatMap { session in
-                self.userProfileAPI.auth = .bearer(token: session.accessToken)
+                self.spotifyUserProfileAPI.auth = .bearer(token: session.accessToken)
                 return .success(())
             })
         }
     }
     
-    func isCurrentSpotifyUserProfilePremium(completion: @escaping (Result<Bool, ClientError>) -> Void) {
-        userProfileAPI.request(.currentUserProfile) { (result: Result<UserProfileResponse, ClientError>) in
+    private func initSpotifyUserSubscription(completion: @escaping (Result<Void, ClientError>) -> Void) {
+        spotifyUserProfileAPI.request(.currentUserProfile) { (result: Result<UserProfileResponse, ClientError>) in
             completion( result.flatMap { userProfile in
-                .success(userProfile.product == "premium")
+                self.spotifyUserSubscription = userProfile.product
+                return .success(())
             })
         }
     }
     
-    func spotifyButtonPressedAction(completion: @escaping (Result<Bool, Error>) -> Void) {
+    private func initSession(completion: @escaping (Result<Void, Error>) -> Void) {
+        Auth.auth().signInAnonymously { authDataResult, error in
+            guard let authData = authDataResult else {
+                if let error = error {
+                    completion(.failure(error))
+                }
+                print("AuthDataResult is nil")
+                return
+            }
+            
+            self.generatetNewSessionCode { result in
+                switch result {
+                case let .failure(error):
+                    completion(.failure(error))
+                case let .success(newCode):
+                    let user = User(documentID: authData.user.uid)
+                    self.session = Session(documentID: newCode, code: newCode, host: user)
+                    completion(.success(()))
+                }
+            }
+        }
+    }
+    
+    private func saveSession(completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let session = session else {
+            print("Could not save session, session is nil")
+            return
+        }
+        FirestoreRepository<Session>(collectionPath: "sessions").create(session) { error in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                completion(.success(()))
+            }
+        }
+    }
+    
+    private func generatetNewSessionCode(completion: @escaping (Result<String, RepositoryError>) -> Void) {
+        let newCode = generateRandomCode(length: 4)
+        FirestoreRepository<Session>(collectionPath: "sessions").get(id: newCode) { result in
+            switch result {
+            case .failure(let error):
+                if case .notFound = error {
+                    print("\(newCode) does not exist. Using for new room")
+                    completion(.success(newCode))
+                }
+            case .success:
+                print("\(newCode) already exists. Regenerating room code")
+                self.generatetNewSessionCode(completion: completion)
+            }
+        }
+    }
+    
+    private func generateRandomCode(length: Int) -> String {
+        let alphabeticRange = 65...90
+        var code = ""
+        while code.count < length {
+            let unicodeScalar = Int.random(in: alphabeticRange)
+            let letter = Character(UnicodeScalar(unicodeScalar)!)
+            code = "\(code)\(letter)"
+        }
+        return code
+    }
+    
+    func createRoom(completion: @escaping (Result<Void, Error>) -> Void) {
         let semaphore = DispatchSemaphore(value: 1)
         
         DispatchQueue.global().async { [self] in
@@ -94,14 +162,36 @@ class HomeViewModel: NSObject {
             }
             
             semaphore.wait()
-            isCurrentSpotifyUserProfilePremium { result in
+            initSpotifyUserSubscription { result in
                 switch result {
-                case let .failure(error):
+                case .failure(let error):
                     completion(.failure(error))
                     return
-                case let .success(isPremium):
+                case .success:
                     semaphore.signal()
-                    completion(.success(isPremium))
+                }
+            }
+            
+            semaphore.wait()
+            initSession { result in
+                switch result {
+                case .failure(let error):
+                    completion(.failure(error))
+                    return
+                case .success:
+                    semaphore.signal()
+                }
+            }
+            
+            semaphore.wait()
+            saveSession { result in
+                switch result {
+                case .failure(let error):
+                    completion(.failure(error))
+                    return
+                case .success:
+                    semaphore.signal()
+                    completion(.success(()))
                 }
             }
         }

@@ -9,10 +9,8 @@ import Foundation
 import FirebaseFirestore
 
 struct SpotifyCredentials: FirestoreDocument {
-    
     var documentID: String?
     var dateAdded: Timestamp?
-    
     var clientID: String
     var clientSecret: String
     var redirectURL: String

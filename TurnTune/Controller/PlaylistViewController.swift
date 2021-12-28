@@ -23,6 +23,7 @@ class PlaylistViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.prefersLargeTitles = false
+        navigationItem.title = vm.session.code
     }
     
     private func prepareSearchController() -> UISearchController? {
@@ -30,7 +31,6 @@ class PlaylistViewController: UIViewController {
             print("Spotify session is nil on prepareSearchController")
             return nil
         }
-        print("session: \(session.accessToken)")
         
         let searchViewController = storyboard?.instantiateViewController(identifier: "SearchViewController") as! SearchViewController
         searchViewController.vm = SearchViewModel(session)
