@@ -8,7 +8,10 @@
 import UIKit
 
 class SessionDetailsViewController: UIViewController {
+    
+    var vm: SessionDetailsViewModel!
 
+    @IBOutlet weak var sessionIDLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var tableHeaderView: UIView!
     
@@ -18,20 +21,32 @@ class SessionDetailsViewController: UIViewController {
         tableView.delegate = self
         tableHeaderView.frame.size = CGSize(width: view.frame.width, height: view.frame.width/2)
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        vm.membersChangeListener { result in
+            switch result {
+            case .failure(let error):
+                print(error)
+            case .success:
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
+        }
+    }
 }
 
 extension SessionDetailsViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        5
+        vm.members.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "RoomDetailsTableViewCell", for: indexPath) as? RoomDetailsTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "MemberTableViewCell", for: indexPath) as? MemberTableViewCell else {
             return UITableViewCell()
         }
-        cell.textLabel?.text = "Member \(indexPath.row+1)"
-        cell.imageView?.image = UIImage(systemName: indexPath.row == 0 ? "person.fill" : "person")
+        cell.member = vm.members[indexPath.row]
         return cell
     }
 }
@@ -43,6 +58,6 @@ extension SessionDetailsViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "Members \(5)/8"
+        return "Members \(vm.members.count)/8"
     }
 }

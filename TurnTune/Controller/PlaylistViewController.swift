@@ -23,7 +23,7 @@ class PlaylistViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.prefersLargeTitles = false
-        navigationItem.title = vm.session.code
+        navigationItem.title = vm.session.id
         vm.playlistChangeListener { result in
             switch result {
             case .failure(let error):
@@ -33,6 +33,13 @@ class PlaylistViewController: UIViewController {
                     self.tableView.reloadData()
                 }
             }
+        }
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "SessionDetailsViewController" {
+            let vc = segue.destination as! SessionDetailsViewController
+            vc.vm = SessionDetailsViewModel(vm.session)
         }
     }
     

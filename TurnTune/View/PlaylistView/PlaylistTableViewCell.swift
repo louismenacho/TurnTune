@@ -12,7 +12,7 @@ class PlaylistTableViewCell: UITableViewCell {
 
     var song = Song() {
         didSet {
-            imageView?.sd_setImage(with: URL(string: song.artworkURL), placeholderImage: UIImage(systemName: "photo.fill"))
+            imageView?.sd_setImage(with: URL(string: song.artworkURL), placeholderImage: UIImage(systemName: "image"))
             textLabel?.text = song.name
             detailTextLabel?.text = song.artist
         }

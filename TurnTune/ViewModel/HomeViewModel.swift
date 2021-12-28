@@ -85,8 +85,8 @@ class HomeViewModel: NSObject {
                 case let .failure(error):
                     completion(.failure(error))
                 case let .success(newCode):
-                    let user = User(documentID: authData.user.uid)
-                    self.session = Session(documentID: newCode, code: newCode, host: user)
+                    let member = Member(documentID: authData.user.uid, id: authData.user.uid, isHost: true)
+                    self.session = Session(documentID: newCode, id: newCode, host: member)
                     completion(.success(()))
                 }
             }
@@ -99,6 +99,21 @@ class HomeViewModel: NSObject {
             return
         }
         FirestoreRepository<Session>(collectionPath: "sessions").create(session) { error in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                completion(.success(()))
+            }
+        }
+    }
+    
+    private func saveHost(name: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        guard var session = session else {
+            print("Could not save host, session is nil")
+            return
+        }
+        session.host.displayName = name
+        FirestoreRepository<Member>(collectionPath: "sessions/"+session.id+"/members").create(session.host) { error in
             if let error = error {
                 completion(.failure(error))
             } else {
@@ -134,7 +149,7 @@ class HomeViewModel: NSObject {
         return code
     }
     
-    func createRoom(completion: @escaping (Result<Void, Error>) -> Void) {
+    func createRoom(hostName: String, completion: @escaping (Result<Void, Error>) -> Void) {
         let semaphore = DispatchSemaphore(value: 1)
         
         DispatchQueue.global().async { [self] in
@@ -191,9 +206,21 @@ class HomeViewModel: NSObject {
                     return
                 case .success:
                     semaphore.signal()
+                }
+            }
+            
+            semaphore.wait()
+            saveHost(name: hostName) { result in
+                switch result {
+                case .failure(let error):
+                    completion(.failure(error))
+                    return
+                case .success:
+                    semaphore.signal()
                     completion(.success(()))
                 }
             }
+
         }
     }
 }

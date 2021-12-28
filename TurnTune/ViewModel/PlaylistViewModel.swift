@@ -17,7 +17,7 @@ class PlaylistViewModel: NSObject {
     
     init(_ session: Session, _ spotifySessionManager: SPTSessionManager) {
         self.session = session
-        self.playlistRepository = FirestoreRepository<Song>(collectionPath: "sessions/"+session.code+"/playlist")
+        self.playlistRepository = FirestoreRepository<Song>(collectionPath: "sessions/"+session.id+"/playlist")
         self.spotifySessionManager = spotifySessionManager
         super.init()
         self.spotifySessionManager.delegate = self

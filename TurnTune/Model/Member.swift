@@ -1,5 +1,5 @@
 //
-//  Session.swift
+//  Member.swift
 //  TurnTune
 //
 //  Created by Louis Menacho on 12/27/21.
@@ -9,11 +9,10 @@ import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-struct Session: FirestoreDocument {
+struct Member: FirestoreDocument {
     @DocumentID var documentID: String?
     @ServerTimestamp var dateAdded: Timestamp?
-    var id: String
-    var host: Member
-    var token: String = ""
-    var userCount: Int = 0
+    var id: String = ""
+    var displayName: String = ""
+    var isHost: Bool = false
 }

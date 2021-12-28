@@ -97,7 +97,7 @@ extension HomeViewController: SessionFormViewDelegate {
     }
     
     func sessionFormView(_ sessionFormView: SessionFormView, spotifyButtonPressed button: UIButton) {
-        vm.createRoom { [self] result in
+        vm.createRoom(hostName: sessionFormView.displayNameTextField.text!) { [self] result in
             switch result {
             case .failure(let error):
                 if let clientError = error as? ClientError {

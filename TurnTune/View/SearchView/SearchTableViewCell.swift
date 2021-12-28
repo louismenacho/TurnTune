@@ -12,7 +12,7 @@ class SearchTableViewCell: UITableViewCell {
     
     var searchResultItem = SearchResultItem() {
         didSet {
-            imageView?.sd_setImage(with: URL(string: searchResultItem.song.artworkURL), placeholderImage: UIImage(systemName: "photo.fill"))
+            imageView?.sd_setImage(with: URL(string: searchResultItem.song.artworkURL), placeholderImage: UIImage(systemName: "image"))
             textLabel?.text = searchResultItem.song.name
             detailTextLabel?.text = searchResultItem.song.artist
         

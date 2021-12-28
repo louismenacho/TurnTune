@@ -191,14 +191,14 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="qGP-dF-JMV">
-                                                    <rect key="frame" x="86" y="7.5" width="30" height="17"/>
+                                                    <rect key="frame" x="86" y="7" width="35" height="20.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Subtitle" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="2uP-wQ-f5t">
-                                                    <rect key="frame" x="86" y="27" width="44" height="14.5"/>
+                                                    <rect key="frame" x="86" y="27.5" width="53" height="18"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                                     <color key="textColor" systemColor="secondaryLabelColor"/>
@@ -403,7 +403,7 @@
                                     </constraints>
                                 </view>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="RoomDetailsTableViewCell" textLabel="PjY-U4-qJ3" imageView="0T3-UE-yid" style="IBUITableViewCellStyleDefault" id="fT5-Ti-7b5" customClass="RoomDetailsTableViewCell" customModule="TurnTune" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="MemberTableViewCell" textLabel="PjY-U4-qJ3" imageView="0T3-UE-yid" style="IBUITableViewCellStyleDefault" id="fT5-Ti-7b5" customClass="MemberTableViewCell" customModule="TurnTune" customModuleProvider="target">
                                         <rect key="frame" x="20" y="171.5" width="374" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="fT5-Ti-7b5" id="apH-Os-NZN">
@@ -438,6 +438,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="0pC-m9-uQU"/>
                     <connections>
+                        <outlet property="sessionIDLabel" destination="GKn-DX-1BM" id="n16-jw-if2"/>
                         <outlet property="tableHeaderView" destination="60I-Tx-GLL" id="yRl-ov-Vnz"/>
                         <outlet property="tableView" destination="feW-JM-KPG" id="7z0-fy-7dL"/>
                     </connections>

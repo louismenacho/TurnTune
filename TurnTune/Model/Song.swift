@@ -22,7 +22,7 @@ struct Song: FirestoreDocument {
     var spotifyURI: String = ""
     
     init() {
-        name = "No song playing"
+        name = ""
         artist = ""
         album = ""
         artworkURL = ""
