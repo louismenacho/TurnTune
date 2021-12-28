@@ -364,10 +364,10 @@
             </objects>
             <point key="canvasLocation" x="1725" y="-666"/>
         </scene>
-        <!--Room Details View Controller-->
+        <!--Session Details View Controller-->
         <scene sceneID="CnV-o1-v3u">
             <objects>
-                <viewController id="s2F-mK-hxT" customClass="RoomDetailsViewController" customModule="TurnTune" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="s2F-mK-hxT" customClass="SessionDetailsViewController" customModule="TurnTune" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="kiG-Cx-vGv">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

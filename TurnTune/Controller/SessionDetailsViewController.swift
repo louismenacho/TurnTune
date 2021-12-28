@@ -1,5 +1,5 @@
 //
-//  RoomDetailsViewController.swift
+//  SessionDetailsViewController.swift
 //  TurnTune
 //
 //  Created by Louis Menacho on 11/19/21.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class RoomDetailsViewController: UIViewController {
+class SessionDetailsViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var tableHeaderView: UIView!
@@ -20,7 +20,7 @@ class RoomDetailsViewController: UIViewController {
     }
 }
 
-extension RoomDetailsViewController: UITableViewDataSource {
+extension SessionDetailsViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         5
@@ -36,7 +36,7 @@ extension RoomDetailsViewController: UITableViewDataSource {
     }
 }
 
-extension RoomDetailsViewController: UITableViewDelegate {
+extension SessionDetailsViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)

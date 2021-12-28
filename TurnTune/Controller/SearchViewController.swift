@@ -8,7 +8,7 @@
 import UIKit
 
 protocol SearchViewControllerDelegate: AnyObject {
-    func searchViewController(_ searchViewController: SearchViewController, didQueue song: Song)
+    func searchViewController(_ searchViewController: SearchViewController, didAdd song: Song)
 }
 
 class SearchViewController: UIViewController {
@@ -70,7 +70,7 @@ extension SearchViewController: UITableViewDelegate {
                 }
                 print(error)
             case let .success(song):
-                self.delegate?.searchViewController(self, didQueue: song)
+                self.delegate?.searchViewController(self, didAdd: song)
             }
         }
         let generator = UIImpactFeedbackGenerator(style: .heavy)

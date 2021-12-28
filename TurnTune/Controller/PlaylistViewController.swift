@@ -89,7 +89,7 @@ extension PlaylistViewController: UITableViewDelegate {
 }
 
 extension PlaylistViewController: SearchViewControllerDelegate {
-    func searchViewController(_ searchViewController: SearchViewController, didQueue song: Song) {
+    func searchViewController(_ searchViewController: SearchViewController, didAdd song: Song) {
         vm.addSong(song) { result in
             if case .failure(let error) = result {
                 print(error)

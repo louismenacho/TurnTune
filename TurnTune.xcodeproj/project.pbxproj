@@ -14,7 +14,7 @@
 		9584F2A12741FCFA0018FBFB /* PlaylistTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9584F2A02741FCFA0018FBFB /* PlaylistTableViewCell.swift */; };
 		9584F2A32744CD130018FBFB /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9584F2A22744CD130018FBFB /* SearchViewController.swift */; };
 		9584F2A52744DB080018FBFB /* SearchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9584F2A42744DB080018FBFB /* SearchTableViewCell.swift */; };
-		9584F2A72747750A0018FBFB /* RoomDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9584F2A62747750A0018FBFB /* RoomDetailsViewController.swift */; };
+		9584F2A72747750A0018FBFB /* SessionDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9584F2A62747750A0018FBFB /* SessionDetailsViewController.swift */; };
 		958949C92778284200F3C8E3 /* PlaylistViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958949C82778284200F3C8E3 /* PlaylistViewModel.swift */; };
 		958949CB2779677A00F3C8E3 /* SearchResultItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958949CA2779677A00F3C8E3 /* SearchResultItem.swift */; };
 		958949CD2779679400F3C8E3 /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958949CC2779679400F3C8E3 /* Song.swift */; };
@@ -89,7 +89,7 @@
 		9584F2A02741FCFA0018FBFB /* PlaylistTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistTableViewCell.swift; sourceTree = "<group>"; };
 		9584F2A22744CD130018FBFB /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		9584F2A42744DB080018FBFB /* SearchTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTableViewCell.swift; sourceTree = "<group>"; };
-		9584F2A62747750A0018FBFB /* RoomDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomDetailsViewController.swift; sourceTree = "<group>"; };
+		9584F2A62747750A0018FBFB /* SessionDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDetailsViewController.swift; sourceTree = "<group>"; };
 		958949C82778284200F3C8E3 /* PlaylistViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistViewModel.swift; sourceTree = "<group>"; };
 		958949CA2779677A00F3C8E3 /* SearchResultItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultItem.swift; sourceTree = "<group>"; };
 		958949CC2779679400F3C8E3 /* Song.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Song.swift; sourceTree = "<group>"; };
@@ -262,7 +262,7 @@
 				95D9746F25B41CB9000286C9 /* HomeViewController.swift */,
 				9584F29D2741F6010018FBFB /* PlaylistViewController.swift */,
 				9584F2A22744CD130018FBFB /* SearchViewController.swift */,
-				9584F2A62747750A0018FBFB /* RoomDetailsViewController.swift */,
+				9584F2A62747750A0018FBFB /* SessionDetailsViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -458,7 +458,7 @@
 				958CDBFD273F484B00001DB9 /* SwitchControl.swift in Sources */,
 				95D02694276DA1DF004BCD7B /* SpotifyAPIEndpoint.swift in Sources */,
 				9584F2A32744CD130018FBFB /* SearchViewController.swift in Sources */,
-				9584F2A72747750A0018FBFB /* RoomDetailsViewController.swift in Sources */,
+				9584F2A72747750A0018FBFB /* SessionDetailsViewController.swift in Sources */,
 				95D0267D276DA099004BCD7B /* UserDefaultsProperty.swift in Sources */,
 				95D02697276DA1DF004BCD7B /* SpotifySearchAPI.swift in Sources */,
 				9584F2A12741FCFA0018FBFB /* PlaylistTableViewCell.swift in Sources */,
