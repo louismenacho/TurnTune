@@ -11,7 +11,7 @@ import FirebaseFirestoreSwift
 
 struct Session: FirestoreDocument {
     @DocumentID var documentID: String?
-    var dateAdded: Timestamp?
+    @ServerTimestamp var dateAdded: Timestamp?
     var code: String
     var host: User
     var token: String = ""

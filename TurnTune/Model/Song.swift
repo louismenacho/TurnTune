@@ -13,7 +13,7 @@ struct Song: FirestoreDocument {
     typealias MilliSeconds = Int
     
     @DocumentID var documentID: String?
-    var dateAdded: Timestamp?
+    @ServerTimestamp var dateAdded: Timestamp?
     var name: String
     var artist: String
     var album: String

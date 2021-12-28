@@ -7,7 +7,13 @@
 
 import UIKit
 
+protocol SearchViewControllerDelegate: AnyObject {
+    func searchViewController(_ searchViewController: SearchViewController, didQueue song: Song)
+}
+
 class SearchViewController: UIViewController {
+    
+    weak var delegate: SearchViewControllerDelegate?
     
     var vm: SearchViewModel!
     
@@ -56,12 +62,15 @@ extension SearchViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         vm.enqueueSong(at: indexPath.row) { result in
-            if case .failure(let error) = result {
+            switch result {
+            case let .failure(error):
                 DispatchQueue.main.async {
                     tableView.deselectRow(at: indexPath, animated: true)
                     tableView.reloadData()
                 }
                 print(error)
+            case let .success(song):
+                self.delegate?.searchViewController(self, didQueue: song)
             }
         }
         let generator = UIImpactFeedbackGenerator(style: .heavy)

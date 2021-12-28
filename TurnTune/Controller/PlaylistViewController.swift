@@ -31,9 +31,9 @@ class PlaylistViewController: UIViewController {
             print("Spotify session is nil on prepareSearchController")
             return nil
         }
-        
         let searchViewController = storyboard?.instantiateViewController(identifier: "SearchViewController") as! SearchViewController
         searchViewController.vm = SearchViewModel(session)
+        searchViewController.delegate = self
         
         let searchController = UISearchController(searchResultsController: searchViewController)
         searchController.searchResultsUpdater = searchViewController
@@ -77,5 +77,15 @@ extension PlaylistViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+}
+
+extension PlaylistViewController: SearchViewControllerDelegate {
+    func searchViewController(_ searchViewController: SearchViewController, didQueue song: Song) {
+        vm.addSong(song) { result in
+            if case .failure(let error) = result {
+                print(error)
+            }
+        }
     }
 }

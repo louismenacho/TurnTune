@@ -7,20 +7,25 @@
 
 import Foundation
 
-class SearchViewModel {
+class SearchViewModel: NSObject {
     
     var searchResult = [SearchResultItem]()
     
-    private var searchAPI = SpotifyAPIClient<SpotifySearchAPI>()
-    private var playerAPI = SpotifyAPIClient<SpotifyPlayerAPI>()
+    private var spotifySearchAPI = SpotifyAPIClient<SpotifySearchAPI>()
+    private var spotifyPlayerAPI = SpotifyAPIClient<SpotifyPlayerAPI>()
     
     init(_ session: SPTSession) {
-        searchAPI.auth = .bearer(token: session.accessToken)
-        playerAPI.auth = .bearer(token: session.accessToken)
+        spotifySearchAPI.auth = .bearer(token: session.accessToken)
+        spotifyPlayerAPI.auth = .bearer(token: session.accessToken)
+    }
+    
+    func updateSpotifySession(_ session: SPTSession) {
+        spotifySearchAPI.auth = .bearer(token: session.accessToken)
+        spotifyPlayerAPI.auth = .bearer(token: session.accessToken)
     }
     
     func updateSearchResult(query: String, completion: @escaping (Result<Void, ClientError>) -> Void) {
-        searchAPI.request(.search(query: query, type: "track", limit: 50)) { (result: Result<SearchResponse, ClientError>) in
+        spotifySearchAPI.request(.search(query: query, type: "track", limit: 50)) { (result: Result<SearchResponse, ClientError>) in
             completion( result.flatMap { searchResult in
                 self.searchResult = searchResult.tracks.items.map { SearchResultItem(from: $0) }
                 return .success(())
@@ -28,15 +33,15 @@ class SearchViewModel {
         }
     }
     
-    func enqueueSong(at index: Int, completion: @escaping (Result<Void, ClientError>) -> Void) {
+    func enqueueSong(at index: Int, completion: @escaping (Result<Song, ClientError>) -> Void) {
         self.searchResult[index].isAdded = true
-        playerAPI.request(.queueTrack(uri: searchResult[index].song.spotifyURI)) { (result: Result<EmptyData, ClientError>) in
+        spotifyPlayerAPI.request(.queueTrack(uri: searchResult[index].song.spotifyURI)) { (result: Result<EmptyData, ClientError>) in
             switch result {
             case .failure(let error):
                 self.searchResult[index].isAdded = false
                 completion(.failure(error))
             case .success:
-                completion(.success(()))
+                completion(.success(self.searchResult[index].song))
             }
         }
     }

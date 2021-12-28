@@ -20,6 +20,16 @@ class PlaylistViewModel: NSObject {
         super.init()
         self.spotifySessionManager.delegate = self
     }
+    
+    func addSong(_ song: Song, completion: @escaping (Result<Void, RepositoryError>) -> Void) {
+        playlistRepository.create(song) { error in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                completion(.success(()))
+            }
+        }
+    }
 }
 
 extension PlaylistViewModel: SPTSessionManagerDelegate {

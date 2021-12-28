@@ -11,6 +11,6 @@ import FirebaseFirestoreSwift
 
 struct User: FirestoreDocument {
     @DocumentID var documentID: String?
-    var dateAdded: Timestamp?
+    @ServerTimestamp var dateAdded: Timestamp?
     var displayName: String = ""
 }
