@@ -44,12 +44,8 @@ class PlaylistViewController: UIViewController {
     }
     
     private func prepareSearchController() -> UISearchController? {
-        guard let session = vm.spotifySessionManager.session else {
-            print("Spotify session is nil on prepareSearchController")
-            return nil
-        }
         let searchViewController = storyboard?.instantiateViewController(identifier: "SearchViewController") as! SearchViewController
-        searchViewController.vm = SearchViewModel(session)
+        searchViewController.vm = SearchViewModel(vm.session.spotifyToken)
         searchViewController.delegate = self
         
         let searchController = UISearchController(searchResultsController: searchViewController)
@@ -103,4 +99,11 @@ extension PlaylistViewController: SearchViewControllerDelegate {
             }
         }
     }
+    
+    func renewSpotifyToken(completion: @escaping (Result<String, Error>) -> Void) {
+        vm.renewSpotifyToken { result in
+            completion(result)
+        }
+    }
+
 }

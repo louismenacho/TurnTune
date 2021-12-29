@@ -15,5 +15,5 @@ struct Session: FirestoreDocument {
     var id: String
     var host: Member
     var userCount: Int = 0
-    var token: String = ""
+    var spotifyToken: String = ""
 }

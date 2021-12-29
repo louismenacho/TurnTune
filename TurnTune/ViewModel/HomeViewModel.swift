@@ -13,7 +13,7 @@ class HomeViewModel: NSObject {
     
     var currentMember: Member?
     var currentSession: Session?
-    private var sessionCode: String = ""
+    private var currentSessionID: String = ""
     
     var spotifySessionManager: SPTSessionManager?
     private var spotifyInitiateSessionCompletion: ((Result<Void, Error>) -> Void)?
@@ -74,26 +74,26 @@ class HomeViewModel: NSObject {
         }
     }
     
-    private func generateSessionCode(completion: @escaping (Result<String, Error>) -> Void) {
+    private func generateNewSessionID(completion: @escaping (Result<String, Error>) -> Void) {
         Auth.auth().signInAnonymously { authDataResult, error in
             if let error = error {
                 completion(.failure(error))
                 return
             }
-            let newCode = self.generateRandomCode(length: 4)
-            FirestoreRepository<Session>(collectionPath: "sessions").get(id: newCode) { result in
+            let newID = self.generateRandomCode(length: 4)
+            FirestoreRepository<Session>(collectionPath: "sessions").get(id: newID) { result in
                 switch result {
                 case .failure(let error):
                     if case .notFound = error {
-                        print("\(newCode) does not exist. Using for new room")
-                        self.sessionCode = newCode
-                        completion(.success(newCode))
+                        print("\(newID) does not exist. Using for new room")
+                        self.currentSessionID = newID
+                        completion(.success(newID))
                     } else {
                         completion(.failure(error))
                     }
                 case .success:
-                    print("\(newCode) already exists. Regenerating room code")
-                    self.generateSessionCode(completion: completion)
+                    print("\(newID) already exists. Regenerating room code")
+                    self.generateNewSessionID(completion: completion)
                 }
             }
         }
@@ -107,7 +107,7 @@ class HomeViewModel: NSObject {
             return
         }
         let host = Member(documentID: currentUser.uid, id: currentUser.uid, displayName: hostName ,isHost: true)
-        let session = Session(documentID: sessionCode, id: sessionCode, host: host, userCount: 1, token: spotifySession.accessToken)
+        let session = Session(documentID: currentSessionID, id: currentSessionID, host: host, userCount: 1, spotifyToken: spotifySession.accessToken)
         let group = DispatchGroup()
         
         group.enter()
@@ -121,7 +121,7 @@ class HomeViewModel: NSObject {
         }
         
         group.enter()
-        FirestoreRepository<Member>(collectionPath: "sessions/"+sessionCode+"/members").create(host) { error in
+        FirestoreRepository<Member>(collectionPath: "sessions/"+currentSessionID+"/members").create(host) { error in
             if let error = error {
                 completion(.failure(error))
                 return
@@ -148,7 +148,6 @@ class HomeViewModel: NSObject {
     
     func createRoom(hostName: String, completion: @escaping (Result<Void, Error>) -> Void) {
         let semaphore = DispatchSemaphore(value: 1)
-        
         DispatchQueue.global().async { [self] in
             
             semaphore.wait()
@@ -186,7 +185,7 @@ class HomeViewModel: NSObject {
             }
             
             semaphore.wait()
-            generateSessionCode { result in
+            generateNewSessionID { result in
                 switch result {
                 case .failure(let error):
                     completion(.failure(error))
@@ -198,6 +197,101 @@ class HomeViewModel: NSObject {
             
             semaphore.wait()
             createNewSession(hostName: hostName) { result in
+                switch result {
+                case .failure(let error):
+                    completion(.failure(error))
+                    return
+                case .success:
+                    completion(.success(()))
+                }
+            }
+        }
+    }
+    
+    func findSession(id: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        Auth.auth().signInAnonymously { authDataResult, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            FirestoreRepository<Session>(collectionPath: "sessions").get(id: id) { result in
+                switch result {
+                case .failure(let error):
+                    completion(.failure(error))
+                    return
+                case .success(let session):
+                    self.currentSession = session
+                    self.currentSessionID = session.id
+                    completion(.success(()))
+                }
+            }
+        }
+    }
+    
+    func addSessionMember(memberName: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let currentUser = Auth.auth().currentUser else {
+            return
+        }
+        guard let currentSession = currentSession else {
+            return
+        }
+        let newMember = Member(documentID: currentUser.uid, id: currentUser.uid, displayName: memberName, isHost: false)
+        FirestoreRepository<Member>(collectionPath: "sessions/"+currentSession.id+"/members").create(newMember) { error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            self.currentMember = newMember
+            completion(.success(()))
+        }
+    }
+    
+    func joinRoom(sessionID: String, memberName: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        let semaphore = DispatchSemaphore(value: 1)
+        DispatchQueue.global().async { [self] in
+            
+            semaphore.wait()
+            findSession(id: sessionID) { result in
+                switch result {
+                case .failure(let error):
+                    completion(.failure(error))
+                    return
+                case .success:
+                    semaphore.signal()
+                }
+            }
+
+            semaphore.wait()
+            addSessionMember(memberName: memberName) { result in
+                switch result {
+                case .failure(let error):
+                    completion(.failure(error))
+                    return
+                case .success:
+                    semaphore.signal()
+                }
+            }
+            
+            semaphore.wait()
+            if currentMember?.id != currentSession?.host.id {
+                semaphore.signal()
+                completion(.success(()))
+                return
+            }
+            
+            semaphore.wait()
+            initSpotifyConfig { result in
+                switch result {
+                case .failure(let error):
+                    completion(.failure(error))
+                    return
+                case .success:
+                    semaphore.signal()
+                }
+            }
+            
+            semaphore.wait()
+            initSpotifySession { result in
                 switch result {
                 case .failure(let error):
                     completion(.failure(error))

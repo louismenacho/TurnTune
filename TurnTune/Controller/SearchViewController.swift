@@ -9,6 +9,7 @@ import UIKit
 
 protocol SearchViewControllerDelegate: AnyObject {
     func searchViewController(_ searchViewController: SearchViewController, didAdd song: Song)
+    func renewSpotifyToken(completion: @escaping (Result<String, Error>) -> Void)
 }
 
 class SearchViewController: UIViewController {
@@ -29,10 +30,27 @@ class SearchViewController: UIViewController {
 extension SearchViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         guard let searchText = searchController.searchBar.text else { return }
-        vm.updateSearchResult(query: searchText) { result in
+        vm.updateSearchResult(query: searchText) { [self] result in
             switch result {
             case .failure(let error):
-                print(error)
+                switch error {
+                case .requestFailed(let error):
+                    print(error)
+                case .decodingError(_):
+                    print(error)
+                case let .badResponse(code,_,_):
+                    if code == 401 {
+                        print("2")
+                        delegate?.renewSpotifyToken { result in
+                            if let newToken = try? result.get() {
+                                self.vm.updateSpotifyToken(newToken)
+                            }
+                        }
+                    }
+                    print(error)
+                case .noResponse:
+                    print("No response")
+                }
             case .success:
                 DispatchQueue.main.async {
                     self.tableView.reloadData()

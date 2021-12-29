@@ -14,14 +14,15 @@ class SearchViewModel: NSObject {
     private var spotifySearchAPI = SpotifyAPIClient<SpotifySearchAPI>()
     private var spotifyPlayerAPI = SpotifyAPIClient<SpotifyPlayerAPI>()
     
-    init(_ session: SPTSession) {
-        spotifySearchAPI.auth = .bearer(token: session.accessToken)
-        spotifyPlayerAPI.auth = .bearer(token: session.accessToken)
+    init(_ spotifyToken: String) {
+        spotifySearchAPI.auth = .bearer(token: spotifyToken)
+        spotifyPlayerAPI.auth = .bearer(token: spotifyToken)
     }
     
-    func updateSpotifySession(_ session: SPTSession) {
-        spotifySearchAPI.auth = .bearer(token: session.accessToken)
-        spotifyPlayerAPI.auth = .bearer(token: session.accessToken)
+    func updateSpotifyToken(_ token: String) {
+        spotifySearchAPI.auth = .bearer(token: token)
+        spotifyPlayerAPI.auth = .bearer(token: token)
+        print("token updated")
     }
     
     func updateSearchResult(query: String, completion: @escaping (Result<Void, ClientError>) -> Void) {

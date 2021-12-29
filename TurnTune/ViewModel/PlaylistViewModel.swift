@@ -13,14 +13,17 @@ class PlaylistViewModel: NSObject {
 
     var session: Session
     var playlistRepository: FirestoreRepository<Song>
-    var spotifySessionManager: SPTSessionManager
+    var spotifySessionManager: SPTSessionManager?
+    private var spotifyRenewSessionCompletion: ((Result<SPTSession, Error>) -> Void)?
     
-    init(_ session: Session, _ spotifySessionManager: SPTSessionManager) {
+    init(_ session: Session, _ spotifySessionManager: SPTSessionManager?) {
         self.session = session
         self.playlistRepository = FirestoreRepository<Song>(collectionPath: "sessions/"+session.id+"/playlist")
         self.spotifySessionManager = spotifySessionManager
         super.init()
-        self.spotifySessionManager.delegate = self
+        if let spotifySessionManager = spotifySessionManager {
+            spotifySessionManager.delegate = self
+        }
     }
     
     func addSong(_ song: Song, completion: @escaping (Result<Void, RepositoryError>) -> Void) {
@@ -45,6 +48,18 @@ class PlaylistViewModel: NSObject {
             }
         }
     }
+    
+    func renewSpotifyToken(completion: @escaping (Result<String, Error>) -> Void) {
+        self.spotifySessionManager?.renewSession()
+        self.spotifyRenewSessionCompletion = { result in
+            switch result {
+            case .failure(let error):
+                print(error)
+            case .success(let session):
+                completion(.success(session.accessToken))
+            }
+        }
+    }
 }
 
 extension PlaylistViewModel: SPTSessionManagerDelegate {
@@ -54,7 +69,8 @@ extension PlaylistViewModel: SPTSessionManagerDelegate {
     }
     
     func sessionManager(manager: SPTSessionManager, didRenew session: SPTSession) {
-        
+        print("sessionManager did renew session")
+        spotifyRenewSessionCompletion?(.success(session))
     }
     
     func sessionManager(manager: SPTSessionManager, didFailWith error: Error) {
