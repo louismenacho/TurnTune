@@ -11,13 +11,13 @@ import FirebaseFirestore
 
 class HomeViewModel: NSObject {
     
-    var session: Session?
+    var currentMember: Member?
+    var currentSession: Session?
+    private var sessionCode: String = ""
+    
     var spotifySessionManager: SPTSessionManager?
-
-    private var spotifyUserProfileAPI = SpotifyAPIClient<SpotifyUserProfileAPI>()
-    private var spotifyInitiateSessionCompletion: ((Result<SPTSession, Error>) -> Void)?
+    private var spotifyInitiateSessionCompletion: ((Result<Void, Error>) -> Void)?
     private var spotifyConfig: SPTConfiguration?
-    private var spotifyUserSubscription: String = ""
     private var spotifyScope: SPTScope = [
         .appRemoteControl,
         .userReadCurrentlyPlaying,
@@ -55,86 +55,80 @@ class HomeViewModel: NSObject {
         
         spotifyInitiateSessionCompletion = { result in
             completion( result.flatMap { session in
-                self.spotifyUserProfileAPI.auth = .bearer(token: session.accessToken)
                 return .success(())
             })
         }
     }
     
-    private func initSpotifyUserSubscription(completion: @escaping (Result<Void, ClientError>) -> Void) {
-        spotifyUserProfileAPI.request(.currentUserProfile) { (result: Result<UserProfileResponse, ClientError>) in
-            completion( result.flatMap { userProfile in
-                self.spotifyUserSubscription = userProfile.product
-                return .success(())
-            })
-        }
-    }
-    
-    private func initSession(completion: @escaping (Result<Void, Error>) -> Void) {
-        Auth.auth().signInAnonymously { authDataResult, error in
-            guard let authData = authDataResult else {
-                if let error = error {
-                    completion(.failure(error))
-                }
-                print("AuthDataResult is nil")
-                return
-            }
-            
-            self.generatetNewSessionCode { result in
-                switch result {
-                case let .failure(error):
-                    completion(.failure(error))
-                case let .success(newCode):
-                    let member = Member(documentID: authData.user.uid, id: authData.user.uid, isHost: true)
-                    self.session = Session(documentID: newCode, id: newCode, host: member)
-                    completion(.success(()))
-                }
-            }
-        }
-    }
-    
-    private func saveSession(completion: @escaping (Result<Void, Error>) -> Void) {
-        guard let session = session else {
-            print("Could not save session, session is nil")
+    private func getSpotifyUserSubscription(completion: @escaping (Result<String, ClientError>) -> Void) {
+        guard let spotifySession = spotifySessionManager?.session else {
+            print("Could not request Spotify user profile, Spotify session is nil")
             return
         }
+        let spotifyUserProfileAPI = SpotifyAPIClient<SpotifyUserProfileAPI>()
+        spotifyUserProfileAPI.auth = .bearer(token: spotifySession.accessToken)
+        spotifyUserProfileAPI.request(.currentUserProfile) { (result: Result<UserProfileResponse, ClientError>) in
+            completion( result.flatMap { userProfile in
+                return .success((userProfile.product))
+            })
+        }
+    }
+    
+    private func generateSessionCode(completion: @escaping (Result<String, Error>) -> Void) {
+        Auth.auth().signInAnonymously { authDataResult, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            let newCode = self.generateRandomCode(length: 4)
+            FirestoreRepository<Session>(collectionPath: "sessions").get(id: newCode) { result in
+                switch result {
+                case .failure(let error):
+                    if case .notFound = error {
+                        print("\(newCode) does not exist. Using for new room")
+                        self.sessionCode = newCode
+                        completion(.success(newCode))
+                    } else {
+                        completion(.failure(error))
+                    }
+                case .success:
+                    print("\(newCode) already exists. Regenerating room code")
+                    self.generateSessionCode(completion: completion)
+                }
+            }
+        }
+    }
+    
+    private func createNewSession(hostName: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let currentUser = Auth.auth().currentUser else {
+            return
+        }
+        let host = Member(documentID: currentUser.uid, id: currentUser.uid, displayName: hostName ,isHost: true)
+        let session = Session(documentID: sessionCode, id: sessionCode, host: host, userCount: 1)
+        let group = DispatchGroup()
+        
+        group.enter()
         FirestoreRepository<Session>(collectionPath: "sessions").create(session) { error in
             if let error = error {
                 completion(.failure(error))
-            } else {
-                completion(.success(()))
+                return
             }
+            self.currentSession = session
+            group.leave()
         }
-    }
-    
-    private func saveHost(name: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        guard var session = session else {
-            print("Could not save host, session is nil")
-            return
-        }
-        session.host.displayName = name
-        FirestoreRepository<Member>(collectionPath: "sessions/"+session.id+"/members").create(session.host) { error in
+        
+        group.enter()
+        FirestoreRepository<Member>(collectionPath: "sessions/"+sessionCode+"/members").create(host) { error in
             if let error = error {
                 completion(.failure(error))
-            } else {
-                completion(.success(()))
+                return
             }
+            self.currentMember = host
+            group.leave()
         }
-    }
-    
-    private func generatetNewSessionCode(completion: @escaping (Result<String, RepositoryError>) -> Void) {
-        let newCode = generateRandomCode(length: 4)
-        FirestoreRepository<Session>(collectionPath: "sessions").get(id: newCode) { result in
-            switch result {
-            case .failure(let error):
-                if case .notFound = error {
-                    print("\(newCode) does not exist. Using for new room")
-                    completion(.success(newCode))
-                }
-            case .success:
-                print("\(newCode) already exists. Regenerating room code")
-                self.generatetNewSessionCode(completion: completion)
-            }
+        
+        group.notify(queue: .main) {
+            completion(.success(()))
         }
     }
     
@@ -177,7 +171,19 @@ class HomeViewModel: NSObject {
             }
             
             semaphore.wait()
-            initSpotifyUserSubscription { result in
+            getSpotifyUserSubscription { result in
+                switch result {
+                case .failure(let error):
+                    completion(.failure(error))
+                    return
+                case .success(let subscription):
+                    print("subscription type: \(subscription)")
+                    semaphore.signal()
+                }
+            }
+            
+            semaphore.wait()
+            generateSessionCode { result in
                 switch result {
                 case .failure(let error):
                     completion(.failure(error))
@@ -188,29 +194,7 @@ class HomeViewModel: NSObject {
             }
             
             semaphore.wait()
-            initSession { result in
-                switch result {
-                case .failure(let error):
-                    completion(.failure(error))
-                    return
-                case .success:
-                    semaphore.signal()
-                }
-            }
-            
-            semaphore.wait()
-            saveSession { result in
-                switch result {
-                case .failure(let error):
-                    completion(.failure(error))
-                    return
-                case .success:
-                    semaphore.signal()
-                }
-            }
-            
-            semaphore.wait()
-            saveHost(name: hostName) { result in
+            createNewSession(hostName: hostName) { result in
                 switch result {
                 case .failure(let error):
                     completion(.failure(error))
@@ -220,7 +204,6 @@ class HomeViewModel: NSObject {
                     completion(.success(()))
                 }
             }
-
         }
     }
 }
@@ -229,7 +212,7 @@ extension HomeViewModel: SPTSessionManagerDelegate {
     
     func sessionManager(manager: SPTSessionManager, didInitiate session: SPTSession) {
         print("SPTSession didInitiate")
-        spotifyInitiateSessionCompletion?(.success(session))
+        spotifyInitiateSessionCompletion?(.success(()))
     }
     
     func sessionManager(manager: SPTSessionManager, didFailWith error: Error) {
