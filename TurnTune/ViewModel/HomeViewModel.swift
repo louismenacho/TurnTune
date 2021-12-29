@@ -103,8 +103,11 @@ class HomeViewModel: NSObject {
         guard let currentUser = Auth.auth().currentUser else {
             return
         }
+        guard let spotifySession = spotifySessionManager?.session else {
+            return
+        }
         let host = Member(documentID: currentUser.uid, id: currentUser.uid, displayName: hostName ,isHost: true)
-        let session = Session(documentID: sessionCode, id: sessionCode, host: host, userCount: 1)
+        let session = Session(documentID: sessionCode, id: sessionCode, host: host, userCount: 1, token: spotifySession.accessToken)
         let group = DispatchGroup()
         
         group.enter()
