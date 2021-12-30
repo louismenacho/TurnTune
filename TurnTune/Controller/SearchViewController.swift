@@ -74,12 +74,24 @@ extension SearchViewController: UITableViewDataSource {
 extension SearchViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        vm.enqueueSong(at: indexPath.row) { result in
+        vm.enqueueSong(at: indexPath.row) { [self] result in
             switch result {
             case let .success(song):
                 self.delegate?.searchViewController(self, didAdd: song)
             case let .failure(error):
-                print(error)
+                switch error {
+                case .requestFailed:
+                    print(error)
+                case .decodingError:
+                    print(error)
+                case .noResponse:
+                    print(error)
+                case .badResponse(let code, _, _):
+                    print(error)
+                    if code == 401 {
+                        delegate?.searchViewController(self, renewSpotifyToken: ())
+                    }
+                }
                 DispatchQueue.main.async {
                     tableView.deselectRow(at: indexPath, animated: true)
                     tableView.reloadData()

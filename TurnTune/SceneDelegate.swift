@@ -30,6 +30,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidBecomeActive(_ scene: UIScene) {
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
+        guard let spotifySession = spotifySessionManager?.session else {
+            return
+        }
+        if spotifySession.isExpired {
+            spotifySessionManager?.renewSession()
+        }
     }
 
     func sceneWillResignActive(_ scene: UIScene) {

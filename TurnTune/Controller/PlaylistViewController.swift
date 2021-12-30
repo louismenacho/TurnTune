@@ -55,6 +55,10 @@ class PlaylistViewController: UIViewController {
         }
     }
     
+    @IBAction func playButton(_ sender: UIButton) {
+        
+    }
+    
     private func prepareSearchController() -> UISearchController? {
         searchViewController = storyboard?.instantiateViewController(identifier: "SearchViewController") as? SearchViewController
         searchViewController.vm = SearchViewModel(vm.session.spotifyToken)
@@ -113,15 +117,8 @@ extension PlaylistViewController: SearchViewControllerDelegate {
     }
     
     func searchViewController(_ searchViewController: SearchViewController, renewSpotifyToken: Void) {
-        vm.renewSpotifyToken { [self] result in
-            switch result {
-            case .success:
-                vm.updateSession { result in
-                    if case let .failure(error) = result {
-                        print(error)
-                    }
-                }
-            case .failure(let error):
+        vm.renewSpotifyToken { result in
+            if case .failure(let error) = result {
                 print(error)
             }
         }
