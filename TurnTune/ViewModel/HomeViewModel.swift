@@ -54,9 +54,7 @@ class HomeViewModel: NSObject {
         }
         
         spotifyInitiateSessionCompletion = { result in
-            completion( result.flatMap { session in
-                return .success(())
-            })
+            completion(result)
         }
     }
     
@@ -130,7 +128,7 @@ class HomeViewModel: NSObject {
             group.leave()
         }
         
-        group.notify(queue: .main) {
+        group.notify(queue: .global()) {
             completion(.success(()))
         }
     }

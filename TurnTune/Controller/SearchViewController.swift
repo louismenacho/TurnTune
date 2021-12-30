@@ -9,7 +9,7 @@ import UIKit
 
 protocol SearchViewControllerDelegate: AnyObject {
     func searchViewController(_ searchViewController: SearchViewController, didAdd song: Song)
-    func renewSpotifyToken(completion: @escaping (Result<String, Error>) -> Void)
+    func searchViewController(_ searchViewController: SearchViewController, renewSpotifyToken: Void)
 }
 
 class SearchViewController: UIViewController {
@@ -29,31 +29,26 @@ class SearchViewController: UIViewController {
 
 extension SearchViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-        guard let searchText = searchController.searchBar.text else { return }
+        guard let searchText = searchController.searchBar.text, !searchText.isEmpty else { return }
         vm.updateSearchResult(query: searchText) { [self] result in
             switch result {
-            case .failure(let error):
-                switch error {
-                case .requestFailed(let error):
-                    print(error)
-                case .decodingError(_):
-                    print(error)
-                case let .badResponse(code,_,_):
-                    if code == 401 {
-                        print("2")
-                        delegate?.renewSpotifyToken { result in
-                            if let newToken = try? result.get() {
-                                self.vm.updateSpotifyToken(newToken)
-                            }
-                        }
-                    }
-                    print(error)
-                case .noResponse:
-                    print("No response")
-                }
             case .success:
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
+                }
+            case .failure(let error):
+                switch error {
+                case .requestFailed:
+                    print(error)
+                case .decodingError:
+                    print(error)
+                case .noResponse:
+                    print(error)
+                case .badResponse(let code, _, _):
+                    print(error)
+                    if code == 401 {
+                        delegate?.searchViewController(self, renewSpotifyToken: ())
+                    }
                 }
             }
         }
@@ -81,14 +76,14 @@ extension SearchViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         vm.enqueueSong(at: indexPath.row) { result in
             switch result {
+            case let .success(song):
+                self.delegate?.searchViewController(self, didAdd: song)
             case let .failure(error):
+                print(error)
                 DispatchQueue.main.async {
                     tableView.deselectRow(at: indexPath, animated: true)
                     tableView.reloadData()
                 }
-                print(error)
-            case let .success(song):
-                self.delegate?.searchViewController(self, didAdd: song)
             }
         }
         let generator = UIImpactFeedbackGenerator(style: .heavy)

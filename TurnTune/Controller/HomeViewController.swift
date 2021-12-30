@@ -119,7 +119,9 @@ extension HomeViewController: SessionFormViewDelegate {
                     print(repositoryError)
                 }
             case .success:
-                self.performSegue(withIdentifier: "PlaylistViewController", sender: self)
+                DispatchQueue.main.async {
+                    self.performSegue(withIdentifier: "PlaylistViewController", sender: self)
+                }
             }
         }
     }

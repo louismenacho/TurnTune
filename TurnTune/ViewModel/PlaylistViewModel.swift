@@ -9,20 +9,53 @@ import Foundation
 
 class PlaylistViewModel: NSObject {
     
-    var playlist = [Song]()
-
     var session: Session
+    var sessionRepository: FirestoreRepository<Session>
+    
+    var playlist: [Song]
     var playlistRepository: FirestoreRepository<Song>
+    
     var spotifySessionManager: SPTSessionManager?
     private var spotifyRenewSessionCompletion: ((Result<SPTSession, Error>) -> Void)?
     
     init(_ session: Session, _ spotifySessionManager: SPTSessionManager?) {
         self.session = session
+        self.sessionRepository = FirestoreRepository<Session>(collectionPath: "sessions")
+        
+        self.playlist = [Song]()
         self.playlistRepository = FirestoreRepository<Song>(collectionPath: "sessions/"+session.id+"/playlist")
+        
         self.spotifySessionManager = spotifySessionManager
         super.init()
-        if let spotifySessionManager = spotifySessionManager {
-            spotifySessionManager.delegate = self
+        self.spotifySessionManager?.delegate = self
+    }
+    
+    func sessionChangeListener(completion: @escaping (Result<Session, RepositoryError>) -> Void) {
+        sessionRepository.addListener(id: session.id) { result in
+            completion( result.flatMap { session in
+                self.session = session
+                return .success(session)
+            })
+        }
+    }
+    
+    func updateSession(completion: @escaping (Result<Void, RepositoryError>) -> Void) {
+        sessionRepository.update(session) { error in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                completion(.success(()))
+            }
+        }
+    }
+    
+    func playlistChangeListener(completion: @escaping (Result<Void, RepositoryError>) -> Void) {
+        let query = playlistRepository.collectionReference.order(by: "dateAdded")
+        playlistRepository.addListener(query) { result in
+            completion( result.flatMap { songs in
+                self.playlist = songs
+                return .success(())
+            })
         }
     }
     
@@ -36,27 +69,15 @@ class PlaylistViewModel: NSObject {
         }
     }
     
-    func playlistChangeListener(completion: @escaping (Result<Void, RepositoryError>) -> Void) {
-        let query = playlistRepository.collectionReference.order(by: "dateAdded")
-        playlistRepository.addListener(query) { result in
-            switch result {
-            case let .failure(error):
-                completion(.failure(error))
-            case let .success(songs):
-                self.playlist = songs
-                completion(.success(()))
-            }
-        }
-    }
-    
-    func renewSpotifyToken(completion: @escaping (Result<String, Error>) -> Void) {
-        self.spotifySessionManager?.renewSession()
-        self.spotifyRenewSessionCompletion = { result in
+    func renewSpotifyToken(completion: @escaping (Result<Void, Error>) -> Void) {
+        spotifySessionManager?.renewSession()
+        spotifyRenewSessionCompletion = { result in
             switch result {
             case .failure(let error):
                 print(error)
-            case .success(let session):
-                completion(.success(session.accessToken))
+            case .success(let spotifySession):
+                self.session.spotifyToken = spotifySession.accessToken
+                completion(.success(()))
             }
         }
     }

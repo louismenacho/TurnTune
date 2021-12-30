@@ -10,7 +10,8 @@ import UIKit
 class PlaylistViewController: UIViewController {
     
     var vm: PlaylistViewModel!
-
+    var searchViewController: SearchViewController!
+    
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
@@ -24,6 +25,17 @@ class PlaylistViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.prefersLargeTitles = false
         navigationItem.title = vm.session.id
+        
+        vm.sessionChangeListener { result in
+            switch result {
+            case .failure(let error):
+                print(error)
+            case .success(let session):
+                print("session updated")
+                self.searchViewController.vm.updateSpotifyToken(session.spotifyToken)
+            }
+        }
+        
         vm.playlistChangeListener { result in
             switch result {
             case .failure(let error):
@@ -44,7 +56,7 @@ class PlaylistViewController: UIViewController {
     }
     
     private func prepareSearchController() -> UISearchController? {
-        let searchViewController = storyboard?.instantiateViewController(identifier: "SearchViewController") as! SearchViewController
+        searchViewController = storyboard?.instantiateViewController(identifier: "SearchViewController") as? SearchViewController
         searchViewController.vm = SearchViewModel(vm.session.spotifyToken)
         searchViewController.delegate = self
         
@@ -100,10 +112,18 @@ extension PlaylistViewController: SearchViewControllerDelegate {
         }
     }
     
-    func renewSpotifyToken(completion: @escaping (Result<String, Error>) -> Void) {
-        vm.renewSpotifyToken { result in
-            completion(result)
+    func searchViewController(_ searchViewController: SearchViewController, renewSpotifyToken: Void) {
+        vm.renewSpotifyToken { [self] result in
+            switch result {
+            case .success:
+                vm.updateSession { result in
+                    if case let .failure(error) = result {
+                        print(error)
+                    }
+                }
+            case .failure(let error):
+                print(error)
+            }
         }
     }
-
 }
