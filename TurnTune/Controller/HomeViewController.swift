@@ -35,6 +35,7 @@ class HomeViewController: UIViewController {
             }
             let vc = segue.destination as! PlaylistViewController
             vc.vm = PlaylistViewModel(currentSession, vm.spotifySessionManager)
+            vc.vm.spotifyConfig = vm.spotifyConfig
         }
     }
     

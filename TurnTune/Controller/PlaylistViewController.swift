@@ -13,13 +13,15 @@ class PlaylistViewController: UIViewController {
     var searchViewController: SearchViewController!
     
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var playButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.dataSource = self
-        tableView.delegate = self
         navigationItem.searchController = prepareSearchController()
         navigationItem.hidesSearchBarWhenScrolling = false
+        tableView.dataSource = self
+        tableView.delegate = self
+        playButton.isHidden = !vm.isCurrentUserHost()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -55,8 +57,12 @@ class PlaylistViewController: UIViewController {
         }
     }
     
-    @IBAction func playButton(_ sender: UIButton) {
-        
+    @IBAction func playButtonPressed(_ sender: UIButton) {
+        vm.play { result in
+            if case .failure(let error) = result {
+                print(error)
+            }
+        }
     }
     
     private func prepareSearchController() -> UISearchController? {

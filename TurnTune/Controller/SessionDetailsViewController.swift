@@ -17,6 +17,7 @@ class SessionDetailsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        sessionIDLabel.text = vm.session.id
         tableView.dataSource = self
         tableView.delegate = self
         tableHeaderView.frame.size = CGSize(width: view.frame.width, height: view.frame.width/2)

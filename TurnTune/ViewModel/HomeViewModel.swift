@@ -13,12 +13,13 @@ class HomeViewModel: NSObject {
     
     var currentMember: Member?
     var currentSession: Session?
-    private var currentSessionID: String = ""
+    var currentSessionID: String = ""
     
     var spotifySessionManager: SPTSessionManager?
-    private var spotifyInitiateSessionCompletion: ((Result<Void, Error>) -> Void)?
-    private var spotifyConfig: SPTConfiguration?
-    private var spotifyScope: SPTScope = [
+    var spotifyInitiateSessionCompletion: ((Result<Void, Error>) -> Void)?
+    
+    var spotifyConfig: SPTConfiguration?
+    var spotifyScope: SPTScope = [
         .appRemoteControl,
         .userReadCurrentlyPlaying,
         .userReadRecentlyPlayed,

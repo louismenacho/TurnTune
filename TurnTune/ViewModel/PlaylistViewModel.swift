@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import FirebaseAuth
 
 class PlaylistViewModel: NSObject {
     
@@ -17,6 +18,16 @@ class PlaylistViewModel: NSObject {
     
     var spotifySessionManager: SPTSessionManager?
     private var spotifyRenewSessionCompletion: ((Result<Void, Error>) -> Void)?
+
+    var spotifyConfig: SPTConfiguration?
+    var spotifyScope: SPTScope = [
+        .appRemoteControl,
+        .userReadCurrentlyPlaying,
+        .userReadRecentlyPlayed,
+        .userReadPlaybackState,
+        .userModifyPlaybackState,
+        .userReadPrivate
+    ]
     
     init(_ session: Session, _ spotifySessionManager: SPTSessionManager?) {
         self.session = session
@@ -69,15 +80,29 @@ class PlaylistViewModel: NSObject {
         }
     }
     
+    func play(completion: @escaping (Result<Void, Error>) -> Void) {
+        spotifyConfig?.playURI = ""
+        spotifySessionManager?.initiateSession(with: spotifyScope, options: .clientOnly)
+        spotifyRenewSessionCompletion = { result in
+            completion(result)
+        }
+    }
+    
     func renewSpotifyToken(completion: @escaping (Result<Void, Error>) -> Void) {
         spotifySessionManager?.renewSession()
         spotifyRenewSessionCompletion = { result in
-            switch result {
-            case .failure(let error):
-                print(error)
-            case .success:
-                completion(.success(()))
-            }
+            completion(result)
+        }
+    }
+    
+    func isCurrentUserHost() -> Bool {
+        guard let currentUser = Auth.auth().currentUser else {
+            return false
+        }
+        if currentUser.uid != session.host.id {
+            return false
+        } else {
+            return true
         }
     }
 }
@@ -85,7 +110,15 @@ class PlaylistViewModel: NSObject {
 extension PlaylistViewModel: SPTSessionManagerDelegate {
     
     func sessionManager(manager: SPTSessionManager, didInitiate session: SPTSession) {
-        
+        self.session.spotifyToken = session.accessToken
+        updateSession { result in
+            switch result {
+            case .failure(let error):
+                self.spotifyRenewSessionCompletion?(.failure(error))
+            case .success:
+                self.spotifyRenewSessionCompletion?(.success(()))
+            }
+        }
     }
     
     func sessionManager(manager: SPTSessionManager, didRenew session: SPTSession) {
