@@ -15,4 +15,11 @@ struct Member: FirestoreDocument {
     var id: String = ""
     var displayName: String = ""
     var isHost: Bool = false
+    
+}
+
+extension Member: Equatable {
+    static func ==(lhs: Member, rhs: Member) -> Bool {
+        return lhs.id == rhs.id
+    }
 }
