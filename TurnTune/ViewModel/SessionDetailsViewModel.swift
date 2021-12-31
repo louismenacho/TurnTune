@@ -30,4 +30,8 @@ class SessionDetailsViewModel {
             }
         }
     }
+    
+    func removeMembersChangeListener() {
+        memberRepository.removeListener()
+    }
 }

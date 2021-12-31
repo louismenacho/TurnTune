@@ -24,16 +24,23 @@ class SessionDetailsViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         vm.membersChangeListener { result in
             switch result {
             case .failure(let error):
                 print(error)
             case .success:
+                print("members updated")
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
                 }
             }
         }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        vm.removeMembersChangeListener()
     }
 }
 

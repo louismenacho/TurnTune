@@ -25,6 +25,7 @@ class PlaylistViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         navigationController?.navigationBar.prefersLargeTitles = false
         navigationItem.title = vm.session.id
         
@@ -50,6 +51,12 @@ class PlaylistViewController: UIViewController {
         }
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        vm.removeSessionChangeListener()
+        vm.removePlaylistChangeListener()
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "SessionDetailsViewController" {
             let vc = segue.destination as! SessionDetailsViewController
@@ -58,7 +65,7 @@ class PlaylistViewController: UIViewController {
     }
     
     @IBAction func playButtonPressed(_ sender: UIButton) {
-        vm.play { result in
+        vm.wakeAndPlay { result in
             if case .failure(let error) = result {
                 print(error)
             }

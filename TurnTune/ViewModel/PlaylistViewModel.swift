@@ -50,6 +50,10 @@ class PlaylistViewModel: NSObject {
         }
     }
     
+    func removeSessionChangeListener() {
+        sessionRepository.removeListener()
+    }
+    
     func updateSession(completion: @escaping (Result<Void, RepositoryError>) -> Void) {
         sessionRepository.update(session) { error in
             if let error = error {
@@ -70,6 +74,10 @@ class PlaylistViewModel: NSObject {
         }
     }
     
+    func removePlaylistChangeListener() {
+        playlistRepository.removeListener()
+    }
+    
     func addSong(_ song: Song, completion: @escaping (Result<Void, RepositoryError>) -> Void) {
         playlistRepository.create(song) { error in
             if let error = error {
@@ -80,7 +88,7 @@ class PlaylistViewModel: NSObject {
         }
     }
     
-    func play(completion: @escaping (Result<Void, Error>) -> Void) {
+    func wakeAndPlay(completion: @escaping (Result<Void, Error>) -> Void) {
         spotifyConfig?.playURI = ""
         spotifySessionManager?.initiateSession(with: spotifyScope, options: .clientOnly)
         spotifyRenewSessionCompletion = { result in
