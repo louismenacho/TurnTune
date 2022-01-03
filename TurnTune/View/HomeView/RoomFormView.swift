@@ -72,12 +72,13 @@ class RoomFormView: UIStackView {
 
 extension RoomFormView: UITextFieldDelegate {
     
-    func textView(_ textView: UITextField, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
         // get the current text, or use an empty string if that failed
-        let currentText = textView.text ?? ""
+        let currentText = textField.text ?? ""
         
         // allow only letter characters
-        if text.rangeOfCharacter(from: CharacterSet.letters.inverted) != nil {
+        if string.rangeOfCharacter(from: CharacterSet.letters.inverted) != nil {
             return false
         }
         
@@ -85,18 +86,19 @@ extension RoomFormView: UITextFieldDelegate {
         guard let stringRange = Range(range, in: currentText) else { return false }
         
         // add their new text to the existing text
-        let updatedText = currentText.replacingCharacters(in: stringRange, with: text)
+        let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
         
         // make sure the result is under 20 characters if display name text field
-        if textView == displayNameTextField {
+        if textField == displayNameTextField {
             return updatedText.count <= 20
         }
         
         // make sure the result is under 4 characters if room ID text field
-        if textView == roomCodeTextField {
+        if textField == roomCodeTextField {
             return updatedText.count <= 4
         }
         
         return true
     }
+
 }
