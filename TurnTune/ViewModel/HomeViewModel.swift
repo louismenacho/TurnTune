@@ -28,6 +28,145 @@ class HomeViewModel: NSObject {
         .userReadPrivate
     ]
     
+    func createRoom(hostName: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        let semaphore = DispatchSemaphore(value: 0)
+        DispatchQueue.global().async { [self] in
+            
+            initSpotifySessionManager { result in
+                semaphore.signal()
+                switch result {
+                case .failure(let error):
+                    completion(.failure(error))
+                    return
+                case .success:
+                    print("initSpotifySessionManager complete")
+                }
+            }
+            semaphore.wait()
+            
+            initSpotifySession { result in
+                semaphore.signal()
+                switch result {
+                case .failure(let error):
+                    completion(.failure(error))
+                    return
+                case .success:
+                    print("initSpotifySession complete")
+                }
+            }
+            semaphore.wait()
+            
+            getSpotifyUserSubscription { result in
+                semaphore.signal()
+                switch result {
+                case .failure(let error):
+                    completion(.failure(error))
+                    return
+                case .success(let subscription):
+                    print("getSpotifyUserSubscription complete: \(subscription)")
+                }
+            }
+            semaphore.wait()
+            
+            generateNewRoomID { result in
+                semaphore.signal()
+                switch result {
+                case .failure(let error):
+                    completion(.failure(error))
+                    return
+                case .success:
+                    print("generateNewSessionID complete")
+                }
+            }
+            semaphore.wait()
+            
+            createNewRoom(hostName: hostName) { result in
+                semaphore.signal()
+                switch result {
+                case .failure(let error):
+                    completion(.failure(error))
+                    return
+                case .success:
+                    print("createNewSession complete")
+                }
+            }
+            semaphore.wait()
+            
+            completion(.success(()))
+        }
+    }
+    
+    func joinRoom(roomID: String, memberName: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        let semaphore = DispatchSemaphore(value: 0)
+        DispatchQueue.global().async { [self] in
+            
+            findRoom(id: roomID) { result in
+                semaphore.signal()
+                switch result {
+                case .failure(let error):
+                    completion(.failure(error))
+                    return
+                case .success:
+                    print("findSession complete")
+                }
+            }
+            semaphore.wait()
+            
+            addRoomMember(memberName: memberName) { result in
+                semaphore.signal()
+                switch result {
+                case .failure(let error):
+                    completion(.failure(error))
+                    return
+                case .success:
+                    print("addSessionMember complete")
+                }
+            }
+            semaphore.wait()
+            
+            initSpotifySessionManager { result in
+                semaphore.signal()
+                switch result {
+                case .failure(let error):
+                    completion(.failure(error))
+                    return
+                case .success:
+                    print("initSpotifySessionManager complete")
+                }
+            }
+            semaphore.wait()
+            
+            if let currentRoom = currentRoom, Date() >= currentRoom.spotifyTokenExpirationDate && currentMember == currentRoom.host {
+                initSpotifySession { result in
+                    semaphore.signal()
+                    switch result {
+                    case .failure(let error):
+                        completion(.failure(error))
+                        return
+                    case .success:
+                        print("initSpotifySession complete")
+                    }
+                }
+                semaphore.wait()
+                
+                updateRoom { result in
+                    semaphore.signal()
+                    switch result {
+                    case .failure(let error):
+                        completion(.failure(error))
+                        return
+                    case .success:
+                        print("initSpotifySession complete")
+                    }
+                }
+                semaphore.wait()
+                
+            }
+            
+            completion(.success(()))
+        }
+    }
+    
     private func initSpotifySessionManager(completion: @escaping (Result<Void, RepositoryError>) -> Void) {
         FirestoreRepository<SpotifyCredentials>(collectionPath: "spotify").get(id: "credentials") { result in
             completion( result.flatMap { credentials in
@@ -142,74 +281,6 @@ class HomeViewModel: NSObject {
         return code
     }
     
-    func createRoom(hostName: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        let semaphore = DispatchSemaphore(value: 0)
-        DispatchQueue.global().async { [self] in
-            
-            initSpotifySessionManager { result in
-                semaphore.signal()
-                switch result {
-                case .failure(let error):
-                    completion(.failure(error))
-                    return
-                case .success:
-                    print("initSpotifySessionManager complete")
-                }
-            }
-            semaphore.wait()
-            
-            initSpotifySession { result in
-                semaphore.signal()
-                switch result {
-                case .failure(let error):
-                    completion(.failure(error))
-                    return
-                case .success:
-                    print("initSpotifySession complete")
-                }
-            }
-            semaphore.wait()
-            
-            getSpotifyUserSubscription { result in
-                semaphore.signal()
-                switch result {
-                case .failure(let error):
-                    completion(.failure(error))
-                    return
-                case .success(let subscription):
-                    print("getSpotifyUserSubscription complete: \(subscription)")
-                }
-            }
-            semaphore.wait()
-            
-            generateNewRoomID { result in
-                semaphore.signal()
-                switch result {
-                case .failure(let error):
-                    completion(.failure(error))
-                    return
-                case .success:
-                    print("generateNewSessionID complete")
-                }
-            }
-            semaphore.wait()
-            
-            createNewRoom(hostName: hostName) { result in
-                semaphore.signal()
-                switch result {
-                case .failure(let error):
-                    completion(.failure(error))
-                    return
-                case .success:
-                    print("createNewSession complete")
-                }
-            }
-            semaphore.wait()
-            
-            completion(.success(()))
-        }
-    }
-    
     private func findRoom(id: String, completion: @escaping (Result<Void, Error>) -> Void) {
         Auth.auth().signInAnonymously { authDataResult, error in
             if let error = error {
@@ -263,77 +334,6 @@ class HomeViewModel: NSObject {
             } else {
                 completion(.success(()))
             }
-        }
-    }
-    
-    func joinRoom(roomID: String, memberName: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        let semaphore = DispatchSemaphore(value: 0)
-        DispatchQueue.global().async { [self] in
-            
-            findRoom(id: roomID) { result in
-                semaphore.signal()
-                switch result {
-                case .failure(let error):
-                    completion(.failure(error))
-                    return
-                case .success:
-                    print("findSession complete")
-                }
-            }
-            semaphore.wait()
-            
-            addRoomMember(memberName: memberName) { result in
-                semaphore.signal()
-                switch result {
-                case .failure(let error):
-                    completion(.failure(error))
-                    return
-                case .success:
-                    print("addSessionMember complete")
-                }
-            }
-            semaphore.wait()
-            
-            initSpotifySessionManager { result in
-                semaphore.signal()
-                switch result {
-                case .failure(let error):
-                    completion(.failure(error))
-                    return
-                case .success:
-                    print("initSpotifySessionManager complete")
-                }
-            }
-            semaphore.wait()
-            
-            if let currentRoom = currentRoom, Date() >= currentRoom.spotifyTokenExpirationDate && currentMember == currentRoom.host {
-                initSpotifySession { result in
-                    semaphore.signal()
-                    switch result {
-                    case .failure(let error):
-                        completion(.failure(error))
-                        return
-                    case .success:
-                        print("initSpotifySession complete")
-                    }
-                }
-                semaphore.wait()
-                
-                updateRoom { result in
-                    semaphore.signal()
-                    switch result {
-                    case .failure(let error):
-                        completion(.failure(error))
-                        return
-                    case .success:
-                        print("initSpotifySession complete")
-                    }
-                }
-                semaphore.wait()
-
-            }
-            
-            completion(.success(()))
         }
     }
 }
