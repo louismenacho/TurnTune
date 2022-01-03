@@ -22,7 +22,6 @@ class SearchViewModel: NSObject {
     func updateSpotifyToken(_ token: String) {
         spotifySearchAPI.auth = .bearer(token: token)
         spotifyPlayerAPI.auth = .bearer(token: token)
-        print("token updated")
     }
     
     func updateSearchResult(query: String, completion: @escaping (Result<Void, ClientError>) -> Void) {

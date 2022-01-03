@@ -118,6 +118,7 @@ class PlaylistViewModel: NSObject {
 extension PlaylistViewModel: SPTSessionManagerDelegate {
     
     func sessionManager(manager: SPTSessionManager, didInitiate session: SPTSession) {
+        print("sessionManager did initiate session")
         room.spotifyToken = session.accessToken
         room.spotifyTokenExpirationDate = session.expirationDate
         updateRoom { result in
@@ -132,7 +133,7 @@ extension PlaylistViewModel: SPTSessionManagerDelegate {
     
     func sessionManager(manager: SPTSessionManager, didRenew session: SPTSession) {
         print("sessionManager did renew session")
-        self.room.spotifyToken = session.accessToken
+        room.spotifyToken = session.accessToken
         updateRoom { result in
             switch result {
             case .failure(let error):
@@ -144,6 +145,7 @@ extension PlaylistViewModel: SPTSessionManagerDelegate {
     }
     
     func sessionManager(manager: SPTSessionManager, didFailWith error: Error) {
+        print("sessionManager did fail with error")
         self.spotifyRenewSessionCompletion?(.failure(error))
     }
 }

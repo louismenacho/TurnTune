@@ -28,32 +28,29 @@ class HomeViewModel: NSObject {
         .userReadPrivate
     ]
     
-    private func initSpotifyConfig(completion: @escaping (Result<Void, RepositoryError>) -> Void) {
+    private func initSpotifySessionManager(completion: @escaping (Result<Void, RepositoryError>) -> Void) {
         FirestoreRepository<SpotifyCredentials>(collectionPath: "spotify").get(id: "credentials") { result in
             completion( result.flatMap { credentials in
                 let config = SPTConfiguration(clientID: credentials.clientID, redirectURL: URL(string: credentials.redirectURL)!)
                 config.tokenSwapURL = URL(string: credentials.tokenSwapURL)
                 config.tokenRefreshURL = URL(string: credentials.tokenRefreshURL)
                 self.spotifyConfig = config
+                self.spotifySessionManager = SPTSessionManager(configuration: config, delegate: self)
                 return .success(())
             })
         }
     }
     
     private func initSpotifySession(completion: @escaping (Result<Void, Error>) -> Void) {
-        guard let config = spotifyConfig else {
-            print("Could not initiate Spotify session, Spotify config is nil")
+        guard let spotifySessionManager = spotifySessionManager else {
+            print("Could not initiate Spotify session, Spotify session manager is nil")
             return
         }
-        let spotifySessionManager = SPTSessionManager(configuration: config, delegate: self)
-        self.spotifySessionManager = spotifySessionManager
-        
         DispatchQueue.main.async {
             let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
             sceneDelegate?.spotifySessionManager = spotifySessionManager
             spotifySessionManager.initiateSession(with: self.spotifyScope, options: .clientOnly)
         }
-        
         spotifyInitiateSessionCompletion = { result in
             completion(result)
         }
@@ -73,7 +70,7 @@ class HomeViewModel: NSObject {
         }
     }
     
-    private func generateNewSessionID(completion: @escaping (Result<String, Error>) -> Void) {
+    private func generateNewRoomID(completion: @escaping (Result<String, Error>) -> Void) {
         Auth.auth().signInAnonymously { authDataResult, error in
             if let error = error {
                 completion(.failure(error))
@@ -92,13 +89,13 @@ class HomeViewModel: NSObject {
                     }
                 case .success:
                     print("Room\(newID) already exists. Regenerating room code")
-                    self.generateNewSessionID(completion: completion)
+                    self.generateNewRoomID(completion: completion)
                 }
             }
         }
     }
     
-    private func createNewSession(hostName: String, completion: @escaping (Result<Void, Error>) -> Void) {
+    private func createNewRoom(hostName: String, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let currentUser = Auth.auth().currentUser else {
             return
         }
@@ -149,18 +146,18 @@ class HomeViewModel: NSObject {
         let semaphore = DispatchSemaphore(value: 0)
         DispatchQueue.global().async { [self] in
             
-            initSpotifyConfig { result in
+            initSpotifySessionManager { result in
                 semaphore.signal()
                 switch result {
                 case .failure(let error):
                     completion(.failure(error))
                     return
                 case .success:
-                    print("initSpotifyConfig complete")
+                    print("initSpotifySessionManager complete")
                 }
             }
-            
             semaphore.wait()
+            
             initSpotifySession { result in
                 semaphore.signal()
                 switch result {
@@ -171,8 +168,8 @@ class HomeViewModel: NSObject {
                     print("initSpotifySession complete")
                 }
             }
-            
             semaphore.wait()
+            
             getSpotifyUserSubscription { result in
                 semaphore.signal()
                 switch result {
@@ -183,9 +180,9 @@ class HomeViewModel: NSObject {
                     print("getSpotifyUserSubscription complete: \(subscription)")
                 }
             }
-            
             semaphore.wait()
-            generateNewSessionID { result in
+            
+            generateNewRoomID { result in
                 semaphore.signal()
                 switch result {
                 case .failure(let error):
@@ -195,9 +192,9 @@ class HomeViewModel: NSObject {
                     print("generateNewSessionID complete")
                 }
             }
-            
             semaphore.wait()
-            createNewSession(hostName: hostName) { result in
+            
+            createNewRoom(hostName: hostName) { result in
                 semaphore.signal()
                 switch result {
                 case .failure(let error):
@@ -207,8 +204,8 @@ class HomeViewModel: NSObject {
                     print("createNewSession complete")
                 }
             }
-
             semaphore.wait()
+            
             completion(.success(()))
         }
     }
@@ -233,26 +230,39 @@ class HomeViewModel: NSObject {
         }
     }
     
-    private func addSessionMember(memberName: String, completion: @escaping (Result<Void, Error>) -> Void) {
+    private func addRoomMember(memberName: String, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let currentUser = Auth.auth().currentUser else {
             return
         }
-        guard let currentSession = currentRoom else {
+        guard let currentRoom = currentRoom else {
             return
         }
         let newMember = Member(documentID: currentUser.uid, id: currentUser.uid, displayName: memberName, isHost: false)
-        if newMember == currentSession.host {
-            currentMember = currentSession.host
+        if newMember == currentRoom.host {
+            currentMember = currentRoom.host
             completion(.success(()))
             return
         }
-        FirestoreRepository<Member>(collectionPath: "rooms/"+currentSession.id+"/members").create(newMember) { error in
+        FirestoreRepository<Member>(collectionPath: "rooms/"+currentRoom.id+"/members").create(newMember) { error in
             if let error = error {
                 completion(.failure(error))
                 return
             }
             self.currentMember = newMember
             completion(.success(()))
+        }
+    }
+    
+    private func updateRoom(completion: @escaping (Result<Void, RepositoryError>) -> Void) {
+        guard let currentRoom = currentRoom else {
+            return
+        }
+        FirestoreRepository<Room>(collectionPath: "rooms").update(currentRoom) { error in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                completion(.success(()))
+            }
         }
     }
     
@@ -270,9 +280,9 @@ class HomeViewModel: NSObject {
                     print("findSession complete")
                 }
             }
-            
             semaphore.wait()
-            addSessionMember(memberName: memberName) { result in
+            
+            addRoomMember(memberName: memberName) { result in
                 semaphore.signal()
                 switch result {
                 case .failure(let error):
@@ -282,23 +292,23 @@ class HomeViewModel: NSObject {
                     print("addSessionMember complete")
                 }
             }
-            
             semaphore.wait()
-            if let currentRoom = currentRoom, Date() >= currentRoom.spotifyTokenExpirationDate && currentMember == currentRoom.host {
-                
-                initSpotifyConfig { result in
-                    semaphore.signal()
-                    switch result {
-                    case .failure(let error):
-                        completion(.failure(error))
-                        return
-                    case .success:
-                        print("initSpotifyConfig complete")
-                    }
+            
+            initSpotifySessionManager { result in
+                semaphore.signal()
+                switch result {
+                case .failure(let error):
+                    completion(.failure(error))
+                    return
+                case .success:
+                    print("initSpotifySessionManager complete")
                 }
-                
-                semaphore.wait()
+            }
+            semaphore.wait()
+            
+            if let currentRoom = currentRoom, Date() >= currentRoom.spotifyTokenExpirationDate && currentMember == currentRoom.host {
                 initSpotifySession { result in
+                    semaphore.signal()
                     switch result {
                     case .failure(let error):
                         completion(.failure(error))
@@ -307,6 +317,20 @@ class HomeViewModel: NSObject {
                         print("initSpotifySession complete")
                     }
                 }
+                semaphore.wait()
+                
+                updateRoom { result in
+                    semaphore.signal()
+                    switch result {
+                    case .failure(let error):
+                        completion(.failure(error))
+                        return
+                    case .success:
+                        print("initSpotifySession complete")
+                    }
+                }
+                semaphore.wait()
+
             }
             
             completion(.success(()))
@@ -317,12 +341,13 @@ class HomeViewModel: NSObject {
 extension HomeViewModel: SPTSessionManagerDelegate {
     
     func sessionManager(manager: SPTSessionManager, didInitiate session: SPTSession) {
-        print("SPTSession didInitiate")
+        print("sessionManager did initiate session in Home view")
+        currentRoom?.spotifyToken = session.accessToken
         spotifyInitiateSessionCompletion?(.success(()))
     }
     
     func sessionManager(manager: SPTSessionManager, didFailWith error: Error) {
-        print("SPTSession didFailWith error")
+        print("sessionManager did fail with error in Home view")
         spotifyInitiateSessionCompletion?(.failure(error))
     }
 }

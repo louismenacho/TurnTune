@@ -47,6 +47,7 @@ extension SearchViewController: UISearchResultsUpdating {
                 case .badResponse(let code, _, _):
                     print(error)
                     if code == 401 {
+                        print("renewSpotifyToken")
                         delegate?.searchViewController(self, renewSpotifyToken: ())
                     }
                 }

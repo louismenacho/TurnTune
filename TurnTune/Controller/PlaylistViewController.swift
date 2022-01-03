@@ -133,6 +133,8 @@ extension PlaylistViewController: SearchViewControllerDelegate {
         vm.renewSpotifyToken { result in
             if case .failure(let error) = result {
                 print(error)
+            } else {
+                print("renewSpotifyToken completed")
             }
         }
     }
