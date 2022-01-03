@@ -19,9 +19,9 @@ class RoomFormView: UIStackView {
     
     weak var delegate: RoomFormViewDelegate?
     
-    @IBOutlet weak var segmentedControl: UISegmentedControl!
-    @IBOutlet weak var displayNameTextField: UITextField!
-    @IBOutlet weak var roomCodeTextField: UITextField!
+    @IBOutlet weak var segmentedControl: RoomFormSegmentedControl!
+    @IBOutlet weak var displayNameTextField: RoomFormTextField!
+    @IBOutlet weak var roomCodeTextField: RoomFormTextField!
     @IBOutlet weak var joinButton: UIButton!
     @IBOutlet weak var spotifyButton: UIButton!
     
@@ -30,6 +30,12 @@ class RoomFormView: UIStackView {
         displayNameTextField.delegate = self
         roomCodeTextField.delegate = self
         showJoinRoomOptions()
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        joinButton.layer.cornerRadius = 24
+        spotifyButton.layer.cornerRadius = 24
     }
 
     @IBAction func selectedSegmentDidChange(_ sender: UISegmentedControl) {
@@ -42,10 +48,13 @@ class RoomFormView: UIStackView {
     }
     
     @IBAction func displayNameTextFieldDidChange(_ sender: UITextField) {
+        joinButton.isEnabled = !displayNameTextField.text!.isEmpty && roomCodeTextField.text!.count == 4
+        spotifyButton.isEnabled = !displayNameTextField.text!.isEmpty
         delegate?.roomFormView(self, displayNameTextFieldDidChange: sender.text)
     }
     
     @IBAction func roomCodeTextFieldDidChange(_ sender: UITextField) {
+        joinButton.isEnabled = !displayNameTextField.text!.isEmpty && roomCodeTextField.text!.count == 4
         delegate?.roomFormView(self, roomCodeTextFieldDidChange: sender.text)
     }
     
@@ -61,12 +70,14 @@ class RoomFormView: UIStackView {
         roomCodeTextField.isHidden = false
         joinButton.isHidden = false
         spotifyButton.isHidden = true
+        joinButton.isEnabled = !displayNameTextField.text!.isEmpty && roomCodeTextField.text!.count == 4
     }
     
     private func showCreateRoomOptions() {
         roomCodeTextField.isHidden = true
         joinButton.isHidden = true
         spotifyButton.isHidden = false
+        spotifyButton.isEnabled = !displayNameTextField.text!.isEmpty
     }
 }
 

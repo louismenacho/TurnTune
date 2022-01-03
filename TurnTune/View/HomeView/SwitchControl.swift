@@ -20,6 +20,16 @@ class SwitchControl: UIControl {
     @IBOutlet weak var thumbImageView: UIImageView!
     @IBOutlet weak var centerXConstraint: NSLayoutConstraint!
     
+    override func awakeFromNib() {
+        super.awakeFromNib()
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        layer.cornerRadius = frame.height/2
+        thumbImageView.layer.cornerRadius = thumbImageView.frame.height/2
+    }
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         print("touchesBegan")
     }
@@ -31,7 +41,10 @@ class SwitchControl: UIControl {
     
     func toggle() {
         isOn.toggle()
-        centerXConstraint.constant *= -1
+        UIView.animate(withDuration: 0.3) { [self] in
+            centerXConstraint.constant *= -1
+            layoutIfNeeded()
+        }
         delegate?.switchControl(self, didToggle: isOn)
     }
     
@@ -41,7 +54,7 @@ class SwitchControl: UIControl {
         }
     }
     
-    func setThumbImage(_ image: UIImage) {
+    func setThumbImage(_ image: UIImage?) {
         thumbImageView.image = image
     }
 }

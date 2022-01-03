@@ -21,6 +21,7 @@ class HomeViewController: UIViewController {
         appearanceSwitch.delegate = self
         formView.delegate = self
         addKeyboardObserver()
+        appearanceSwitch.setOn(traitCollection.userInterfaceStyle == .light ? true : false)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -68,9 +69,13 @@ class HomeViewController: UIViewController {
 }
 
 extension HomeViewController: SwitchControlDelegate {
+    
     func switchControl(_ switchControl: SwitchControl, didToggle isOn: Bool) {
+        switchControl.setThumbImage(UIImage(systemName: isOn ? "sun.min.fill" : "moon.fill"))
         UIApplication.shared.windows.forEach { window in
-            window.overrideUserInterfaceStyle = isOn ? .light : .dark
+            UIView.animate(withDuration: 0.3) {
+                window.overrideUserInterfaceStyle = isOn ? .light : .dark
+            }
         }
     }
 }
