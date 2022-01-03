@@ -27,15 +27,15 @@ class PlaylistViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.prefersLargeTitles = false
-        navigationItem.title = vm.session.id
+        navigationItem.title = vm.room.id
         
-        vm.sessionChangeListener { result in
+        vm.roomChangeListener { result in
             switch result {
             case .failure(let error):
                 print(error)
-            case .success(let session):
-                print("session updated")
-                self.searchViewController.vm.updateSpotifyToken(session.spotifyToken)
+            case .success(let room):
+                print("room updated")
+                self.searchViewController.vm.updateSpotifyToken(room.spotifyToken)
             }
         }
         
@@ -53,14 +53,14 @@ class PlaylistViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        vm.removeSessionChangeListener()
+        vm.removeRoomChangeListener()
         vm.removePlaylistChangeListener()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "SessionDetailsViewController" {
-            let vc = segue.destination as! SessionDetailsViewController
-            vc.vm = SessionDetailsViewModel(vm.session)
+        if segue.identifier == "RoomDetailsViewController" {
+            let vc = segue.destination as! RoomDetailsViewController
+            vc.vm = RoomDetailsViewModel(vm.room)
         }
     }
     
@@ -74,7 +74,7 @@ class PlaylistViewController: UIViewController {
     
     private func prepareSearchController() -> UISearchController? {
         searchViewController = storyboard?.instantiateViewController(identifier: "SearchViewController") as? SearchViewController
-        searchViewController.vm = SearchViewModel(vm.session.spotifyToken)
+        searchViewController.vm = SearchViewModel(vm.room.spotifyToken)
         searchViewController.delegate = self
         
         let searchController = UISearchController(searchResultsController: searchViewController)
@@ -87,7 +87,7 @@ class PlaylistViewController: UIViewController {
     }
     
     @IBAction func sessionDetailsButtonPressed(_ sender: UIBarButtonItem) {
-        performSegue(withIdentifier: "SessionDetailsViewController", sender: self)
+        performSegue(withIdentifier: "RoomDetailsViewController", sender: self)
     }
 }
 

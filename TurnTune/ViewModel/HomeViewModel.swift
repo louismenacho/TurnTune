@@ -12,8 +12,8 @@ import FirebaseFirestore
 class HomeViewModel: NSObject {
     
     var currentMember: Member?
-    var currentSession: Session?
-    var currentSessionID: String = ""
+    var currentRoom: Room?
+    var currentRoomID: String = ""
     
     var spotifySessionManager: SPTSessionManager?
     var spotifyInitiateSessionCompletion: ((Result<Void, Error>) -> Void)?
@@ -80,18 +80,18 @@ class HomeViewModel: NSObject {
                 return
             }
             let newID = self.generateRandomCode(length: 4)
-            FirestoreRepository<Session>(collectionPath: "sessions").get(id: newID) { result in
+            FirestoreRepository<Room>(collectionPath: "rooms").get(id: newID) { result in
                 switch result {
                 case .failure(let error):
                     if case .notFound = error {
                         print("\(newID) does not exist. Using for new room")
-                        self.currentSessionID = newID
+                        self.currentRoomID = newID
                         completion(.success(newID))
                     } else {
                         completion(.failure(error))
                     }
                 case .success:
-                    print("\(newID) already exists. Regenerating room code")
+                    print("Room\(newID) already exists. Regenerating room code")
                     self.generateNewSessionID(completion: completion)
                 }
             }
@@ -106,21 +106,21 @@ class HomeViewModel: NSObject {
             return
         }
         let host = Member(documentID: currentUser.uid, id: currentUser.uid, displayName: hostName ,isHost: true)
-        let session = Session(documentID: currentSessionID, id: currentSessionID, host: host, userCount: 1, spotifyToken: spotifySession.accessToken)
+        let room = Room(documentID: currentRoomID, id: currentRoomID, host: host, spotifyToken: spotifySession.accessToken, spotifyTokenExpirationDate: spotifySession.expirationDate)
         let group = DispatchGroup()
         
         group.enter()
-        FirestoreRepository<Session>(collectionPath: "sessions").create(session) { error in
+        FirestoreRepository<Room>(collectionPath: "rooms").create(room) { error in
             if let error = error {
                 completion(.failure(error))
                 return
             }
-            self.currentSession = session
+            self.currentRoom = room
             group.leave()
         }
         
         group.enter()
-        FirestoreRepository<Member>(collectionPath: "sessions/"+currentSessionID+"/members").create(host) { error in
+        FirestoreRepository<Member>(collectionPath: "rooms/"+currentRoomID+"/members").create(host) { error in
             if let error = error {
                 completion(.failure(error))
                 return
@@ -213,20 +213,20 @@ class HomeViewModel: NSObject {
         }
     }
     
-    private func findSession(id: String, completion: @escaping (Result<Void, Error>) -> Void) {
+    private func findRoom(id: String, completion: @escaping (Result<Void, Error>) -> Void) {
         Auth.auth().signInAnonymously { authDataResult, error in
             if let error = error {
                 completion(.failure(error))
                 return
             }
-            FirestoreRepository<Session>(collectionPath: "sessions").get(id: id) { result in
+            FirestoreRepository<Room>(collectionPath: "rooms").get(id: id) { result in
                 switch result {
                 case .failure(let error):
                     completion(.failure(error))
                     return
-                case .success(let session):
-                    self.currentSession = session
-                    self.currentSessionID = session.id
+                case .success(let room):
+                    self.currentRoom = room
+                    self.currentRoomID = room.id
                     completion(.success(()))
                 }
             }
@@ -237,7 +237,7 @@ class HomeViewModel: NSObject {
         guard let currentUser = Auth.auth().currentUser else {
             return
         }
-        guard let currentSession = currentSession else {
+        guard let currentSession = currentRoom else {
             return
         }
         let newMember = Member(documentID: currentUser.uid, id: currentUser.uid, displayName: memberName, isHost: false)
@@ -246,7 +246,7 @@ class HomeViewModel: NSObject {
             completion(.success(()))
             return
         }
-        FirestoreRepository<Member>(collectionPath: "sessions/"+currentSession.id+"/members").create(newMember) { error in
+        FirestoreRepository<Member>(collectionPath: "rooms/"+currentSession.id+"/members").create(newMember) { error in
             if let error = error {
                 completion(.failure(error))
                 return
@@ -256,11 +256,11 @@ class HomeViewModel: NSObject {
         }
     }
     
-    func joinRoom(sessionID: String, memberName: String, completion: @escaping (Result<Void, Error>) -> Void) {
+    func joinRoom(roomID: String, memberName: String, completion: @escaping (Result<Void, Error>) -> Void) {
         let semaphore = DispatchSemaphore(value: 0)
         DispatchQueue.global().async { [self] in
             
-            findSession(id: sessionID) { result in
+            findRoom(id: roomID) { result in
                 semaphore.signal()
                 switch result {
                 case .failure(let error):
@@ -284,8 +284,7 @@ class HomeViewModel: NSObject {
             }
             
             semaphore.wait()
-            if currentMember?.id == currentSession?.host.id {
-                print("host rejoining...")
+            if let currentRoom = currentRoom, Date() >= currentRoom.spotifyTokenExpirationDate && currentMember == currentRoom.host {
                 
                 initSpotifyConfig { result in
                     semaphore.signal()

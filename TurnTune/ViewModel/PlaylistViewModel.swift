@@ -10,8 +10,8 @@ import FirebaseAuth
 
 class PlaylistViewModel: NSObject {
     
-    var session: Session
-    var sessionRepository: FirestoreRepository<Session>
+    var room: Room
+    var roomRepository: FirestoreRepository<Room>
     
     var playlist: [Song]
     var playlistRepository: FirestoreRepository<Song>
@@ -29,33 +29,33 @@ class PlaylistViewModel: NSObject {
         .userReadPrivate
     ]
     
-    init(_ session: Session, _ spotifySessionManager: SPTSessionManager?) {
-        self.session = session
-        self.sessionRepository = FirestoreRepository<Session>(collectionPath: "sessions")
+    init(_ room: Room, _ spotifySessionManager: SPTSessionManager?) {
+        self.room = room
+        self.roomRepository = FirestoreRepository<Room>(collectionPath: "rooms")
         
         self.playlist = [Song]()
-        self.playlistRepository = FirestoreRepository<Song>(collectionPath: "sessions/"+session.id+"/playlist")
+        self.playlistRepository = FirestoreRepository<Song>(collectionPath: "rooms/"+room.id+"/playlist")
         
         self.spotifySessionManager = spotifySessionManager
         super.init()
         self.spotifySessionManager?.delegate = self
     }
     
-    func sessionChangeListener(completion: @escaping (Result<Session, RepositoryError>) -> Void) {
-        sessionRepository.addListener(id: session.id) { result in
-            completion( result.flatMap { session in
-                self.session = session
-                return .success(session)
+    func roomChangeListener(completion: @escaping (Result<Room, RepositoryError>) -> Void) {
+        roomRepository.addListener(id: room.id) { result in
+            completion( result.flatMap { room in
+                self.room = room
+                return .success(room)
             })
         }
     }
     
-    func removeSessionChangeListener() {
-        sessionRepository.removeListener()
+    func removeRoomChangeListener() {
+        roomRepository.removeListener()
     }
     
-    func updateSession(completion: @escaping (Result<Void, RepositoryError>) -> Void) {
-        sessionRepository.update(session) { error in
+    func updateRoom(completion: @escaping (Result<Void, RepositoryError>) -> Void) {
+        roomRepository.update(room) { error in
             if let error = error {
                 completion(.failure(error))
             } else {
@@ -107,7 +107,7 @@ class PlaylistViewModel: NSObject {
         guard let currentUser = Auth.auth().currentUser else {
             return false
         }
-        if currentUser.uid != session.host.id {
+        if currentUser.uid != room.host.id {
             return false
         } else {
             return true
@@ -118,8 +118,9 @@ class PlaylistViewModel: NSObject {
 extension PlaylistViewModel: SPTSessionManagerDelegate {
     
     func sessionManager(manager: SPTSessionManager, didInitiate session: SPTSession) {
-        self.session.spotifyToken = session.accessToken
-        updateSession { result in
+        room.spotifyToken = session.accessToken
+        room.spotifyTokenExpirationDate = session.expirationDate
+        updateRoom { result in
             switch result {
             case .failure(let error):
                 self.spotifyRenewSessionCompletion?(.failure(error))
@@ -131,8 +132,8 @@ extension PlaylistViewModel: SPTSessionManagerDelegate {
     
     func sessionManager(manager: SPTSessionManager, didRenew session: SPTSession) {
         print("sessionManager did renew session")
-        self.session.spotifyToken = session.accessToken
-        updateSession { result in
+        self.room.spotifyToken = session.accessToken
+        updateRoom { result in
             switch result {
             case .failure(let error):
                 self.spotifyRenewSessionCompletion?(.failure(error))

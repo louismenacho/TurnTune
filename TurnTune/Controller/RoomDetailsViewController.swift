@@ -1,5 +1,5 @@
 //
-//  SessionDetailsViewController.swift
+//  RoomDetailsViewController.swift
 //  TurnTune
 //
 //  Created by Louis Menacho on 11/19/21.
@@ -7,17 +7,17 @@
 
 import UIKit
 
-class SessionDetailsViewController: UIViewController {
+class RoomDetailsViewController: UIViewController {
     
-    var vm: SessionDetailsViewModel!
+    var vm: RoomDetailsViewModel!
 
-    @IBOutlet weak var sessionIDLabel: UILabel!
+    @IBOutlet weak var roomIDLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var tableHeaderView: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        sessionIDLabel.text = vm.session.id
+        roomIDLabel.text = vm.room.id
         tableView.dataSource = self
         tableView.delegate = self
         tableHeaderView.frame.size = CGSize(width: view.frame.width, height: view.frame.width/2)
@@ -44,7 +44,7 @@ class SessionDetailsViewController: UIViewController {
     }
 }
 
-extension SessionDetailsViewController: UITableViewDataSource {
+extension RoomDetailsViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         vm.members.count
@@ -59,7 +59,7 @@ extension SessionDetailsViewController: UITableViewDataSource {
     }
 }
 
-extension SessionDetailsViewController: UITableViewDelegate {
+extension RoomDetailsViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)

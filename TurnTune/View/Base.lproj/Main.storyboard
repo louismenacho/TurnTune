@@ -53,7 +53,7 @@
                                     <constraint firstItem="3CT-NQ-9UE" firstAttribute="centerX" secondItem="mZ1-CY-pE1" secondAttribute="centerX" id="ch0-yF-TGX"/>
                                 </constraints>
                             </view>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="24P-eW-RD1" userLabel="Form View" customClass="SessionFormView" customModule="TurnTune" customModuleProvider="target">
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="24P-eW-RD1" userLabel="Form View" customClass="RoomFormView" customModule="TurnTune" customModuleProvider="target">
                                 <rect key="frame" x="94.5" y="374" width="225" height="202"/>
                                 <subviews>
                                     <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="SPj-Ph-Btn">
@@ -191,14 +191,14 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="qGP-dF-JMV">
-                                                    <rect key="frame" x="86" y="7.5" width="30" height="17"/>
+                                                    <rect key="frame" x="86" y="7" width="35" height="20.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Subtitle" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="2uP-wQ-f5t">
-                                                    <rect key="frame" x="86" y="27" width="44" height="14.5"/>
+                                                    <rect key="frame" x="86" y="27.5" width="53" height="18"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                                     <color key="textColor" systemColor="secondaryLabelColor"/>
@@ -277,7 +277,7 @@
                         <barButtonItem key="rightBarButtonItem" image="ellipsis" catalog="system" id="PRN-hh-h0O">
                             <connections>
                                 <action selector="settingsButtonPressed:" destination="oO9-CS-oMz" id="cp2-Aj-h3e"/>
-                                <segue destination="s2F-mK-hxT" kind="show" identifier="SessionDetailsViewController" id="bXY-fe-Bay"/>
+                                <segue destination="s2F-mK-hxT" kind="show" identifier="RoomDetailsViewController" id="bXY-fe-Bay"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -327,14 +327,14 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="mXL-2k-XcO">
-                                                    <rect key="frame" x="86" y="7.5" width="30" height="17"/>
+                                                    <rect key="frame" x="86" y="7" width="35" height="20.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="aGf-rr-dzL">
-                                                    <rect key="frame" x="86" y="27" width="44" height="14.5"/>
+                                                    <rect key="frame" x="86" y="27.5" width="53" height="18"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                                     <nil key="textColor"/>
@@ -368,10 +368,10 @@
             </objects>
             <point key="canvasLocation" x="1725" y="-666"/>
         </scene>
-        <!--Session Details View Controller-->
+        <!--Room Details View Controller-->
         <scene sceneID="CnV-o1-v3u">
             <objects>
-                <viewController id="s2F-mK-hxT" customClass="SessionDetailsViewController" customModule="TurnTune" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="s2F-mK-hxT" customClass="RoomDetailsViewController" customModule="TurnTune" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="kiG-Cx-vGv">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -442,7 +442,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="0pC-m9-uQU"/>
                     <connections>
-                        <outlet property="sessionIDLabel" destination="GKn-DX-1BM" id="n16-jw-if2"/>
+                        <outlet property="roomIDLabel" destination="GKn-DX-1BM" id="n16-jw-if2"/>
                         <outlet property="tableHeaderView" destination="60I-Tx-GLL" id="yRl-ov-Vnz"/>
                         <outlet property="tableView" destination="feW-JM-KPG" id="7z0-fy-7dL"/>
                     </connections>

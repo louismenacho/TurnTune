@@ -1,5 +1,5 @@
 //
-//  SessionDetailsViewModel.swift
+//  RoomDetailsViewModel.swift
 //  TurnTune
 //
 //  Created by Louis Menacho on 12/28/21.
@@ -7,15 +7,15 @@
 
 import Foundation
 
-class SessionDetailsViewModel {
+class RoomDetailsViewModel {
     
-    var session: Session
+    var room: Room
     var members = [Member]()
     var memberRepository: FirestoreRepository<Member>
     
-    init(_ session: Session) {
-        self.session = session
-        self.memberRepository = FirestoreRepository<Member>(collectionPath: "sessions/"+session.id+"/members")
+    init(_ room: Room) {
+        self.room = room
+        self.memberRepository = FirestoreRepository<Member>(collectionPath: "rooms/"+room.id+"/members")
     }
     
     func membersChangeListener(completion: @escaping (Result<Void, RepositoryError>) -> Void) {

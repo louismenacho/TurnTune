@@ -13,7 +13,7 @@ class HomeViewController: UIViewController {
     var vm = HomeViewModel()
         
     @IBOutlet weak var appearanceSwitch: SwitchControl!
-    @IBOutlet weak var formView: SessionFormView!
+    @IBOutlet weak var formView: RoomFormView!
     @IBOutlet weak var formViewCenterYConstraint: NSLayoutConstraint!
     
     override func viewDidLoad() {
@@ -29,12 +29,12 @@ class HomeViewController: UIViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "PlaylistViewController" {
-            guard let currentSession = vm.currentSession else {
-                print("Session is nil on performing segue")
+            guard let currentRoom = vm.currentRoom else {
+                print("Room is nil on performing segue")
                 return
             }
             let vc = segue.destination as! PlaylistViewController
-            vc.vm = PlaylistViewModel(currentSession, vm.spotifySessionManager)
+            vc.vm = PlaylistViewModel(currentRoom, vm.spotifySessionManager)
             vc.vm.spotifyConfig = vm.spotifyConfig
         }
     }
@@ -75,24 +75,24 @@ extension HomeViewController: SwitchControlDelegate {
     }
 }
 
-extension HomeViewController: SessionFormViewDelegate {
+extension HomeViewController: RoomFormViewDelegate {
     
-    func sessionFormView(_ sessionFormView: SessionFormView, selectedSegmentDidChange selectedSegmentIndex: Int) {
+    func roomFormView(_ roomFormView: RoomFormView, selectedSegmentDidChange selectedSegmentIndex: Int) {
         
     }
     
-    func sessionFormView(_ sessionFormView: SessionFormView, displayNameTextFieldDidChange text: String?) {
+    func roomFormView(_ roomFormView: RoomFormView, displayNameTextFieldDidChange text: String?) {
         
     }
     
-    func sessionFormView(_ sessionFormView: SessionFormView, roomCodeTextFieldDidChange text: String?) {
+    func roomFormView(_ roomFormView: RoomFormView, roomCodeTextFieldDidChange text: String?) {
         
     }
     
-    func sessionFormView(_ sessionFormView: SessionFormView, joinButtonPressed button: UIButton) {
-        let displayName = sessionFormView.displayNameTextField.text!
-        let roomCode = sessionFormView.roomCodeTextField.text!
-        vm.joinRoom(sessionID: roomCode, memberName: displayName) { result in
+    func roomFormView(_ roomFormView: RoomFormView, joinButtonPressed button: UIButton) {
+        let displayName = roomFormView.displayNameTextField.text!
+        let roomCode = roomFormView.roomCodeTextField.text!
+        vm.joinRoom(roomID: roomCode, memberName: displayName) { result in
             switch result {
             case .failure(let error):
                 if let clientError = error as? ClientError {
@@ -109,8 +109,8 @@ extension HomeViewController: SessionFormViewDelegate {
         }
     }
     
-    func sessionFormView(_ sessionFormView: SessionFormView, spotifyButtonPressed button: UIButton) {
-        vm.createRoom(hostName: sessionFormView.displayNameTextField.text!) { result in
+    func roomFormView(_ roomFormView: RoomFormView, spotifyButtonPressed button: UIButton) {
+        vm.createRoom(hostName: roomFormView.displayNameTextField.text!) { result in
             switch result {
             case .failure(let error):
                 if let clientError = error as? ClientError {
