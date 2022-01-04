@@ -12,12 +12,13 @@ class SearchTableViewCell: UITableViewCell {
     
     var searchResultItem = SearchResultItem() {
         didSet {
-            imageView?.sd_setImage(with: URL(string: searchResultItem.song.artworkURL), placeholderImage: UIImage(systemName: "image"))
-            textLabel?.text = searchResultItem.song.name
-            detailTextLabel?.text = searchResultItem.song.artist
-        
-            textLabel!.isEnabled = !searchResultItem.isAdded
-            detailTextLabel!.isEnabled = !searchResultItem.isAdded
+            albumImageView.sd_setImage(with: URL(string: searchResultItem.song.artworkURL), placeholderImage: UIImage(systemName: "image"))
+            songTitleLabel.text = searchResultItem.song.name
+            artistNamesLabel.text = searchResultItem.song.artist
         }
     }
+    
+    @IBOutlet weak var albumImageView: UIImageView!
+    @IBOutlet weak var songTitleLabel: UILabel!
+    @IBOutlet weak var artistNamesLabel: UILabel!
 }

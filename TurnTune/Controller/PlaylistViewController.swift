@@ -79,7 +79,7 @@ class PlaylistViewController: UIViewController {
         
         let searchController = UISearchController(searchResultsController: searchViewController)
         searchController.searchResultsUpdater = searchViewController
-        searchController.searchBar.placeholder = "Search songs to add"
+        searchController.searchBar.placeholder = "Search songs, artists, albums"
         searchController.searchBar.autocapitalizationType = .none
         searchController.searchBar.setValue("Done", forKey: "cancelButtonText")
         searchController.delegate = self

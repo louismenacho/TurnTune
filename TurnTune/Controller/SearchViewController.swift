@@ -18,6 +18,7 @@ class SearchViewController: UIViewController {
     
     var vm: SearchViewModel!
     
+    @IBOutlet weak var tableViewHeaderLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
 
     override func viewDidLoad() {
@@ -34,7 +35,7 @@ extension SearchViewController: UISearchResultsUpdating {
             switch result {
             case .success:
                 DispatchQueue.main.async {
-                    self.tableView.reloadData()
+                    tableView.reloadData()
                 }
             case .failure(let error):
                 switch error {
@@ -59,6 +60,7 @@ extension SearchViewController: UISearchResultsUpdating {
 extension SearchViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        tableViewHeaderLabel.isHidden = vm.searchResult.count == 0
         return vm.searchResult.count
     }
     
@@ -110,5 +112,9 @@ extension SearchViewController: UITableViewDelegate {
         
     func tableView(_ tableView: UITableView, willDeselectRowAt indexPath: IndexPath) -> IndexPath? {
         return nil
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 68
     }
 }
