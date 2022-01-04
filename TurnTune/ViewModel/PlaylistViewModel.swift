@@ -10,6 +10,8 @@ import FirebaseAuth
 
 class PlaylistViewModel: NSObject {
     
+    var currentMember: Member
+    
     var room: Room
     var roomRepository: FirestoreRepository<Room>
     
@@ -29,7 +31,9 @@ class PlaylistViewModel: NSObject {
         .userReadPrivate
     ]
     
-    init(_ room: Room, _ spotifySessionManager: SPTSessionManager?) {
+    init(_ currentMember: Member,_ room: Room, _ spotifySessionManager: SPTSessionManager?) {
+        self.currentMember = currentMember
+        
         self.room = room
         self.roomRepository = FirestoreRepository<Room>(collectionPath: "rooms")
         

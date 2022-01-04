@@ -30,12 +30,10 @@ class HomeViewController: UIViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "PlaylistViewController" {
-            guard let currentRoom = vm.currentRoom else {
-                print("Room is nil on performing segue")
-                return
-            }
+            guard let currentMember = vm.currentMember else { return }
+            guard let currentRoom = vm.currentRoom else { return }
             let vc = segue.destination as! PlaylistViewController
-            vc.vm = PlaylistViewModel(currentRoom, vm.spotifySessionManager)
+            vc.vm = PlaylistViewModel(currentMember, currentRoom, vm.spotifySessionManager)
             vc.vm.spotifyConfig = vm.spotifyConfig
         }
     }
@@ -97,7 +95,7 @@ extension HomeViewController: RoomFormViewDelegate {
     func roomFormView(_ roomFormView: RoomFormView, joinButtonPressed button: UIButton) {
         let displayName = roomFormView.displayNameTextField.text!
         let roomCode = roomFormView.roomCodeTextField.text!
-        vm.joinRoom(roomID: roomCode, memberName: displayName) { result in
+        vm.joinRoom(roomID: roomCode, memberName: displayName) { [self] result in
             switch result {
             case .failure(let error):
                 if let clientError = error as? ClientError {
@@ -107,6 +105,13 @@ extension HomeViewController: RoomFormViewDelegate {
                     print(repositoryError)
                 }
             case .success:
+                guard
+                    vm.currentMember != nil,
+                    vm.currentRoom != nil
+                else {
+                    print("Cannot perform segue. current member or current room is nil")
+                    return
+                }
                 DispatchQueue.main.async {
                     self.performSegue(withIdentifier: "PlaylistViewController", sender: self)
                 }
@@ -115,7 +120,7 @@ extension HomeViewController: RoomFormViewDelegate {
     }
     
     func roomFormView(_ roomFormView: RoomFormView, spotifyButtonPressed button: UIButton) {
-        vm.createRoom(hostName: roomFormView.displayNameTextField.text!) { result in
+        vm.createRoom(hostName: roomFormView.displayNameTextField.text!) { [self] result in
             switch result {
             case .failure(let error):
                 if let clientError = error as? ClientError {
@@ -125,8 +130,15 @@ extension HomeViewController: RoomFormViewDelegate {
                     print(repositoryError)
                 }
             case .success:
+                guard
+                    vm.currentMember != nil,
+                    vm.currentRoom != nil
+                else {
+                    print("Cannot perform segue. current member or current room is nil")
+                    return
+                }
                 DispatchQueue.main.async {
-                    self.performSegue(withIdentifier: "PlaylistViewController", sender: self)
+                    performSegue(withIdentifier: "PlaylistViewController", sender: self)
                 }
             }
         }
