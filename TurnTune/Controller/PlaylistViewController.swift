@@ -108,7 +108,7 @@ extension PlaylistViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "PlaylistTableViewCell", for: indexPath) as? PlaylistTableViewCell else {
             return UITableViewCell()
         }
-        cell.song = vm.playlist[indexPath.row]
+        cell.playlistItem = vm.playlist[indexPath.row]
         return cell
     }
 }
@@ -122,7 +122,7 @@ extension PlaylistViewController: UITableViewDelegate {
 
 extension PlaylistViewController: SearchViewControllerDelegate {
     func searchViewController(_ searchViewController: SearchViewController, didAdd song: Song) {
-        vm.addSong(song) { result in
+        vm.addPlaylistItem(newSong: song) { result in
             if case .failure(let error) = result {
                 print(error)
             }

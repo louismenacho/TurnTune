@@ -6,14 +6,10 @@
 //
 
 import Foundation
-import FirebaseFirestore
-import FirebaseFirestoreSwift
 
-struct Song: FirestoreDocument {
+struct Song: Codable {
     typealias MilliSeconds = Int
-    
-    @DocumentID var documentID: String?
-    @ServerTimestamp var dateAdded: Timestamp?
+
     var name: String
     var artist: String
     var album: String

@@ -10,11 +10,18 @@ import SDWebImage
 
 class PlaylistTableViewCell: UITableViewCell {
 
-    var song = Song() {
+    var playlistItem = PlaylistItem() {
         didSet {
-            imageView?.sd_setImage(with: URL(string: song.artworkURL), placeholderImage: UIImage(systemName: "image"))
-            textLabel?.text = song.name
-            detailTextLabel?.text = song.artist
+            imageView?.sd_setImage(with: URL(string: playlistItem.song.artworkURL), placeholderImage: UIImage(systemName: "image"))
+            songTitleLabel?.text = playlistItem.song.name
+            artistNamesLabel?.text = playlistItem.song.artist
+            addedByMemberLabel?.text = playlistItem.addedBy.displayName
         }
     }
+    
+    @IBOutlet weak var albumImageView: UIImageView!
+    @IBOutlet weak var songTitleLabel: UILabel!
+    @IBOutlet weak var artistNamesLabel: UILabel!
+    @IBOutlet weak var addedByMemberLabel: UILabel!
+    
 }

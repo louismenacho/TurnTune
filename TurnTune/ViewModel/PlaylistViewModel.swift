@@ -15,8 +15,8 @@ class PlaylistViewModel: NSObject {
     var room: Room
     var roomRepository: FirestoreRepository<Room>
     
-    var playlist: [Song]
-    var playlistRepository: FirestoreRepository<Song>
+    var playlist: [PlaylistItem]
+    var playlistRepository: FirestoreRepository<PlaylistItem>
     
     var spotifySessionManager: SPTSessionManager?
     private var spotifyRenewSessionCompletion: ((Result<Void, Error>) -> Void)?
@@ -37,8 +37,8 @@ class PlaylistViewModel: NSObject {
         self.room = room
         self.roomRepository = FirestoreRepository<Room>(collectionPath: "rooms")
         
-        self.playlist = [Song]()
-        self.playlistRepository = FirestoreRepository<Song>(collectionPath: "rooms/"+room.id+"/playlist")
+        self.playlist = [PlaylistItem]()
+        self.playlistRepository = FirestoreRepository<PlaylistItem>(collectionPath: "rooms/"+room.id+"/playlist")
         
         self.spotifySessionManager = spotifySessionManager
         super.init()
@@ -82,8 +82,9 @@ class PlaylistViewModel: NSObject {
         playlistRepository.removeListener()
     }
     
-    func addSong(_ song: Song, completion: @escaping (Result<Void, RepositoryError>) -> Void) {
-        playlistRepository.create(song) { error in
+    func addPlaylistItem(newSong: Song, completion: @escaping (Result<Void, RepositoryError>) -> Void) {
+        let newPlaylistItem = PlaylistItem(song: newSong, addedBy: currentMember)
+        playlistRepository.create(newPlaylistItem) { error in
             if let error = error {
                 completion(.failure(error))
             } else {

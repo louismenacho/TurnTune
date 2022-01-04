@@ -113,7 +113,7 @@ extension HomeViewController: RoomFormViewDelegate {
                     return
                 }
                 DispatchQueue.main.async {
-                    self.performSegue(withIdentifier: "PlaylistViewController", sender: self)
+                    performSegue(withIdentifier: "PlaylistViewController", sender: self)
                 }
             }
         }
