@@ -22,20 +22,14 @@ class RoomFormView: UIStackView {
     @IBOutlet weak var segmentedControl: RoomFormSegmentedControl!
     @IBOutlet weak var displayNameTextField: RoomFormTextField!
     @IBOutlet weak var roomCodeTextField: RoomFormTextField!
-    @IBOutlet weak var joinButton: UIButton!
-    @IBOutlet weak var spotifyButton: UIButton!
+    @IBOutlet weak var joinButton: RoomFormButton!
+    @IBOutlet weak var spotifyButton: RoomFormButton!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         displayNameTextField.delegate = self
         roomCodeTextField.delegate = self
         showJoinRoomOptions()
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        joinButton.layer.cornerRadius = 24
-        spotifyButton.layer.cornerRadius = 24
     }
 
     @IBAction func selectedSegmentDidChange(_ sender: UISegmentedControl) {

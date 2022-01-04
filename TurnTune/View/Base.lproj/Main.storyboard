@@ -98,7 +98,7 @@
                                             <action selector="roomCodeTextFieldDidChange:" destination="24P-eW-RD1" eventType="editingChanged" id="TRp-tk-9i9"/>
                                         </connections>
                                     </textField>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ESe-3I-JJh">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ESe-3I-JJh" customClass="RoomFormButton" customModule="TurnTune" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="168" width="225" height="48"/>
                                         <color key="backgroundColor" systemColor="linkColor"/>
                                         <constraints>
@@ -114,7 +114,7 @@
                                             <action selector="joinButtonPressed:" destination="24P-eW-RD1" eventType="touchUpInside" id="UT8-pZ-UrI"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FyT-mT-mFK">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FyT-mT-mFK" customClass="RoomFormButton" customModule="TurnTune" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="224" width="225" height="48"/>
                                         <color key="backgroundColor" red="0.11443904789999999" green="0.72594159840000005" blue="0.32852503659999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
