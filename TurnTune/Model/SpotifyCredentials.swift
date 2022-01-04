@@ -12,7 +12,6 @@ struct SpotifyCredentials: FirestoreDocument {
     var documentID: String?
     var dateAdded: Timestamp?
     var clientID: String
-    var clientSecret: String
     var redirectURL: String
     var tokenSwapURL: String
     var tokenRefreshURL: String

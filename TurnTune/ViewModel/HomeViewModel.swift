@@ -33,61 +33,61 @@ class HomeViewModel: NSObject {
         DispatchQueue.global().async { [self] in
             
             initSpotifySessionManager { result in
-                semaphore.signal()
                 switch result {
                 case .failure(let error):
                     completion(.failure(error))
                     return
                 case .success:
                     print("initSpotifySessionManager complete")
+                    semaphore.signal()
                 }
             }
             semaphore.wait()
             
             initSpotifySession { result in
-                semaphore.signal()
                 switch result {
                 case .failure(let error):
                     completion(.failure(error))
                     return
                 case .success:
                     print("initSpotifySession complete")
+                    semaphore.signal()
                 }
             }
             semaphore.wait()
             
             getSpotifyUserSubscription { result in
-                semaphore.signal()
                 switch result {
                 case .failure(let error):
                     completion(.failure(error))
                     return
                 case .success(let subscription):
                     print("getSpotifyUserSubscription complete: \(subscription)")
+                    semaphore.signal()
                 }
             }
             semaphore.wait()
             
             generateNewRoomID { result in
-                semaphore.signal()
                 switch result {
                 case .failure(let error):
                     completion(.failure(error))
                     return
                 case .success:
                     print("generateNewSessionID complete")
+                    semaphore.signal()
                 }
             }
             semaphore.wait()
             
             createNewRoom(hostName: hostName) { result in
-                semaphore.signal()
                 switch result {
                 case .failure(let error):
                     completion(.failure(error))
                     return
                 case .success:
                     print("createNewSession complete")
+                    semaphore.signal()
                 }
             }
             semaphore.wait()
@@ -101,62 +101,62 @@ class HomeViewModel: NSObject {
         DispatchQueue.global().async { [self] in
             
             findRoom(id: roomID) { result in
-                semaphore.signal()
                 switch result {
                 case .failure(let error):
                     completion(.failure(error))
                     return
                 case .success:
                     print("findSession complete")
+                    semaphore.signal()
                 }
             }
             semaphore.wait()
             
             addRoomMember(memberName: memberName) { result in
-                semaphore.signal()
                 switch result {
                 case .failure(let error):
                     completion(.failure(error))
                     return
                 case .success:
                     print("addSessionMember complete")
+                    semaphore.signal()
                 }
             }
             semaphore.wait()
             
             initSpotifySessionManager { result in
-                semaphore.signal()
                 switch result {
                 case .failure(let error):
                     completion(.failure(error))
                     return
                 case .success:
                     print("initSpotifySessionManager complete")
+                    semaphore.signal()
                 }
             }
             semaphore.wait()
             
             if let currentRoom = currentRoom, Date() >= currentRoom.spotifyTokenExpirationDate && currentMember == currentRoom.host {
                 initSpotifySession { result in
-                    semaphore.signal()
                     switch result {
                     case .failure(let error):
                         completion(.failure(error))
                         return
                     case .success:
                         print("initSpotifySession complete")
+                        semaphore.signal()
                     }
                 }
                 semaphore.wait()
                 
                 updateRoom { result in
-                    semaphore.signal()
                     switch result {
                     case .failure(let error):
                         completion(.failure(error))
                         return
                     case .success:
                         print("initSpotifySession complete")
+                        semaphore.signal()
                     }
                 }
                 semaphore.wait()
