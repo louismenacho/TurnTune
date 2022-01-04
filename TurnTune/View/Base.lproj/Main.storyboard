@@ -225,60 +225,57 @@
                                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 </view>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="PlaylistTableViewCell" rowHeight="51" id="o2p-U7-f2o" customClass="PlaylistTableViewCell" customModule="TurnTune" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="50.5" width="414" height="51"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="PlaylistTableViewCell" rowHeight="68" id="o2p-U7-f2o" customClass="PlaylistTableViewCell" customModule="TurnTune" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="50.5" width="414" height="68"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="o2p-U7-f2o" id="fPn-Mv-yE8">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="51"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="68"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="WpU-dB-lJ5">
-                                                    <rect key="frame" x="20" y="0.0" width="374" height="51"/>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="o3B-rD-Ian">
+                                                    <rect key="frame" x="20" y="4" width="60" height="60"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="60" id="BgX-0C-rOM"/>
+                                                        <constraint firstAttribute="height" constant="60" id="Eg1-bu-8Wn"/>
+                                                    </constraints>
+                                                </imageView>
+                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" translatesAutoresizingMaskIntoConstraints="NO" id="lx9-bz-Vo4">
+                                                    <rect key="frame" x="95" y="11.5" width="299" height="45"/>
                                                     <subviews>
-                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="o3B-rD-Ian">
-                                                            <rect key="frame" x="0.0" y="0.0" width="51" height="51"/>
-                                                            <constraints>
-                                                                <constraint firstAttribute="width" secondItem="o3B-rD-Ian" secondAttribute="height" multiplier="1:1" id="feO-eA-0e1"/>
-                                                            </constraints>
-                                                        </imageView>
-                                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="lx9-bz-Vo4">
-                                                            <rect key="frame" x="66" y="3" width="308" height="45"/>
-                                                            <subviews>
-                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Song" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wDK-4s-a0b">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="308" height="17"/>
-                                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
-                                                                    <nil key="textColor"/>
-                                                                    <nil key="highlightedColor"/>
-                                                                </label>
-                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Artists" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="b5O-WZ-Lkl">
-                                                                    <rect key="frame" x="0.0" y="17" width="308" height="14.5"/>
-                                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
-                                                                    <color key="textColor" systemColor="secondaryLabelColor"/>
-                                                                    <nil key="highlightedColor"/>
-                                                                </label>
-                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Added By" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="J7z-Ib-U2x">
-                                                                    <rect key="frame" x="0.0" y="31.5" width="308" height="13.5"/>
-                                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
-                                                                    <color key="textColor" systemColor="tertiaryLabelColor"/>
-                                                                    <nil key="highlightedColor"/>
-                                                                </label>
-                                                            </subviews>
-                                                        </stackView>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Song" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wDK-4s-a0b">
+                                                            <rect key="frame" x="0.0" y="0.0" width="299" height="17"/>
+                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                                            <nil key="textColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Artists" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="b5O-WZ-Lkl">
+                                                            <rect key="frame" x="0.0" y="17" width="299" height="14.5"/>
+                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                                            <color key="textColor" systemColor="secondaryLabelColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Added By" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="J7z-Ib-U2x">
+                                                            <rect key="frame" x="0.0" y="31.5" width="299" height="13.5"/>
+                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                                            <color key="textColor" systemColor="tertiaryLabelColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
                                                     </subviews>
                                                 </stackView>
                                             </subviews>
                                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                             <constraints>
-                                                <constraint firstAttribute="bottom" secondItem="WpU-dB-lJ5" secondAttribute="bottom" id="HWe-Yx-e7T"/>
-                                                <constraint firstItem="WpU-dB-lJ5" firstAttribute="leading" secondItem="fPn-Mv-yE8" secondAttribute="leading" constant="20" id="WHG-Fj-vQT"/>
-                                                <constraint firstItem="WpU-dB-lJ5" firstAttribute="top" secondItem="fPn-Mv-yE8" secondAttribute="top" id="WII-Tg-A7t"/>
-                                                <constraint firstAttribute="trailing" secondItem="WpU-dB-lJ5" secondAttribute="trailing" constant="20" id="i25-uO-sN6"/>
+                                                <constraint firstItem="lx9-bz-Vo4" firstAttribute="centerY" secondItem="fPn-Mv-yE8" secondAttribute="centerY" id="FAQ-Hj-y0r"/>
+                                                <constraint firstItem="o3B-rD-Ian" firstAttribute="centerY" secondItem="fPn-Mv-yE8" secondAttribute="centerY" id="KQV-cr-HuF"/>
+                                                <constraint firstItem="lx9-bz-Vo4" firstAttribute="leading" secondItem="o3B-rD-Ian" secondAttribute="trailing" constant="15" id="Tls-8n-oBu"/>
+                                                <constraint firstItem="o3B-rD-Ian" firstAttribute="leading" secondItem="fPn-Mv-yE8" secondAttribute="leading" constant="20" symbolic="YES" id="UW7-Uh-rM5"/>
+                                                <constraint firstAttribute="trailing" secondItem="lx9-bz-Vo4" secondAttribute="trailing" constant="20" id="gbO-ox-u2o"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="addedByMemberLabel" destination="J7z-Ib-U2x" id="gTN-uo-CjC"/>
                                             <outlet property="albumImageView" destination="o3B-rD-Ian" id="J4m-ge-y5Z"/>
                                             <outlet property="artistNamesLabel" destination="b5O-WZ-Lkl" id="qWw-3X-8XL"/>
-                                            <outlet property="contributorLabel" destination="J7z-Ib-U2x" id="21F-We-adA"/>
                                             <outlet property="songTitleLabel" destination="wDK-4s-a0b" id="mDT-f7-fAq"/>
                                         </connections>
                                     </tableViewCell>

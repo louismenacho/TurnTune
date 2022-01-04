@@ -12,10 +12,10 @@ class PlaylistTableViewCell: UITableViewCell {
 
     var playlistItem = PlaylistItem() {
         didSet {
-            imageView?.sd_setImage(with: URL(string: playlistItem.song.artworkURL), placeholderImage: UIImage(systemName: "image"))
-            songTitleLabel?.text = playlistItem.song.name
-            artistNamesLabel?.text = playlistItem.song.artist
-            addedByMemberLabel?.text = playlistItem.addedBy.displayName
+            albumImageView.sd_setImage(with: URL(string: playlistItem.song.artworkURL), placeholderImage: UIImage(systemName: "image"))
+            songTitleLabel.text = playlistItem.song.name
+            artistNamesLabel.text = playlistItem.song.artist
+            addedByMemberLabel.text = "Added by @"+playlistItem.addedBy.displayName
         }
     }
     

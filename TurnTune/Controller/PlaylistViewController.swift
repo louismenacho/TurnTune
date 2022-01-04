@@ -27,7 +27,7 @@ class PlaylistViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.prefersLargeTitles = false
-        navigationItem.title = vm.room.id
+        navigationItem.title = "Room Playlist"
         
         vm.roomChangeListener { result in
             switch result {
@@ -79,7 +79,7 @@ class PlaylistViewController: UIViewController {
         
         let searchController = UISearchController(searchResultsController: searchViewController)
         searchController.searchResultsUpdater = searchViewController
-        searchController.searchBar.placeholder = "Search songs"
+        searchController.searchBar.placeholder = "Search songs to add"
         searchController.searchBar.autocapitalizationType = .none
         searchController.searchBar.setValue("Done", forKey: "cancelButtonText")
         searchController.delegate = self
@@ -101,7 +101,7 @@ extension PlaylistViewController: UISearchControllerDelegate {
 extension PlaylistViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        vm.playlist.count
+        return vm.playlist.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -117,6 +117,10 @@ extension PlaylistViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 68
     }
 }
 
