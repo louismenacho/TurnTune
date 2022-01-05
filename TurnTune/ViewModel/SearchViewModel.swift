@@ -34,11 +34,11 @@ class SearchViewModel: NSObject {
     }
     
     func enqueueSong(at index: Int, completion: @escaping (Result<Song, ClientError>) -> Void) {
-        self.searchResult[index].isAdded = true
-        spotifyPlayerAPI.request(.queueTrack(uri: searchResult[index].song.spotifyURI)) { (result: Result<EmptyData, ClientError>) in
+        searchResult[index].isAdded = true
+        spotifyPlayerAPI.request(.queueTrack(uri: searchResult[index].song.spotifyURI)) { [self] (result: Result<EmptyData, ClientError>) in
             switch result {
             case .failure(let error):
-                self.searchResult[index].isAdded = false
+                searchResult[index].isAdded = false
                 completion(.failure(error))
             case .success:
                 completion(.success(self.searchResult[index].song))

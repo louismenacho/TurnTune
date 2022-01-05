@@ -69,6 +69,7 @@ extension SearchViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         let cell = tableView.dequeueReusableCell(withIdentifier: "SearchTableViewCell", for: indexPath) as! SearchTableViewCell
+        cell.delegate = self
         cell.searchResultItem = vm.searchResult[indexPath.row]
         return cell
     }
@@ -76,11 +77,22 @@ extension SearchViewController: UITableViewDataSource {
 
 extension SearchViewController: UITableViewDelegate {
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 68
+    }
+}
+
+extension SearchViewController: SearchTableViewCellDelegate {
+    
+    func searchTableViewCell(addButtonPressedFor cell: SearchTableViewCell) {
+        guard let indexPath = tableView.indexPath(for: cell) else {
+            print("Cannot enqueue song, index path is nil for cell")
+            return
+        }
         vm.enqueueSong(at: indexPath.row) { [self] result in
             switch result {
             case let .success(song):
-                self.delegate?.searchViewController(self, didAdd: song)
+                delegate?.searchViewController(self, didAdd: song)
             case let .failure(error):
                 switch error {
                 case .requestFailed:
@@ -96,25 +108,12 @@ extension SearchViewController: UITableViewDelegate {
                     }
                 }
                 DispatchQueue.main.async {
-                    tableView.deselectRow(at: indexPath, animated: true)
                     tableView.reloadData()
                 }
             }
         }
+        tableView.reloadData()
         let generator = UIImpactFeedbackGenerator(style: .heavy)
         generator.impactOccurred()
-        tableView.reloadData()
-    }
-    
-    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-        return vm.searchResult[indexPath.row].isAdded ? nil : indexPath
-    }
-        
-    func tableView(_ tableView: UITableView, willDeselectRowAt indexPath: IndexPath) -> IndexPath? {
-        return nil
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 68
     }
 }

@@ -109,7 +109,7 @@ extension HomeViewController: RoomFormViewDelegate {
                     vm.currentMember != nil,
                     vm.currentRoom != nil
                 else {
-                    print("Cannot perform segue. current member or current room is nil")
+                    print("Cannot perform segue, current member or current room is nil")
                     return
                 }
                 DispatchQueue.main.async {
@@ -134,7 +134,7 @@ extension HomeViewController: RoomFormViewDelegate {
                     vm.currentMember != nil,
                     vm.currentRoom != nil
                 else {
-                    print("Cannot perform segue. current member or current room is nil")
+                    print("Cannot perform segue, current member or current room is nil")
                     return
                 }
                 DispatchQueue.main.async {

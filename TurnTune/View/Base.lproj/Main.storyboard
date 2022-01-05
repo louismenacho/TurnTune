@@ -401,33 +401,48 @@
                                                     </constraints>
                                                 </imageView>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" translatesAutoresizingMaskIntoConstraints="NO" id="766-aj-njs">
-                                                    <rect key="frame" x="95" y="18.5" width="299" height="31.5"/>
+                                                    <rect key="frame" x="95" y="18.5" width="260" height="31.5"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Song" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ALJ-5x-BX2">
-                                                            <rect key="frame" x="0.0" y="0.0" width="299" height="17"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="260" height="17"/>
                                                             <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Artists" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aio-sh-mdE">
-                                                            <rect key="frame" x="0.0" y="17" width="299" height="14.5"/>
+                                                            <rect key="frame" x="0.0" y="17" width="260" height="14.5"/>
                                                             <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                                             <color key="textColor" systemColor="secondaryLabelColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                     </subviews>
                                                 </stackView>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nCG-UN-dko">
+                                                    <rect key="frame" x="363" y="18.5" width="31" height="31"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="31" id="9gi-b3-b5f"/>
+                                                        <constraint firstAttribute="height" constant="31" id="fgu-wh-gtz"/>
+                                                    </constraints>
+                                                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                    <state key="normal" image="plus.circle" catalog="system"/>
+                                                    <connections>
+                                                        <action selector="addButtonPressed:" destination="hBi-nJ-52Z" eventType="touchUpInside" id="NVd-DZ-LWj"/>
+                                                    </connections>
+                                                </button>
                                             </subviews>
                                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                             <constraints>
                                                 <constraint firstItem="766-aj-njs" firstAttribute="leading" secondItem="cEq-1E-pZm" secondAttribute="trailing" constant="15" id="SJZ-N5-G9v"/>
                                                 <constraint firstItem="766-aj-njs" firstAttribute="centerY" secondItem="YcW-2G-oPm" secondAttribute="centerY" id="TdM-aq-hfy"/>
                                                 <constraint firstItem="cEq-1E-pZm" firstAttribute="leading" secondItem="YcW-2G-oPm" secondAttribute="leading" constant="20" symbolic="YES" id="ZJv-bn-2Qo"/>
+                                                <constraint firstAttribute="trailing" secondItem="nCG-UN-dko" secondAttribute="trailing" constant="20" id="buK-Bg-Z05"/>
+                                                <constraint firstItem="nCG-UN-dko" firstAttribute="centerY" secondItem="YcW-2G-oPm" secondAttribute="centerY" id="fls-WH-16M"/>
                                                 <constraint firstItem="cEq-1E-pZm" firstAttribute="centerY" secondItem="YcW-2G-oPm" secondAttribute="centerY" id="iDZ-AE-bqM"/>
-                                                <constraint firstAttribute="trailing" secondItem="766-aj-njs" secondAttribute="trailing" constant="20" id="rvl-98-Vjg"/>
+                                                <constraint firstItem="nCG-UN-dko" firstAttribute="leading" secondItem="766-aj-njs" secondAttribute="trailing" constant="8" id="pex-ay-0DO"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="addButton" destination="nCG-UN-dko" id="eAR-Pf-Bdb"/>
                                             <outlet property="albumImageView" destination="cEq-1E-pZm" id="CKz-n3-R2A"/>
                                             <outlet property="artistNamesLabel" destination="aio-sh-mdE" id="ZmA-fQ-wIN"/>
                                             <outlet property="songTitleLabel" destination="ALJ-5x-BX2" id="kxs-D5-7lF"/>
@@ -542,6 +557,7 @@
         <image name="ellipsis" catalog="system" width="128" height="37"/>
         <image name="person" catalog="system" width="128" height="117"/>
         <image name="play.circle.fill" catalog="system" width="128" height="121"/>
+        <image name="plus.circle" catalog="system" width="128" height="121"/>
         <image name="sun.min.fill" catalog="system" width="128" height="121"/>
         <systemColor name="linkColor">
             <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
