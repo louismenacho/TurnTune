@@ -55,13 +55,27 @@ extension RoomDetailsViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         cell.member = vm.members[indexPath.row]
+        cell.isUserInteractionEnabled = vm.currentMember.isHost
+        if vm.currentMember.isHost {
+            cell.accessoryType = cell.member.isHost ? .none : .disclosureIndicator
+            cell.isUserInteractionEnabled = !cell.member.isHost
+        }
         return cell
     }
 }
 
 extension RoomDetailsViewController: UITableViewDelegate {
     
+    
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        presentAlert(title: "Member", actionTitle: "Remove", actionStyle: .destructive) { [self] _ in
+            vm.deleteMember(at: indexPath.row) { result in
+                if case .failure(let error) = result {
+                    print(error)
+                }
+            }
+        }
         tableView.deselectRow(at: indexPath, animated: true)
     }
     

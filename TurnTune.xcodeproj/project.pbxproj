@@ -70,6 +70,7 @@
 		95DDD0F8273B9D3100B47135 /* FirebaseFunctionsCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 95DDD0F7273B9D3100B47135 /* FirebaseFunctionsCombine-Community */; };
 		95E62FB3273B99CC0032F115 /* SpotifyiOS.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95E62FB2273B99CC0032F115 /* SpotifyiOS.xcframework */; };
 		95E62FB4273B99CC0032F115 /* SpotifyiOS.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 95E62FB2273B99CC0032F115 /* SpotifyiOS.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		95F7AC36278682B20062C83C /* UIViewController+Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95F7AC35278682B20062C83C /* UIViewController+Alert.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -139,6 +140,7 @@
 		95D0269E276EDD09004BCD7B /* SpotifyCredentials.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpotifyCredentials.swift; sourceTree = "<group>"; };
 		95D9746F25B41CB9000286C9 /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		95E62FB2273B99CC0032F115 /* SpotifyiOS.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = SpotifyiOS.xcframework; path = "../../Downloads/ios-sdk-master/SpotifyiOS.xcframework"; sourceTree = "<group>"; };
+		95F7AC35278682B20062C83C /* UIViewController+Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Alert.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -210,12 +212,12 @@
 			path = SearchView;
 			sourceTree = "<group>";
 		};
-		95C6C68A27494E6600C590DB /* SessionDetailView */ = {
+		95C6C68A27494E6600C590DB /* RoomDetailView */ = {
 			isa = PBXGroup;
 			children = (
 				95C6C68B27494E9300C590DB /* MemberTableViewCell.swift */,
 			);
-			path = SessionDetailView;
+			path = RoomDetailView;
 			sourceTree = "<group>";
 		};
 		95C6C68D274CA45100C590DB /* Repository */ = {
@@ -271,6 +273,7 @@
 				95D026A3277243F9004BCD7B /* ViewModel */,
 				95C771682597ED6900EDF930 /* Controller */,
 				95C771692597ED8300EDF930 /* View */,
+				95F7AC34278681A20062C83C /* Extension */,
 				95C7715A25944C1F00EDF930 /* Assets.xcassets */,
 				95C7715F25944C1F00EDF930 /* Info.plist */,
 				95C7716C2597F07100EDF930 /* GoogleService-Info.plist */,
@@ -295,7 +298,7 @@
 				9515B336273B8EC000CADB77 /* HomeView */,
 				9584F29F2741F6080018FBFB /* PlaylistView */,
 				95C6C68927494E6000C590DB /* SearchView */,
-				95C6C68A27494E6600C590DB /* SessionDetailView */,
+				95C6C68A27494E6600C590DB /* RoomDetailView */,
 				95C7715C25944C1F00EDF930 /* LaunchScreen.storyboard */,
 				95C7715725944C1E00EDF930 /* Main.storyboard */,
 			);
@@ -374,6 +377,14 @@
 				958949D9277B715C00F3C8E3 /* RoomDetailsViewModel.swift */,
 			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		95F7AC34278681A20062C83C /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				95F7AC35278682B20062C83C /* UIViewController+Alert.swift */,
+			);
+			path = Extension;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -467,6 +478,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				95F7AC36278682B20062C83C /* UIViewController+Alert.swift in Sources */,
 				95D02692276DA1DF004BCD7B /* SpotifyReponseModels.swift in Sources */,
 				95D02672276D9B03004BCD7B /* HTTPMethod.swift in Sources */,
 				9584F2A52744DB080018FBFB /* SearchTableViewCell.swift in Sources */,

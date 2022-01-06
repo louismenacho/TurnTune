@@ -10,10 +10,11 @@ import FirebaseAuth
 
 class PlaylistViewModel: NSObject {
     
-    var currentMember: Member
-    
     var room: Room
     var roomRepository: FirestoreRepository<Room>
+    
+    var currentMember: Member
+    var memberRepository: FirestoreRepository<Member>
     
     var playlist: [PlaylistItem]
     var playlistRepository: FirestoreRepository<PlaylistItem>
@@ -32,10 +33,11 @@ class PlaylistViewModel: NSObject {
     ]
     
     init(_ currentMember: Member,_ room: Room, _ spotifySessionManager: SPTSessionManager?) {
-        self.currentMember = currentMember
-        
         self.room = room
         self.roomRepository = FirestoreRepository<Room>(collectionPath: "rooms")
+        
+        self.currentMember = currentMember
+        self.memberRepository = FirestoreRepository<Member>(collectionPath: "rooms/"+room.id+"/members")
         
         self.playlist = [PlaylistItem]()
         self.playlistRepository = FirestoreRepository<PlaylistItem>(collectionPath: "rooms/"+room.id+"/playlist")
@@ -66,6 +68,18 @@ class PlaylistViewModel: NSObject {
                 completion(.success(()))
             }
         }
+    }
+    
+    func currentMemberChangeListener(completion: @escaping (Result<Member, RepositoryError>) -> Void) {
+        memberRepository.addListener(id: currentMember.id) { result in
+            completion( result.flatMap { room in
+                return .success(room)
+            })
+        }
+    }
+    
+    func removeMemberChangeListener() {
+        memberRepository.removeListener()
     }
     
     func playlistChangeListener(completion: @escaping (Result<Void, RepositoryError>) -> Void) {

@@ -17,17 +17,13 @@ class PlaylistViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.title = "Room Playlist"
+        navigationController?.navigationBar.prefersLargeTitles = false
         navigationItem.searchController = prepareSearchController()
         navigationItem.hidesSearchBarWhenScrolling = false
         tableView.dataSource = self
         tableView.delegate = self
         playButton.isHidden = !vm.isCurrentUserHost()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        navigationController?.navigationBar.prefersLargeTitles = false
-        navigationItem.title = "Room Playlist"
         
         vm.roomChangeListener { result in
             switch result {
@@ -36,6 +32,12 @@ class PlaylistViewController: UIViewController {
             case .success(let room):
                 print("room updated")
                 self.searchViewController.vm.updateSpotifyToken(room.spotifyToken)
+            }
+        }
+        
+        vm.currentMemberChangeListener { result in
+            if case let .failure(error) = result, case .notFound = error {
+                self.navigationController?.popToRootViewController(animated: true)
             }
         }
         
@@ -51,16 +53,10 @@ class PlaylistViewController: UIViewController {
         }
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        vm.removeRoomChangeListener()
-        vm.removePlaylistChangeListener()
-    }
-    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "RoomDetailsViewController" {
             let vc = segue.destination as! RoomDetailsViewController
-            vc.vm = RoomDetailsViewModel(vm.room)
+            vc.vm = RoomDetailsViewModel(vm.room, vm.currentMember)
         }
     }
     

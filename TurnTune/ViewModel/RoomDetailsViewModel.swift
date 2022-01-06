@@ -10,11 +10,14 @@ import Foundation
 class RoomDetailsViewModel {
     
     var room: Room
+    var currentMember: Member
+    
     var members = [Member]()
     var memberRepository: FirestoreRepository<Member>
     
-    init(_ room: Room) {
+    init(_ room: Room, _ currentMember: Member) {
         self.room = room
+        self.currentMember = currentMember
         self.memberRepository = FirestoreRepository<Member>(collectionPath: "rooms/"+room.id+"/members")
     }
     
@@ -26,6 +29,16 @@ class RoomDetailsViewModel {
                 completion(.failure(error))
             case let .success(members):
                 self.members = members
+                completion(.success(()))
+            }
+        }
+    }
+    
+    func deleteMember(at index: Int, completion: @escaping (Result<Void, RepositoryError>) -> Void) {
+        memberRepository.delete(members[index]) { error in
+            if let error = error {
+                completion(.failure(error))
+            } else {
                 completion(.success(()))
             }
         }
