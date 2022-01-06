@@ -351,7 +351,7 @@ class HomeViewModel: NSObject {
         guard let currentUser = Auth.auth().currentUser else {
             return
         }
-        if currentRoom.memberCount == 8 {
+        if currentRoom.memberCount == 2 {
             completion(.failure(AppError.roomLimitReached))
             return
         }
