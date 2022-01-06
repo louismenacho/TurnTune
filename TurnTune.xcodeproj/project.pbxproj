@@ -71,6 +71,7 @@
 		95E62FB3273B99CC0032F115 /* SpotifyiOS.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95E62FB2273B99CC0032F115 /* SpotifyiOS.xcframework */; };
 		95E62FB4273B99CC0032F115 /* SpotifyiOS.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 95E62FB2273B99CC0032F115 /* SpotifyiOS.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		95F7AC36278682B20062C83C /* UIViewController+Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95F7AC35278682B20062C83C /* UIViewController+Alert.swift */; };
+		95F7AC382786C49C0062C83C /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95F7AC372786C49C0062C83C /* AppError.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -141,6 +142,7 @@
 		95D9746F25B41CB9000286C9 /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		95E62FB2273B99CC0032F115 /* SpotifyiOS.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = SpotifyiOS.xcframework; path = "../../Downloads/ios-sdk-master/SpotifyiOS.xcframework"; sourceTree = "<group>"; };
 		95F7AC35278682B20062C83C /* UIViewController+Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Alert.swift"; sourceTree = "<group>"; };
+		95F7AC372786C49C0062C83C /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -375,6 +377,7 @@
 				958949C82778284200F3C8E3 /* PlaylistViewModel.swift */,
 				954AE28A27743F89007CD15C /* SearchViewModel.swift */,
 				958949D9277B715C00F3C8E3 /* RoomDetailsViewModel.swift */,
+				95F7AC372786C49C0062C83C /* AppError.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -514,6 +517,7 @@
 				95D0266B276D9903004BCD7B /* APIEndpoint.swift in Sources */,
 				95C7715425944C1E00EDF930 /* SceneDelegate.swift in Sources */,
 				95D0269A276DA1DF004BCD7B /* SpotifyAPIClient.swift in Sources */,
+				95F7AC382786C49C0062C83C /* AppError.swift in Sources */,
 				958949D6277A3D0900F3C8E3 /* Room.swift in Sources */,
 				95D0266D276D9909004BCD7B /* APIRequest.swift in Sources */,
 				95D02679276D9FFB004BCD7B /* UserDefaultsRepository.swift in Sources */,

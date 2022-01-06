@@ -10,7 +10,7 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
-    var vm = HomeViewModel()
+    var vm: HomeViewModel!
         
     @IBOutlet weak var appearanceSwitch: SwitchControl!
     @IBOutlet weak var formView: RoomFormView!
@@ -26,6 +26,7 @@ class HomeViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.prefersLargeTitles = true
+        vm = HomeViewModel()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -100,9 +101,11 @@ extension HomeViewController: RoomFormViewDelegate {
             case .failure(let error):
                 if let clientError = error as? ClientError {
                     print(clientError)
-                }
+                } else
                 if let repositoryError = error as? RepositoryError {
                     print(repositoryError)
+                } else {
+                    print(error.localizedDescription)
                 }
             case .success:
                 guard
@@ -125,9 +128,11 @@ extension HomeViewController: RoomFormViewDelegate {
             case .failure(let error):
                 if let clientError = error as? ClientError {
                     print(clientError)
-                }
+                } else
                 if let repositoryError = error as? RepositoryError {
                     print(repositoryError)
+                } else {
+                    print(error.localizedDescription)
                 }
             case .success:
                 guard

@@ -66,8 +66,6 @@ extension RoomDetailsViewController: UITableViewDataSource {
 
 extension RoomDetailsViewController: UITableViewDelegate {
     
-    
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let member = vm.members[indexPath.row]
         presentAlert(title: member.displayName, actionTitle: "Remove", actionStyle: .destructive) { [self] _ in

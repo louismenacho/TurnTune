@@ -14,6 +14,7 @@ struct Room: FirestoreDocument {
     @ServerTimestamp var dateAdded: Timestamp?
     var id: String
     var host: Member
+    var memberCount: Int = 1
     var spotifyToken: String = ""
     var spotifyTokenExpirationDate: Date
 }

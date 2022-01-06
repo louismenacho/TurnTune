@@ -111,7 +111,7 @@ class HomeViewModel: NSObject {
             }
             semaphore.wait()
             
-            findMember { result in
+            findExistingMember { result in
                 switch result {
                 case .failure(let error):
                     if case .notFound = error {
@@ -134,6 +134,17 @@ class HomeViewModel: NSObject {
                         completion(.failure(error))
                     case .success:
                         print("addRoomMember complete")
+                        semaphore.signal()
+                    }
+                }
+                semaphore.wait()
+                
+                updateRoom { result in
+                    switch result {
+                    case .failure(let error):
+                        completion(.failure(error))
+                    case .success:
+                        print("updateRoom complete")
                         semaphore.signal()
                     }
                 }
@@ -168,7 +179,7 @@ class HomeViewModel: NSObject {
                     case .failure(let error):
                         completion(.failure(error))
                     case .success:
-                        print("initSpotifySession complete")
+                        print("updateRoom complete")
                         semaphore.signal()
                     }
                 }
@@ -314,7 +325,7 @@ class HomeViewModel: NSObject {
         }
     }
     
-    private func findMember(completion: @escaping (Result<Void, RepositoryError>) -> Void) {
+    private func findExistingMember(completion: @escaping (Result<Void, RepositoryError>) -> Void) {
         guard let currentRoom = currentRoom else {
             return
         }
@@ -334,24 +345,25 @@ class HomeViewModel: NSObject {
     }
     
     private func addNewRoomMember(memberName: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        guard var currentRoom = currentRoom else {
+            return
+        }
         guard let currentUser = Auth.auth().currentUser else {
             return
         }
-        guard let currentRoom = currentRoom else {
+        if currentRoom.memberCount == 8 {
+            completion(.failure(AppError.roomLimitReached))
             return
         }
         let newMember = Member(documentID: currentUser.uid, id: currentUser.uid, displayName: memberName, isHost: false)
-//        if newMember == currentRoom.host {
-//            currentMember = currentRoom.host
-//            completion(.success(()))
-//            return
-//        }
+        currentRoom.memberCount += 1
         FirestoreRepository<Member>(collectionPath: "rooms/"+currentRoom.id+"/members").create(newMember) { error in
             if let error = error {
                 completion(.failure(error))
                 return
             }
             self.currentMember = newMember
+            self.currentRoom = currentRoom
             completion(.success(()))
         }
     }
