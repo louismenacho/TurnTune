@@ -104,31 +104,46 @@ class HomeViewModel: NSObject {
                 switch result {
                 case .failure(let error):
                     completion(.failure(error))
-                    return
                 case .success:
-                    print("findSession complete")
+                    print("findRoom complete")
                     semaphore.signal()
                 }
             }
             semaphore.wait()
             
-            addRoomMember(memberName: memberName) { result in
+            findMember { result in
                 switch result {
                 case .failure(let error):
-                    completion(.failure(error))
-                    return
+                    if case .notFound = error {
+                        print("findMember notFound")
+                        semaphore.signal()
+                    } else {
+                        completion(.failure(error))
+                    }
                 case .success:
-                    print("addSessionMember complete")
+                    print("findMember complete")
                     semaphore.signal()
                 }
             }
             semaphore.wait()
+            
+            if currentMember == nil {
+                addNewRoomMember(memberName: memberName) { result in
+                    switch result {
+                    case .failure(let error):
+                        completion(.failure(error))
+                    case .success:
+                        print("addRoomMember complete")
+                        semaphore.signal()
+                    }
+                }
+                semaphore.wait()
+            }
             
             initSpotifySessionManager { result in
                 switch result {
                 case .failure(let error):
                     completion(.failure(error))
-                    return
                 case .success:
                     print("initSpotifySessionManager complete")
                     semaphore.signal()
@@ -141,7 +156,6 @@ class HomeViewModel: NSObject {
                     switch result {
                     case .failure(let error):
                         completion(.failure(error))
-                        return
                     case .success:
                         print("initSpotifySession complete")
                         semaphore.signal()
@@ -153,7 +167,6 @@ class HomeViewModel: NSObject {
                     switch result {
                     case .failure(let error):
                         completion(.failure(error))
-                        return
                     case .success:
                         print("initSpotifySession complete")
                         semaphore.signal()
@@ -301,7 +314,26 @@ class HomeViewModel: NSObject {
         }
     }
     
-    private func addRoomMember(memberName: String, completion: @escaping (Result<Void, Error>) -> Void) {
+    private func findMember(completion: @escaping (Result<Void, RepositoryError>) -> Void) {
+        guard let currentRoom = currentRoom else {
+            return
+        }
+        guard let currentUser = Auth.auth().currentUser else {
+            return
+        }
+        FirestoreRepository<Member>(collectionPath: "rooms/"+currentRoom.id+"/members").get(id: currentUser.uid) { result in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+                return
+            case .success(let member):
+                self.currentMember = member
+                completion(.success(()))
+            }
+        }
+    }
+    
+    private func addNewRoomMember(memberName: String, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let currentUser = Auth.auth().currentUser else {
             return
         }
@@ -309,11 +341,11 @@ class HomeViewModel: NSObject {
             return
         }
         let newMember = Member(documentID: currentUser.uid, id: currentUser.uid, displayName: memberName, isHost: false)
-        if newMember == currentRoom.host {
-            currentMember = currentRoom.host
-            completion(.success(()))
-            return
-        }
+//        if newMember == currentRoom.host {
+//            currentMember = currentRoom.host
+//            completion(.success(()))
+//            return
+//        }
         FirestoreRepository<Member>(collectionPath: "rooms/"+currentRoom.id+"/members").create(newMember) { error in
             if let error = error {
                 completion(.failure(error))
