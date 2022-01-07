@@ -12,6 +12,7 @@ class HomeViewController: UIViewController {
     
     var vm: HomeViewModel!
         
+    lazy var activityIndicator = ActivityIndicatorView(frame: view.bounds)
     @IBOutlet weak var appearanceSwitch: SwitchControl!
     @IBOutlet weak var formView: RoomFormView!
     @IBOutlet weak var formViewCenterYConstraint: NSLayoutConstraint!
@@ -22,6 +23,7 @@ class HomeViewController: UIViewController {
         formView.delegate = self
         addKeyboardObserver()
         appearanceSwitch.setOn(traitCollection.userInterfaceStyle == .light ? true : false)
+        view.addSubview(activityIndicator)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -94,19 +96,16 @@ extension HomeViewController: RoomFormViewDelegate {
     }
     
     func roomFormView(_ roomFormView: RoomFormView, joinButtonPressed button: UIButton) {
+        view.endEditing(true)
         let displayName = roomFormView.displayNameTextField.text!
         let roomCode = roomFormView.roomCodeTextField.text!
+        activityIndicator.startAnimating()
         vm.joinRoom(roomID: roomCode, memberName: displayName) { [self] result in
+            activityIndicator.stopAnimating()
             switch result {
             case .failure(let error):
-                if let clientError = error as? ClientError {
-                    print(clientError)
-                } else
-                if let repositoryError = error as? RepositoryError {
-                    print(repositoryError)
-                } else {
-                    print(error.localizedDescription)
-                }
+                print(error)
+                presentAlert(title: error.localizedDescription.capitalized, actionTitle: "Dismiss")
             case .success:
                 guard
                     vm.currentMember != nil,
@@ -123,17 +122,14 @@ extension HomeViewController: RoomFormViewDelegate {
     }
     
     func roomFormView(_ roomFormView: RoomFormView, spotifyButtonPressed button: UIButton) {
+        view.endEditing(true)
+        activityIndicator.startAnimating()
         vm.createRoom(hostName: roomFormView.displayNameTextField.text!) { [self] result in
+            activityIndicator.stopAnimating()
             switch result {
             case .failure(let error):
-                if let clientError = error as? ClientError {
-                    print(clientError)
-                } else
-                if let repositoryError = error as? RepositoryError {
-                    print(repositoryError)
-                } else {
-                    print(error.localizedDescription)
-                }
+                print(error)
+                presentAlert(title: error.localizedDescription, actionTitle: "Dismiss")
             case .success:
                 guard
                     vm.currentMember != nil,

@@ -54,7 +54,10 @@ class HomeViewModel: NSObject {
                     semaphore.signal()
                 }
             }
-            semaphore.wait()
+            let timeoutResult = semaphore.wait(timeout: .now() + 10)
+            if case .timedOut = timeoutResult {
+                completion(.failure(AppError.message("Could not initiate Spotify session")))
+            }
             
             getSpotifyUserSubscription { result in
                 switch result {
@@ -62,7 +65,11 @@ class HomeViewModel: NSObject {
                     completion(.failure(error))
                     return
                 case .success(let subscription):
-                    print("getSpotifyUserSubscription complete: \(subscription)")
+                    print("getSpotifyUserSubscription complete")
+                    if subscription != "premium" {
+                        completion(.failure(AppError.message("You must have a Spotify Premium account to continue")))
+                        return
+                    }
                     semaphore.signal()
                 }
             }
@@ -352,7 +359,7 @@ class HomeViewModel: NSObject {
             return
         }
         if currentRoom.memberCount == 2 {
-            completion(.failure(AppError.roomLimitReached))
+            completion(.failure(AppError.message("Room limit reached")))
             return
         }
         let newMember = Member(documentID: currentUser.uid, id: currentUser.uid, displayName: memberName, isHost: false)

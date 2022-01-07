@@ -18,6 +18,7 @@ class SearchViewController: UIViewController {
     
     var vm: SearchViewModel!
     
+    lazy var activityIndicator = ActivityIndicatorView(frame: view.bounds)
     @IBOutlet weak var tableViewHeaderLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
 
@@ -31,7 +32,10 @@ class SearchViewController: UIViewController {
 extension SearchViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         guard let searchText = searchController.searchBar.text, !searchText.isEmpty else { return }
+        
+        activityIndicator.startAnimating()
         vm.updateSearchResult(query: searchText) { [self] result in
+            activityIndicator.stopAnimating()
             switch result {
             case .success:
                 DispatchQueue.main.async {

@@ -8,12 +8,12 @@
 import Foundation
 
 enum AppError: Error, LocalizedError {
-    case roomLimitReached
+    case message(_ string: String)
     
     var errorDescription: String? {
         switch self {
-        case .roomLimitReached:
-            return "Room limit reached"
+        case let .message(string):
+            return string
         }
     }
 }

@@ -7,10 +7,25 @@
 
 import Foundation
 
-enum RepositoryError: Error {
+enum RepositoryError: Error, LocalizedError {
     case readError(_ error: Error)
     case writeError(_ error: Error)
     case encodingError(_ error: Error)
     case decodingError(_ error: Error)
     case notFound
+    
+    var errorDescription: String? {
+        switch self {
+        case let .readError(error):
+            return error.localizedDescription
+        case let .writeError(error):
+            return error.localizedDescription
+        case let .encodingError(error):
+            return error.localizedDescription
+        case let .decodingError(error):
+            return error.localizedDescription
+        case .notFound:
+            return "Not found"
+        }
+    }
 }

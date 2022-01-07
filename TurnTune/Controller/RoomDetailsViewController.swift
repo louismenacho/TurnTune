@@ -68,7 +68,7 @@ extension RoomDetailsViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let member = vm.members[indexPath.row]
-        presentAlert(title: member.displayName, actionTitle: "Remove", actionStyle: .destructive) { [self] _ in
+        presentAlert(title: member.displayName, style: .actionSheet, actionTitle: "Remove", actionStyle: .destructive) { [self] _ in
             vm.deleteMember(at: indexPath.row) { result in
                 if case .failure(let error) = result {
                     print(error)
