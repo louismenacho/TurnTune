@@ -121,7 +121,7 @@ class HomeViewModel: NSObject {
             findExistingMember { result in
                 switch result {
                 case .failure(let error):
-                    if case .notFound = error {
+                    if let error = error as? RepositoryError, case .notFound = error {
                         print("findMember notFound")
                         semaphore.signal()
                     } else {
@@ -198,7 +198,7 @@ class HomeViewModel: NSObject {
         }
     }
     
-    private func initSpotifySessionManager(completion: @escaping (Result<Void, RepositoryError>) -> Void) {
+    private func initSpotifySessionManager(completion: @escaping (Result<Void, Error>) -> Void) {
         FirestoreRepository<SpotifyCredentials>(collectionPath: "spotify").get(id: "credentials") { result in
             completion( result.flatMap { credentials in
                 let config = SPTConfiguration(clientID: credentials.clientID, redirectURL: URL(string: credentials.redirectURL)!)
@@ -207,13 +207,15 @@ class HomeViewModel: NSObject {
                 self.spotifyConfig = config
                 self.spotifySessionManager = SPTSessionManager(configuration: config, delegate: self)
                 return .success(())
+            }.flatMapError { error in
+                return .failure(AppError.message(error.localizedDescription))
             })
         }
     }
     
     private func initSpotifySession(completion: @escaping (Result<Void, Error>) -> Void) {
         guard let spotifySessionManager = spotifySessionManager else {
-            print("Could not initiate Spotify session, Spotify session manager is nil")
+            completion(.failure(AppError.message("Could not initiate Spotify session")))
             return
         }
         DispatchQueue.main.async {
@@ -226,17 +228,20 @@ class HomeViewModel: NSObject {
         }
     }
     
-    private func getSpotifyUserSubscription(completion: @escaping (Result<String, ClientError>) -> Void) {
+    private func getSpotifyUserSubscription(completion: @escaping (Result<String, Error>) -> Void) {
         guard let spotifySession = spotifySessionManager?.session else {
-            print("Could not request Spotify user profile, Spotify session is nil")
+            print("Could not get Spotify user profile")
+            completion(.failure(AppError.message("")))
             return
         }
         let spotifyUserProfileAPI = SpotifyAPIClient<SpotifyUserProfileAPI>()
         spotifyUserProfileAPI.auth = .bearer(token: spotifySession.accessToken)
         spotifyUserProfileAPI.request(.currentUserProfile) { (result: Result<UserProfileResponse, ClientError>) in
-            completion( result.flatMap { userProfile in
-                return .success((userProfile.product))
-            })
+            completion(result.flatMap { userProfile in
+                    return .success((userProfile.product))
+                }.flatMapError { error in
+                    return .failure(AppError.message(error.localizedDescription))
+                })
         }
     }
     
@@ -266,10 +271,8 @@ class HomeViewModel: NSObject {
     }
     
     private func createNewRoom(hostName: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        guard let currentUser = Auth.auth().currentUser else {
-            return
-        }
-        guard let spotifySession = spotifySessionManager?.session else {
+        guard let currentUser = Auth.auth().currentUser, let spotifySession = spotifySessionManager?.session else {
+            completion(.failure(AppError.message("Could not create new room")))
             return
         }
         let host = Member(documentID: currentUser.uid, id: currentUser.uid, displayName: hostName ,isHost: true)
@@ -332,11 +335,9 @@ class HomeViewModel: NSObject {
         }
     }
     
-    private func findExistingMember(completion: @escaping (Result<Void, RepositoryError>) -> Void) {
-        guard let currentRoom = currentRoom else {
-            return
-        }
-        guard let currentUser = Auth.auth().currentUser else {
+    private func findExistingMember(completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let currentRoom = currentRoom, let currentUser = Auth.auth().currentUser else {
+            completion(.failure(AppError.message("Could not find existing member")))
             return
         }
         FirestoreRepository<Member>(collectionPath: "rooms/"+currentRoom.id+"/members").get(id: currentUser.uid) { result in
@@ -352,10 +353,8 @@ class HomeViewModel: NSObject {
     }
     
     private func addNewRoomMember(memberName: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        guard var currentRoom = currentRoom else {
-            return
-        }
-        guard let currentUser = Auth.auth().currentUser else {
+        guard var currentRoom = currentRoom, let currentUser = Auth.auth().currentUser else {
+            completion(.failure(AppError.message("Could not add new room member")))
             return
         }
         if currentRoom.memberCount == 2 {
@@ -375,8 +374,9 @@ class HomeViewModel: NSObject {
         }
     }
     
-    private func updateRoom(completion: @escaping (Result<Void, RepositoryError>) -> Void) {
+    private func updateRoom(completion: @escaping (Result<Void, Error>) -> Void) {
         guard let currentRoom = currentRoom else {
+            completion(.failure(AppError.message("Could not update room")))
             return
         }
         FirestoreRepository<Room>(collectionPath: "rooms").update(currentRoom) { error in
