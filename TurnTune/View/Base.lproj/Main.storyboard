@@ -281,6 +281,15 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DWB-lC-a8c">
+                                <rect key="frame" x="166.5" y="431.5" width="81" height="33"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="Add songs"/>
+                                <connections>
+                                    <action selector="addSongButtonPressed:" destination="oO9-CS-oMz" eventType="touchUpInside" id="yPy-zV-D0w"/>
+                                </connections>
+                            </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Xa8-Ro-42t">
                                 <rect key="frame" x="0.0" y="813" width="414" height="83"/>
                                 <subviews>
@@ -336,8 +345,10 @@
                             <constraint firstAttribute="bottom" secondItem="Xa8-Ro-42t" secondAttribute="bottom" id="T1w-HA-qdp"/>
                             <constraint firstItem="0Xu-eY-TYh" firstAttribute="top" secondItem="hLa-Z2-dCI" secondAttribute="top" id="T8l-zO-dpr"/>
                             <constraint firstItem="Xa8-Ro-42t" firstAttribute="trailing" secondItem="hLa-Z2-dCI" secondAttribute="trailing" id="Xu8-Kh-gF9"/>
+                            <constraint firstItem="DWB-lC-a8c" firstAttribute="centerY" secondItem="igq-yU-zlr" secondAttribute="centerY" id="bET-vk-pA9"/>
                             <constraint firstItem="Xa8-Ro-42t" firstAttribute="trailing" secondItem="hLa-Z2-dCI" secondAttribute="trailing" id="jHy-sO-BWb"/>
                             <constraint firstItem="Xa8-Ro-42t" firstAttribute="leading" secondItem="hLa-Z2-dCI" secondAttribute="leading" id="l93-X3-IkS"/>
+                            <constraint firstItem="DWB-lC-a8c" firstAttribute="centerX" secondItem="igq-yU-zlr" secondAttribute="centerX" id="xQs-QL-hWl"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="ezd-wJ-Y27">
@@ -349,6 +360,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="addSongsButton" destination="DWB-lC-a8c" id="oNQ-pf-QD0"/>
                         <outlet property="playButton" destination="LG5-04-eov" id="zm7-91-aL4"/>
                         <outlet property="tableView" destination="0Xu-eY-TYh" id="NIb-KV-GZ3"/>
                     </connections>

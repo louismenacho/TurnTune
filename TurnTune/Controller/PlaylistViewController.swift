@@ -13,6 +13,7 @@ class PlaylistViewController: UIViewController {
     var searchViewController: SearchViewController!
     
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var addSongsButton: UIButton!
     @IBOutlet weak var playButton: UIButton!
     
     override func viewDidLoad() {
@@ -47,6 +48,7 @@ class PlaylistViewController: UIViewController {
             case .success:
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
+                    self.addSongsButton.isHidden = !self.vm.playlist.isEmpty
                 }
             }
         }
@@ -61,6 +63,10 @@ class PlaylistViewController: UIViewController {
             let vc = segue.destination as! RoomDetailsViewController
             vc.vm = RoomDetailsViewModel(vm.room, vm.currentMember)
         }
+    }
+    
+    @IBAction func addSongButtonPressed(_ sender: UIButton) {
+        navigationItem.searchController?.searchBar.becomeFirstResponder()
     }
     
     @IBAction func playButtonPressed(_ sender: UIButton) {
