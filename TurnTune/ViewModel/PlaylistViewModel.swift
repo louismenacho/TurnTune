@@ -123,14 +123,7 @@ class PlaylistViewModel: NSObject {
     }
     
     func isCurrentUserHost() -> Bool {
-        guard let currentUser = Auth.auth().currentUser else {
-            return false
-        }
-        if currentUser.uid != room.host.id {
-            return false
-        } else {
-            return true
-        }
+        return currentMember.id == room.host.id
     }
 }
 

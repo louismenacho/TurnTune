@@ -25,30 +25,38 @@ class PlaylistViewController: UIViewController {
         tableView.delegate = self
         playButton.isHidden = !vm.isCurrentUserHost()
         
-        vm.roomChangeListener { result in
+        vm.roomChangeListener { [self] result in
             switch result {
             case .failure(let error):
                 print(error)
+                presentAlert(title: error.localizedDescription, actionTitle: "Dismiss")
             case .success(let room):
                 print("room updated")
-                self.searchViewController.vm.updateSpotifyToken(room.spotifyToken)
+                searchViewController.vm.updateSpotifyToken(room.spotifyToken)
             }
         }
         
-        vm.currentMemberChangeListener { result in
-            if case let .failure(error) = result, case .notFound = error {
-                self.navigationController?.popToRootViewController(animated: true)
+        vm.currentMemberChangeListener { [self] result in
+            if case let .failure(error) = result {
+                if case .notFound = error {
+                    navigationController?.popToRootViewController(animated: true)
+                } else {
+                    print(error)
+                    presentAlert(title: error.localizedDescription, actionTitle: "Dismiss")
+                }
             }
         }
+
         
-        vm.playlistChangeListener { result in
+        vm.playlistChangeListener { [self] result in
             switch result {
             case .failure(let error):
                 print(error)
+                presentAlert(title: error.localizedDescription, actionTitle: "Dismiss")
             case .success:
                 DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                    self.addSongsButton.isHidden = !self.vm.playlist.isEmpty
+                    tableView.reloadData()
+                    addSongsButton.isHidden = !vm.playlist.isEmpty
                 }
             }
         }
@@ -70,9 +78,10 @@ class PlaylistViewController: UIViewController {
     }
     
     @IBAction func playButtonPressed(_ sender: UIButton) {
-        vm.wakeAndPlay { result in
+        vm.wakeAndPlay { [self] result in
             if case .failure(let error) = result {
                 print(error)
+                presentAlert(title: error.localizedDescription, actionTitle: "Dismiss")
             }
         }
     }
@@ -131,17 +140,19 @@ extension PlaylistViewController: UITableViewDelegate {
 
 extension PlaylistViewController: SearchViewControllerDelegate {
     func searchViewController(_ searchViewController: SearchViewController, didAdd song: Song) {
-        vm.addPlaylistItem(newSong: song) { result in
+        vm.addPlaylistItem(newSong: song) { [self] result in
             if case .failure(let error) = result {
                 print(error)
+                presentAlert(title: error.localizedDescription, actionTitle: "Dismiss")
             }
         }
     }
     
     func searchViewController(_ searchViewController: SearchViewController, renewSpotifyToken: Void) {
-        vm.renewSpotifyToken { result in
+        vm.renewSpotifyToken { [self] result in
             if case .failure(let error) = result {
                 print(error)
+                presentAlert(title: error.localizedDescription, actionTitle: "Dismiss")
             } else {
                 print("renewSpotifyToken completed")
             }
