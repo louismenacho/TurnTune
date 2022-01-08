@@ -56,6 +56,7 @@ class PlaylistViewController: UIViewController {
             case .success:
                 DispatchQueue.main.async {
                     tableView.reloadData()
+                    tableView.isScrollEnabled = !vm.playlist.isEmpty
                     addSongsButton.isHidden = !vm.playlist.isEmpty
                 }
             }
