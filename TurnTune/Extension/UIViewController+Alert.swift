@@ -21,8 +21,10 @@ extension UIViewController {
         alert.addAction(UIAlertAction(title: actionTitle, style: actionStyle, handler: action))
         DispatchQueue.main.async {
             self.present(alert, animated: true) {
-                let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.dismissAlertController))
-                alert.view.superview?.subviews[0].addGestureRecognizer(tapGesture)
+                if style == .actionSheet {
+                    let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.dismissAlertController))
+                    alert.view.superview?.subviews[0].addGestureRecognizer(tapGesture)
+                }
             }
         }
     }

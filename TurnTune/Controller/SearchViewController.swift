@@ -98,18 +98,16 @@ extension SearchViewController: SearchTableViewCellDelegate {
             case let .success(song):
                 delegate?.searchViewController(self, didAdd: song)
             case let .failure(error):
-                switch error {
-                case .requestFailed:
-                    print(error)
-                case .decodingError:
-                    print(error)
-                case .noResponse:
-                    print(error)
-                case .badResponse(let code, _, _):
-                    print(error)
+                if case .badResponse(let code, _, _) = error {
                     if code == 401 {
                         delegate?.searchViewController(self, renewSpotifyToken: ())
                     }
+                    if code == 404 {
+                        presentAlert(title: "Host Spotify player is inactive", actionTitle: "Dismiss")
+                    }
+                } else {
+                    print(error)
+                    presentAlert(title: error.localizedDescription.capitalized, actionTitle: "Dismiss")
                 }
                 DispatchQueue.main.async {
                     tableView.reloadData()

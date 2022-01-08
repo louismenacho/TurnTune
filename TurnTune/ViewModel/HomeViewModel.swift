@@ -110,7 +110,11 @@ class HomeViewModel: NSObject {
             findRoom(id: roomID) { result in
                 switch result {
                 case .failure(let error):
-                    completion(.failure(error))
+                    if let error = error as? RepositoryError, case .notFound = error {
+                        completion(.failure(AppError.message("Room not found")))
+                    } else {
+                        completion(.failure(error))
+                    }
                 case .success:
                     print("findRoom complete")
                     semaphore.signal()
