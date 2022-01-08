@@ -18,7 +18,6 @@ class PlaylistViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Room Playlist"
-        navigationController?.navigationBar.prefersLargeTitles = false
         navigationItem.searchController = prepareSearchController()
         navigationItem.hidesSearchBarWhenScrolling = false
         tableView.dataSource = self
@@ -51,6 +50,10 @@ class PlaylistViewController: UIViewController {
                 }
             }
         }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.navigationBar.prefersLargeTitles = false
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
