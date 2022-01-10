@@ -45,18 +45,21 @@ class HomeViewModel: NSObject {
             semaphore.wait()
             
             initSpotifySession { result in
+                semaphore.signal()
                 switch result {
                 case .failure(let error):
                     completion(.failure(error))
                     return
                 case .success:
                     print("initSpotifySession complete")
-                    semaphore.signal()
                 }
             }
             let timeoutResult = semaphore.wait(timeout: .now() + 10)
             if case .timedOut = timeoutResult {
                 completion(.failure(AppError.message("Could not initiate Spotify session")))
+                return
+            } else if spotifySessionManager?.session == nil {
+                return
             }
             
             getSpotifyUserSubscription { result in
