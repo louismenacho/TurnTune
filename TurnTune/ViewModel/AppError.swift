@@ -9,11 +9,17 @@ import Foundation
 
 enum AppError: Error, LocalizedError {
     case message(_ string: String)
+    case spotifyAppNotFoundError
+    case spotifySubscriptionError
     
     var errorDescription: String? {
         switch self {
         case let .message(string):
             return string
+        case .spotifyAppNotFoundError:
+            return "Spotify app is not installed"
+        case .spotifySubscriptionError:
+            return "Spotify user must have premium subscription"
         }
     }
 }

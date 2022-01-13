@@ -6,15 +6,16 @@
 //
 
 import Foundation
+import FirebaseAuth
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
 struct Room: FirestoreDocument {
     @DocumentID var documentID: String?
     @ServerTimestamp var dateAdded: Timestamp?
-    var id: String
-    var host: Member
+    var id: String = ""
+    var host = Member()
     var memberCount: Int = 1
     var spotifyToken: String = ""
-    var spotifyTokenExpirationDate: Date
+    var spotifyTokenExpirationDate = Date()
 }

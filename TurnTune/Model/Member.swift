@@ -15,7 +15,6 @@ struct Member: FirestoreDocument {
     var id: String = ""
     var displayName: String = ""
     var isHost: Bool = false
-    
 }
 
 extension Member: Equatable {

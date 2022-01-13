@@ -9,4 +9,8 @@ import Foundation
 
 class SpotifyAPIClient<Endpoint: SpotifyAPIEndpoint>: APIClient {
     var auth: HTTPAuthorization = .none
+    
+    init(auth: HTTPAuthorization = .none) {
+        self.auth = auth
+    }
 }

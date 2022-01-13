@@ -124,23 +124,15 @@ extension HomeViewController: RoomFormViewDelegate {
     func roomFormView(_ roomFormView: RoomFormView, spotifyButtonPressed button: UIButton) {
         view.endEditing(true)
         activityIndicator.startAnimating()
-        vm.createRoom(hostName: roomFormView.displayNameTextField.text!) { [self] result in
-            activityIndicator.stopAnimating()
-            switch result {
-            case .failure(let error):
-                print(error)
-                presentAlert(title: error.localizedDescription, actionTitle: "Dismiss")
-            case .success:
-                guard
-                    vm.currentMember != nil,
-                    vm.currentRoom != nil
-                else {
-                    print("Cannot perform segue, current member or current room is nil")
-                    return
-                }
-                DispatchQueue.main.async {
-                    performSegue(withIdentifier: "PlaylistViewController", sender: self)
-                }
+        vm.create(hostName: roomFormView.displayNameTextField.text!) { error in
+            if let error = error {
+                print("roomFormView error: \(error)")
+                self.presentAlert(title: error.localizedDescription, actionTitle: "Dismiss")
+                return
+            }
+            DispatchQueue.main.async {
+                self.performSegue(withIdentifier: "PlaylistViewController", sender: self)
+                self.activityIndicator.stopAnimating()
             }
         }
     }

@@ -5,7 +5,7 @@
 //  Created by Louis Menacho on 12/23/21.
 //
 
-import Foundation
+import Combine
 import FirebaseAuth
 import FirebaseFirestore
 
@@ -28,81 +28,156 @@ class HomeViewModel: NSObject {
         .userReadPrivate
     ]
     
-    func createRoom(hostName: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        let semaphore = DispatchSemaphore(value: 0)
-        DispatchQueue.global().async { [self] in
-            
-            initSpotifySessionManager { result in
-                switch result {
-                case .failure(let error):
-                    completion(.failure(error))
-                    return
-                case .success:
-                    print("initSpotifySessionManager complete")
-                    semaphore.signal()
+    var cancellable: AnyCancellable?
+    
+    var spotifyCancellable: AnyCancellable?
+    var spotifyInitiateSessionSubject = PassthroughSubject<SPTSession, Error>()
+    
+    func create(hostName: String, onCompletion: @escaping (Error?) -> Void) {
+        var room = Room()
+        cancellable =
+        self.getSpotifyConfiguration()
+        
+            .flatMap { config in
+                self.initiateSpotifySession(config: config)
+            }
+        
+            .flatMap { session -> Future<String, Error> in
+                room.spotifyToken = session.accessToken
+                room.spotifyTokenExpirationDate = session.expirationDate
+                return self.getSpotifyUserSubscription(session: session)
+            }
+        
+            .flatMap { subscription -> Future<User, Error> in
+                if subscription != "premium" {
+                    return Future<User, Error> { $0(.failure(AppError.spotifySubscriptionError)) }
+                } else {
+                    return self.authenticate()
                 }
             }
-            semaphore.wait()
-            
-            initSpotifySession { result in
-                semaphore.signal()
-                switch result {
-                case .failure(let error):
-                    completion(.failure(error))
-                    return
-                case .success:
-                    print("initSpotifySession complete")
+        
+            .flatMap { user -> Future<String, Error> in
+                let host = Member(documentID: user.uid, id: user.uid, displayName: hostName, isHost: true)
+                room.host = host
+                return self.generateRoomCode()
+            }
+        
+            .flatMap { newRoomCode -> Future<Void, Error> in
+                room.documentID = newRoomCode
+                room.id = newRoomCode
+                return self.createRoom(room)
+            }
+        
+            .sink { completion in
+                switch completion {
+                case.failure(let error):
+                    onCompletion(error)
+                case .finished:
+                    onCompletion(nil)
+                }
+            } receiveValue: {
+                self.currentRoom = room
+                self.currentMember = room.host
+            }
+    }
+    
+    func authenticate() -> Future<User, Error> {
+        Future { promise in
+            Auth.auth().signInAnonymously { authData, error in
+                if let error = error {
+                    promise(.failure(error))
+                } else {
+                    promise(.success(authData!.user))
                 }
             }
-            let timeoutResult = semaphore.wait(timeout: .now() + 10)
-            if case .timedOut = timeoutResult {
-                completion(.failure(AppError.message("Could not initiate Spotify session")))
+        }
+    }
+    
+    func getSpotifyConfiguration() -> Future<SPTConfiguration, Error> {
+        Future { promise in
+            FirestoreRepository<SpotifyConfiguration>(collectionPath: "spotify").get(id: "configuration") { result in
+                promise( result.flatMap { configuration in
+                    let config = SPTConfiguration(clientID: configuration.clientID, redirectURL: URL(string: configuration.redirectURL)!)
+                    config.tokenSwapURL = URL(string: configuration.tokenSwapURL)
+                    config.tokenRefreshURL = URL(string: configuration.tokenRefreshURL)
+                    return .success(config)
+                }.flatMapError { error in
+                    return .failure(AppError.message(error.localizedDescription))
+                })
+            }
+        }
+    }
+    
+    func initiateSpotifySession(config: SPTConfiguration) -> Future<SPTSession, Error> {
+        Future { [self] promise in
+            let sessionManager = SPTSessionManager(configuration: config, delegate: self)
+            guard sessionManager.isSpotifyAppInstalled else {
+                promise(.failure(AppError.spotifyAppNotFoundError))
                 return
-            } else if spotifySessionManager?.session == nil {
-                return
             }
-            
-            getSpotifyUserSubscription { result in
-                switch result {
-                case .failure(let error):
-                    completion(.failure(error))
-                    return
-                case .success(let subscription):
-                    print("getSpotifyUserSubscription complete")
-                    if subscription != "premium" {
-                        completion(.failure(AppError.message("You must have a Spotify Premium account to continue")))
-                        return
-                    }
-                    semaphore.signal()
+            DispatchQueue.main.async {
+                let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+                sceneDelegate?.spotifyConfiguration = config
+                sceneDelegate?.spotifySessionManager = sessionManager
+                sessionManager.initiateSession(with: self.spotifyScope, options: .clientOnly)
+            }
+            spotifyCancellable = spotifyInitiateSessionSubject
+            .sink { completion in
+                if case let .failure(error) = completion {
+                    promise(.failure(error))
                 }
+            } receiveValue: { session in
+                promise(.success(session))
             }
-            semaphore.wait()
-            
-            generateNewRoomID { result in
-                switch result {
-                case .failure(let error):
-                    completion(.failure(error))
+        }
+    }
+    
+    func getSpotifyUserSubscription(session: SPTSession) -> Future<String, Error> {
+        Future { promise in
+            let spotifyUserProfileAPI = SpotifyAPIClient<SpotifyUserProfileAPI>(auth: .bearer(token: session.accessToken))
+            spotifyUserProfileAPI.request(.currentUserProfile) { (result: Result<UserProfileResponse, ClientError>) in
+                promise( result.flatMap { userProfile in
+                    return .success((userProfile.product))
+                }.flatMapError { error in
+                    return .failure(AppError.message(error.localizedDescription))
+                })
+            }
+        }
+    }
+    
+    func generateRoomCode() -> Future<String, Error> {
+        Future { promise in
+            self.generateNewRoomCode { result in
+                promise(result)
+            }
+        }
+    }
+    
+    func createRoom(_ room: Room) -> Future<Void, Error> {
+        Future { promise in
+            let group = DispatchGroup()
+
+            group.enter()
+            FirestoreRepository<Room>(collectionPath: "rooms").create(room) { error in
+                if let error = error {
+                    promise(.failure(error))
                     return
-                case .success:
-                    print("generateNewSessionID complete")
-                    semaphore.signal()
                 }
+                group.leave()
             }
-            semaphore.wait()
             
-            createNewRoom(hostName: hostName) { result in
-                switch result {
-                case .failure(let error):
-                    completion(.failure(error))
+            group.enter()
+            FirestoreRepository<Member>(collectionPath: "rooms/"+room.id+"/members").create(room.host) { error in
+                if let error = error {
+                    promise(.failure(error))
                     return
-                case .success:
-                    print("createNewSession complete")
-                    semaphore.signal()
                 }
+                group.leave()
             }
-            semaphore.wait()
             
-            completion(.success(()))
+            group.notify(queue: .global()) {
+                promise(.success(()))
+            }
         }
     }
     
@@ -206,7 +281,7 @@ class HomeViewModel: NSObject {
     }
     
     private func initSpotifySessionManager(completion: @escaping (Result<Void, Error>) -> Void) {
-        FirestoreRepository<SpotifyCredentials>(collectionPath: "spotify").get(id: "credentials") { result in
+        FirestoreRepository<SpotifyConfiguration>(collectionPath: "spotify").get(id: "credentials") { result in
             completion( result.flatMap { credentials in
                 let config = SPTConfiguration(clientID: credentials.clientID, redirectURL: URL(string: credentials.redirectURL)!)
                 config.tokenSwapURL = URL(string: credentials.tokenSwapURL)
@@ -252,27 +327,21 @@ class HomeViewModel: NSObject {
         }
     }
     
-    private func generateNewRoomID(completion: @escaping (Result<String, Error>) -> Void) {
-        Auth.auth().signInAnonymously { authDataResult, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            let newID = self.generateRandomCode(length: 4)
-            FirestoreRepository<Room>(collectionPath: "rooms").get(id: newID) { result in
-                switch result {
-                case .failure(let error):
-                    if case .notFound = error {
-                        print("\(newID) does not exist. Using for new room")
-                        self.currentRoomID = newID
-                        completion(.success(newID))
-                    } else {
-                        completion(.failure(error))
-                    }
-                case .success:
-                    print("Room\(newID) already exists. Regenerating room code")
-                    self.generateNewRoomID(completion: completion)
+    private func generateNewRoomCode(completion: @escaping (Result<String, Error>) -> Void) {
+        let newCode = self.generateRandomCode(length: 4)
+        FirestoreRepository<Room>(collectionPath: "rooms").get(id: newCode) { result in
+            switch result {
+            case .failure(let error):
+                if case .notFound = error {
+                    print("\(newCode) does not exist. Using for new room")
+                    self.currentRoomID = newCode
+                    completion(.success(newCode))
+                } else {
+                    completion(.failure(error))
                 }
+            case .success:
+                print("Room\(newCode) already exists. Regenerating room code")
+                self.generateNewRoomCode(completion: completion)
             }
         }
     }
@@ -402,11 +471,12 @@ extension HomeViewModel: SPTSessionManagerDelegate {
         print("sessionManager did initiate session in Home view")
         currentRoom?.spotifyToken = session.accessToken
         spotifyInitiateSessionCompletion?(.success(()))
+        spotifyInitiateSessionSubject.send(session)
     }
     
     func sessionManager(manager: SPTSessionManager, didFailWith error: Error) {
         print("sessionManager did fail with error in Home view")
-        spotifyInitiateSessionCompletion?(.failure(error))
+        spotifyInitiateSessionSubject.send(completion: .failure(error))
     }
 }
 
