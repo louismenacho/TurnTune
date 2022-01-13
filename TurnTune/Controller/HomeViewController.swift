@@ -100,23 +100,15 @@ extension HomeViewController: RoomFormViewDelegate {
         let displayName = roomFormView.displayNameTextField.text!
         let roomCode = roomFormView.roomCodeTextField.text!
         activityIndicator.startAnimating()
-        vm.joinRoom(roomID: roomCode, memberName: displayName) { [self] result in
-            activityIndicator.stopAnimating()
-            switch result {
-            case .failure(let error):
-                print(error)
-                presentAlert(title: error.localizedDescription.capitalized, actionTitle: "Dismiss")
-            case .success:
-                guard
-                    vm.currentMember != nil,
-                    vm.currentRoom != nil
-                else {
-                    print("Cannot perform segue, current member or current room is nil")
-                    return
-                }
-                DispatchQueue.main.async {
-                    performSegue(withIdentifier: "PlaylistViewController", sender: self)
-                }
+        vm.joinRoom(room: roomCode, memberName: displayName) { error in
+            if let error = error {
+                print("roomFormView join error: \(error)")
+                self.presentAlert(title: error.localizedDescription, actionTitle: "Dismiss")
+                return
+            }
+            DispatchQueue.main.async {
+                self.performSegue(withIdentifier: "PlaylistViewController", sender: self)
+                self.activityIndicator.stopAnimating()
             }
         }
     }
@@ -124,9 +116,9 @@ extension HomeViewController: RoomFormViewDelegate {
     func roomFormView(_ roomFormView: RoomFormView, spotifyButtonPressed button: UIButton) {
         view.endEditing(true)
         activityIndicator.startAnimating()
-        vm.create(hostName: roomFormView.displayNameTextField.text!) { error in
+        vm.createRoom(hostName: roomFormView.displayNameTextField.text!) { error in
             if let error = error {
-                print("roomFormView error: \(error)")
+                print("roomFormView create error: \(error)")
                 self.presentAlert(title: error.localizedDescription, actionTitle: "Dismiss")
                 return
             }
