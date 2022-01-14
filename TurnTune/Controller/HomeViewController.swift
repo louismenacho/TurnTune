@@ -106,6 +106,8 @@ extension HomeViewController: RoomFormViewDelegate {
                 self.presentAlert(title: error.localizedDescription, actionTitle: "Dismiss")
                 return
             }
+            guard let currentMember = self.vm.currentMember else { return }
+            guard let currentRoom = self.vm.currentRoom else { return }
             DispatchQueue.main.async {
                 self.performSegue(withIdentifier: "PlaylistViewController", sender: self)
                 self.activityIndicator.stopAnimating()

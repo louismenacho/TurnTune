@@ -26,26 +26,36 @@ class HomeViewModel: NSObject {
         .userReadPrivate
     ]
     
-    var cancellable: AnyCancellable?
-    
-    var spotifyCancellable: AnyCancellable?
+    var subscriptions = Set<AnyCancellable>()
     var spotifyInitiateSessionSubject = PassthroughSubject<SPTSession, Error>()
     
-    func createRoom(hostName: String, onCompletion: @escaping (Error?) -> Void) {
-        var room = Room()
-        cancellable =
+    func connectSpotify() -> Future<SPTSession, Error> {
+        Future { promise in
             self.getSpotifyConfiguration()
-        
-        .flatMap { config in
-            self.initiateSpotifySession(config: config)
+            .flatMap { config in
+                self.initiateSpotifySession(config: config)
+            }
+            .sink { completion in
+                if case .failure(let error) = completion {
+                    promise(.failure(error))
+                }
+            } receiveValue: { session in
+                promise(.success(session))
+            }
+            .store(in: &self.subscriptions)
         }
+    }
     
+    func createRoom(hostName: String, onCompletion: @escaping (Error?) -> Void) {
+        var newRoom = Room()
+        var newMember = Member(displayName: hostName, isHost: true)
+        
+        let publisher = connectSpotify()
         .flatMap { session -> Future<String, Error> in
-            room.spotifyToken = session.accessToken
-            room.spotifyTokenExpirationDate = session.expirationDate
+            newRoom.spotifyToken = session.accessToken
+            newRoom.spotifyTokenExpirationDate = session.expirationDate
             return self.getSpotifyUserSubscription(session: session)
         }
-    
         .flatMap { subscription -> Future<User, Error> in
             if subscription != "premium" {
                 return Future<User, Error> { $0(.failure(AppError.spotifySubscriptionError)) }
@@ -53,19 +63,19 @@ class HomeViewModel: NSObject {
                 return self.authenticate()
             }
         }
-    
         .flatMap { user -> Future<String, Error> in
-            let host = Member(documentID: user.uid, id: user.uid, displayName: hostName, isHost: true)
-            room.host = host
+            newMember.documentID = user.uid
+            newMember.id = user.uid
+            newRoom.host = newMember
             return self.generateRoomCode()
         }
-    
         .flatMap { newRoomCode -> Future<Void, Error> in
-            room.documentID = newRoomCode
-            room.id = newRoomCode
-            return self.createRoom(room)
+            newRoom.documentID = newRoomCode
+            newRoom.id = newRoomCode
+            return self.createRoom(newRoom)
         }
-    
+        
+        publisher
         .sink { completion in
             switch completion {
             case.failure(let error):
@@ -74,30 +84,30 @@ class HomeViewModel: NSObject {
                 onCompletion(nil)
             }
         } receiveValue: {
-            self.currentRoom = room
-            self.currentMember = room.host
+            self.currentRoom = newRoom
+            self.currentMember = newRoom.host
         }
+        .store(in: &subscriptions)
     }
     
     func joinRoom(room id: String, memberName: String, onCompletion: @escaping (Error?) -> Void) {
         var currentRoom = Room()
-        var currentMember = Member()
-        cancellable =
-            self.authenticate()
+        var currentMember = Member(displayName: memberName)
         
+        authenticate()
         .flatMap { user -> Future<Room, Error> in
+            print("findRoom")
             currentMember.documentID = user.uid
             currentMember.id = user.uid
-            currentMember.displayName = memberName
             return self.findRoom(id: id)
         }
-        
         .flatMap { room -> Future<Member?, Error> in
+            print("findExistingMember")
             currentRoom = room
             return self.findExistingMember(id: currentMember.id, in: currentRoom)
         }
-        
         .flatMap { member -> Future<Void, Error> in
+            print("addMember")
             if let existingMember = member {
                 currentMember = existingMember
                 return Future<Void, Error> { $0(.success(())) }
@@ -106,22 +116,36 @@ class HomeViewModel: NSObject {
                 return self.addMember(member: currentMember, to: currentRoom)
             }
         }
-        
-        .flatMap {
-            self.updateRoom(room: currentRoom)
-        }
-        
-        .sink { completion in
-            switch completion {
-            case.failure(let error):
-                onCompletion(error)
-            case .finished:
+        .sink { print($0) } receiveValue: {
+            
+            var publisher: AnyPublisher<Void, Error>?
+            
+            if !currentMember.isHost {
+                publisher = self.updateRoom(room: currentRoom).eraseToAnyPublisher()
+            } else {
+                publisher = self.connectSpotify()
+                .flatMap { session -> Future<Void, Error> in
+                    currentRoom.spotifyToken = session.accessToken
+                    currentRoom.spotifyTokenExpirationDate = session.expirationDate
+                    return self.updateRoom(room: currentRoom)
+                }
+                .eraseToAnyPublisher()
+            }
+            
+            publisher?
+            .sink { completion in
+                if case let .failure(error) = completion {
+                    onCompletion(error)
+                }
+            } receiveValue: {
+                self.currentRoom = currentRoom
+                self.currentMember = currentMember
                 onCompletion(nil)
             }
-        } receiveValue: {
-            self.currentRoom = currentRoom
-            self.currentMember = currentMember
+            .store(in: &self.subscriptions)
+            
         }
+        .store(in: &self.subscriptions)
     }
     
     private func authenticate() -> Future<User, Error> {
@@ -164,7 +188,7 @@ class HomeViewModel: NSObject {
                 sceneDelegate?.spotifySessionManager = sessionManager
                 sessionManager.initiateSession(with: self.spotifyScope, options: .clientOnly)
             }
-            spotifyCancellable = spotifyInitiateSessionSubject
+            spotifyInitiateSessionSubject
             .sink { completion in
                 if case let .failure(error) = completion {
                     promise(.failure(error))
@@ -172,6 +196,7 @@ class HomeViewModel: NSObject {
             } receiveValue: { session in
                 promise(.success(session))
             }
+            .store(in: &subscriptions)
         }
     }
     
@@ -223,105 +248,6 @@ class HomeViewModel: NSObject {
             }
         }
     }
-    
-//    func joinRoom(roomID: String, memberName: String, completion: @escaping (Result<Void, Error>) -> Void) {
-//        let semaphore = DispatchSemaphore(value: 0)
-//        DispatchQueue.global().async { [self] in
-//
-//            findRoom(id: roomID) { result in
-//                switch result {
-//                case .failure(let error):
-//                    if let error = error as? RepositoryError, case .notFound = error {
-//                        completion(.failure(AppError.message("Room not found")))
-//                    } else {
-//                        completion(.failure(error))
-//                    }
-//                case .success:
-//                    print("findRoom complete")
-//                    semaphore.signal()
-//                }
-//            }
-//            semaphore.wait()
-//
-//            findExistingMember { result in
-//                switch result {
-//                case .failure(let error):
-//                    if let error = error as? RepositoryError, case .notFound = error {
-//                        print("findMember notFound")
-//                        semaphore.signal()
-//                    } else {
-//                        completion(.failure(error))
-//                    }
-//                case .success:
-//                    print("findMember complete")
-//                    semaphore.signal()
-//                }
-//            }
-//            semaphore.wait()
-//
-//            if currentMember == nil {
-//                addNewRoomMember(memberName: memberName) { result in
-//                    switch result {
-//                    case .failure(let error):
-//                        completion(.failure(error))
-//                    case .success:
-//                        print("addRoomMember complete")
-//                        semaphore.signal()
-//                    }
-//                }
-//                semaphore.wait()
-//
-//                updateRoom { result in
-//                    switch result {
-//                    case .failure(let error):
-//                        completion(.failure(error))
-//                    case .success:
-//                        print("updateRoom complete")
-//                        semaphore.signal()
-//                    }
-//                }
-//                semaphore.wait()
-//            }
-//
-//            initSpotifySessionManager { result in
-//                switch result {
-//                case .failure(let error):
-//                    completion(.failure(error))
-//                case .success:
-//                    print("initSpotifySessionManager complete")
-//                    semaphore.signal()
-//                }
-//            }
-//            semaphore.wait()
-//
-//            if let currentRoom = currentRoom, Date() >= currentRoom.spotifyTokenExpirationDate && currentMember == currentRoom.host {
-//                initSpotifySession { result in
-//                    switch result {
-//                    case .failure(let error):
-//                        completion(.failure(error))
-//                    case .success:
-//                        print("initSpotifySession complete")
-//                        semaphore.signal()
-//                    }
-//                }
-//                semaphore.wait()
-//
-//                updateRoom { result in
-//                    switch result {
-//                    case .failure(let error):
-//                        completion(.failure(error))
-//                    case .success:
-//                        print("updateRoom complete")
-//                        semaphore.signal()
-//                    }
-//                }
-//                semaphore.wait()
-//
-//            }
-//
-//            completion(.success(()))
-//        }
-//    }
     
     private func generateNewRoomCode(completion: @escaping (Result<String, Error>) -> Void) {
         let newCode = self.generateRandomCode(length: 4)
@@ -384,7 +310,7 @@ class HomeViewModel: NSObject {
     
     private func addMember(member: Member, to room: Room) -> Future<Void, Error> {
         Future { promise in
-            if room.memberCount == 2 {
+            if room.memberCount > 2 {
                 promise(.failure(AppError.message("Room limit reached")))
                 return
             }
