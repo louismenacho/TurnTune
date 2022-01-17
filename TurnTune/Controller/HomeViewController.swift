@@ -101,16 +101,16 @@ extension HomeViewController: RoomFormViewDelegate {
         let roomCode = roomFormView.roomCodeTextField.text!
         activityIndicator.startAnimating()
         vm.joinRoom(room: roomCode, memberName: displayName) { error in
+            self.activityIndicator.stopAnimating()
             if let error = error {
                 print("roomFormView join error: \(error)")
                 self.presentAlert(title: error.localizedDescription, actionTitle: "Dismiss")
                 return
             }
-            guard let currentMember = self.vm.currentMember else { return }
-            guard let currentRoom = self.vm.currentRoom else { return }
+            guard self.vm.currentMember != nil else { return }
+            guard self.vm.currentRoom != nil else { return }
             DispatchQueue.main.async {
                 self.performSegue(withIdentifier: "PlaylistViewController", sender: self)
-                self.activityIndicator.stopAnimating()
             }
         }
     }
@@ -119,6 +119,7 @@ extension HomeViewController: RoomFormViewDelegate {
         view.endEditing(true)
         activityIndicator.startAnimating()
         vm.createRoom(hostName: roomFormView.displayNameTextField.text!) { error in
+            self.activityIndicator.stopAnimating()
             if let error = error {
                 print("roomFormView create error: \(error)")
                 self.presentAlert(title: error.localizedDescription, actionTitle: "Dismiss")
@@ -126,7 +127,6 @@ extension HomeViewController: RoomFormViewDelegate {
             }
             DispatchQueue.main.async {
                 self.performSegue(withIdentifier: "PlaylistViewController", sender: self)
-                self.activityIndicator.stopAnimating()
             }
         }
     }
