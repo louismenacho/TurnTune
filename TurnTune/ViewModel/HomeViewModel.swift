@@ -121,13 +121,21 @@ class HomeViewModel: NSObject {
             var publisher: AnyPublisher<Void, Error>?
             
             if !currentMember.isHost {
-                publisher = self.updateRoom(room: currentRoom).eraseToAnyPublisher()
+                publisher = self.updateRoom(room: currentRoom)
+                .eraseToAnyPublisher()
             } else {
                 publisher = self.connectSpotify()
-                .flatMap { session -> Future<Void, Error> in
+                .flatMap { session -> Future<String, Error> in
                     currentRoom.spotifyToken = session.accessToken
                     currentRoom.spotifyTokenExpirationDate = session.expirationDate
-                    return self.updateRoom(room: currentRoom)
+                    return self.getSpotifyUserSubscription(session: session)
+                }
+                .flatMap { subscription -> Future<Void, Error> in
+                    if subscription != "premium" {
+                        return Future<Void, Error> { $0(.failure(AppError.spotifySubscriptionError)) }
+                    } else {
+                        return self.updateRoom(room: currentRoom)
+                    }
                 }
                 .eraseToAnyPublisher()
             }
