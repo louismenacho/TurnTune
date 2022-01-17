@@ -29,7 +29,7 @@ class FirestoreRepository<Object: FirestoreDocument>: RemoteRepository {
                 if let data = try documentSnapshot?.data(as: Object.self) {
                     completion(.success(data))
                 } else {
-                    completion(.failure(.notFound))
+                    completion(.failure(.notFound(objectType: Object.self)))
                 }
             } catch {
                 completion(.failure(.decodingError(error)))
@@ -125,7 +125,7 @@ class FirestoreRepository<Object: FirestoreDocument>: RemoteRepository {
                 if let data = try documentSnapshot?.data(as: Object.self) {
                     completion(.success(data))
                 } else {
-                    completion(.failure(.notFound))
+                    completion(.failure(.notFound(objectType: Object.self)))
                 }
             } catch {
                 completion(.failure(.decodingError(error)))

@@ -12,7 +12,7 @@ enum RepositoryError: Error, LocalizedError {
     case writeError(_ error: Error)
     case encodingError(_ error: Error)
     case decodingError(_ error: Error)
-    case notFound
+    case notFound(objectType: FirestoreDocument.Type)
     
     var errorDescription: String? {
         switch self {
@@ -24,8 +24,8 @@ enum RepositoryError: Error, LocalizedError {
             return error.localizedDescription
         case let .decodingError(error):
             return error.localizedDescription
-        case .notFound:
-            return "Not found"
+        case let .notFound(object):
+            return "\(object) does not exist"
         }
     }
 }
