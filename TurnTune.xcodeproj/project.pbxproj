@@ -303,9 +303,9 @@
 				9584F29F2741F6080018FBFB /* PlaylistView */,
 				95C6C68927494E6000C590DB /* SearchView */,
 				95C6C68A27494E6600C590DB /* RoomDetailView */,
+				95C7ECF92787FAA500B0A87B /* ActivityIndicatorView.swift */,
 				95C7715C25944C1F00EDF930 /* LaunchScreen.storyboard */,
 				95C7715725944C1E00EDF930 /* Main.storyboard */,
-				95C7ECF92787FAA500B0A87B /* ActivityIndicatorView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";

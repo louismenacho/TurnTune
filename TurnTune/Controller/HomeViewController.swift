@@ -29,6 +29,8 @@ class HomeViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.prefersLargeTitles = true
         vm = HomeViewModel()
+        formView.roomCodeTextField.text = UserDefaultsRepository().roomID
+        formView.displayNameTextField.text = UserDefaultsRepository().displayName
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -72,12 +74,14 @@ class HomeViewController: UIViewController {
         self.presentAlert(
             title: error.localizedDescription,
             actionTitle: error.localizedRecoverySuggestion ?? "Dismiss",
-            actionStyle: .cancel) { action in
+            actionStyle: .cancel,
+            action: { action in
                 if let error = error as? AppError, case .spotifyAppNotFoundError = error {
                     let url = URL(string: "itms-apps://apple.com/app/spotify-new-music-and-podcasts/id324684580")!
                     UIApplication.shared.open(url)
                 }
             }
+        )
     }
 }
 

@@ -14,7 +14,7 @@ extension UIViewController {
         message: String? = nil,
         style: UIAlertController.Style = .alert,
         actionTitle: String,
-        actionStyle: UIAlertAction.Style = .default,
+        actionStyle: UIAlertAction.Style = .cancel,
         action: ((UIAlertAction) -> Void)? = nil )
     {
         let alert = UIAlertController(title: title, message: message, preferredStyle: style)

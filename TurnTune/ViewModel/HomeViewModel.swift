@@ -77,15 +77,15 @@ class HomeViewModel: NSObject {
         
         publisher
         .sink { completion in
-            switch completion {
-            case.failure(let error):
+            if case let .failure(error) = completion {
                 onCompletion(error)
-            case .finished:
-                onCompletion(nil)
             }
         } receiveValue: {
             self.currentRoom = newRoom
             self.currentMember = newRoom.host
+            UserDefaultsRepository().roomID = newRoom.id
+            UserDefaultsRepository().displayName = newRoom.host.displayName
+            onCompletion(nil)
         }
         .store(in: &subscriptions)
     }
@@ -152,6 +152,8 @@ class HomeViewModel: NSObject {
             } receiveValue: {
                 self.currentRoom = currentRoom
                 self.currentMember = currentMember
+                UserDefaultsRepository().roomID = currentRoom.id
+                UserDefaultsRepository().displayName = currentMember.displayName
                 onCompletion(nil)
             }
             .store(in: &self.subscriptions)
@@ -322,7 +324,7 @@ class HomeViewModel: NSObject {
     
     private func addMember(member: Member, to room: Room) -> Future<Void, Error> {
         Future { promise in
-            if room.memberCount >= 1 {
+            if room.memberCount >= 8 {
                 promise(.failure(AppError.message("Room limit reached")))
                 return
             }
