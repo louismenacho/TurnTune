@@ -322,7 +322,7 @@ class HomeViewModel: NSObject {
     
     private func addMember(member: Member, to room: Room) -> Future<Void, Error> {
         Future { promise in
-            if room.memberCount >= 2 {
+            if room.memberCount >= 1 {
                 promise(.failure(AppError.message("Room limit reached")))
                 return
             }

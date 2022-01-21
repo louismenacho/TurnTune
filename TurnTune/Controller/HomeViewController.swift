@@ -67,6 +67,18 @@ class HomeViewController: UIViewController {
         print("viewTapped")
         view.endEditing(true)
     }
+    
+    func handleError(_ error: NSError) {
+        self.presentAlert(
+            title: error.localizedDescription,
+            actionTitle: error.localizedRecoverySuggestion ?? "Dismiss",
+            actionStyle: .cancel) { action in
+                if let error = error as? AppError, case .spotifyAppNotFoundError = error {
+                    let url = URL(string: "itms-apps://apple.com/app/spotify-new-music-and-podcasts/id324684580")!
+                    UIApplication.shared.open(url)
+                }
+            }
+    }
 }
 
 extension HomeViewController: SwitchControlDelegate {
@@ -102,14 +114,14 @@ extension HomeViewController: RoomFormViewDelegate {
         activityIndicator.startAnimating()
         vm.joinRoom(room: roomCode, memberName: displayName) { error in
             self.activityIndicator.stopAnimating()
-            if let error = error {
+            if let error = error as NSError? {
                 print("roomFormView join error: \(error)")
-                self.presentAlert(title: error.localizedDescription, actionTitle: "Dismiss")
+                self.handleError(error)
                 return
             }
-            guard self.vm.currentMember != nil else { return }
-            guard self.vm.currentRoom != nil else { return }
             DispatchQueue.main.async {
+                guard self.vm.currentMember != nil else { return }
+                guard self.vm.currentRoom != nil else { return }
                 self.performSegue(withIdentifier: "PlaylistViewController", sender: self)
             }
         }
@@ -120,12 +132,14 @@ extension HomeViewController: RoomFormViewDelegate {
         activityIndicator.startAnimating()
         vm.createRoom(hostName: roomFormView.displayNameTextField.text!) { error in
             self.activityIndicator.stopAnimating()
-            if let error = error {
+            if let error = error as NSError? {
                 print("roomFormView create error: \(error)")
-                self.presentAlert(title: error.localizedDescription, actionTitle: "Dismiss")
+                self.handleError(error)
                 return
             }
             DispatchQueue.main.async {
+                guard self.vm.currentMember != nil else { return }
+                guard self.vm.currentRoom != nil else { return }
                 self.performSegue(withIdentifier: "PlaylistViewController", sender: self)
             }
         }

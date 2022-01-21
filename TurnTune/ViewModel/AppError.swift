@@ -22,4 +22,15 @@ enum AppError: Error, LocalizedError {
             return "Spotify user must have premium subscription"
         }
     }
+    
+    var recoverySuggestion: String? {
+        switch self {
+        case .message:
+            return nil
+        case .spotifyAppNotFoundError:
+            return "Go to App store"
+        case .spotifySubscriptionError:
+            return nil
+        }
+    }
 }
