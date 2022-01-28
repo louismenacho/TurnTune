@@ -29,53 +29,37 @@ class HomeViewModel: NSObject {
     var subscriptions = Set<AnyCancellable>()
     var spotifyInitiateSessionSubject = PassthroughSubject<SPTSession, Error>()
     
-    func connectSpotify() -> Future<SPTSession, Error> {
-        Future { promise in
-            self.getSpotifyConfiguration()
-            .flatMap { config in
-                self.initiateSpotifySession(config: config)
-            }
-            .sink { completion in
-                if case .failure(let error) = completion {
-                    promise(.failure(error))
-                }
-            } receiveValue: { session in
-                promise(.success(session))
-            }
-            .store(in: &self.subscriptions)
-        }
-    }
-    
     func createRoom(hostName: String, onCompletion: @escaping (Error?) -> Void) {
         var newRoom = Room()
         var newMember = Member(displayName: hostName, isHost: true)
         
-        let publisher = connectSpotify()
+        authenticate()
+        .flatMap { user -> Future<SPTConfiguration, Error> in
+            newMember.documentID = user.uid
+            newMember.id = user.uid
+            newRoom.host = newMember
+            return self.getSpotifyConfiguration()
+        }
+        .flatMap { config in
+            self.initiateSpotifySession(config: config)
+        }
         .flatMap { session -> Future<String, Error> in
             newRoom.spotifyToken = session.accessToken
             newRoom.spotifyTokenExpirationDate = session.expirationDate
             return self.getSpotifyUserSubscription(session: session)
         }
-        .flatMap { subscription -> Future<User, Error> in
+        .flatMap { subscription -> Future<String, Error> in
             if subscription != "premium" {
-                return Future<User, Error> { $0(.failure(AppError.spotifySubscriptionError)) }
+                return Future<String, Error> { $0(.failure(AppError.spotifySubscriptionError)) }
             } else {
-                return self.authenticate()
+                return self.generateRoomCode()
             }
-        }
-        .flatMap { user -> Future<String, Error> in
-            newMember.documentID = user.uid
-            newMember.id = user.uid
-            newRoom.host = newMember
-            return self.generateRoomCode()
         }
         .flatMap { newRoomCode -> Future<Void, Error> in
             newRoom.documentID = newRoomCode
             newRoom.id = newRoomCode
             return self.createRoom(newRoom)
         }
-        
-        publisher
         .sink { completion in
             if case let .failure(error) = completion {
                 onCompletion(error)
@@ -128,7 +112,10 @@ class HomeViewModel: NSObject {
                 publisher = self.updateRoom(room: currentRoom)
                 .eraseToAnyPublisher()
             } else {
-                publisher = self.connectSpotify()
+                publisher = self.getSpotifyConfiguration()
+                .flatMap { config in
+                    self.initiateSpotifySession(config: config)
+                }
                 .flatMap { session -> Future<String, Error> in
                     currentRoom.spotifyToken = session.accessToken
                     currentRoom.spotifyTokenExpirationDate = session.expirationDate
