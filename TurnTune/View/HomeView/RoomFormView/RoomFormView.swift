@@ -48,6 +48,7 @@ class RoomFormView: UIStackView {
     }
     
     @IBAction func roomCodeTextFieldDidChange(_ sender: UITextField) {
+        roomCodeTextField.text = roomCodeTextField.text?.uppercased()
         joinButton.isEnabled = !displayNameTextField.text!.isEmpty && roomCodeTextField.text!.count == 4
         delegate?.roomFormView(self, roomCodeTextFieldDidChange: sender.text)
     }
