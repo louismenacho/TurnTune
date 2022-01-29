@@ -170,7 +170,7 @@ class HomeViewModel: NSObject {
                     config.tokenRefreshURL = URL(string: configuration.tokenRefreshURL)
                     return .success(config)
                 }.flatMapError { error in
-                    return .failure(AppError.message(error.localizedDescription))
+                    return .failure(AppError.error(error.localizedDescription))
                 })
             }
         }
@@ -189,8 +189,15 @@ class HomeViewModel: NSObject {
                 sceneDelegate?.spotifySessionManager = sessionManager
                 sessionManager.initiateSession(with: self.spotifyScope, options: .clientOnly)
             }
+            
             spotifyInitiateSessionSubject
+            .timeout(10, scheduler: DispatchQueue.main, options: nil) {
+                AppError.error("Could not initiate Spotify session")
+            }
             .sink { completion in
+                if sessionManager.session != nil {
+                    return
+                }
                 if case let .failure(error) = completion {
                     promise(.failure(error))
                 }
@@ -208,7 +215,7 @@ class HomeViewModel: NSObject {
                 promise( result.flatMap { userProfile in
                     return .success((userProfile.product))
                 }.flatMapError { error in
-                    return .failure(AppError.message(error.localizedDescription))
+                    return .failure(AppError.error(error.localizedDescription))
                 })
             }
         }
@@ -312,7 +319,7 @@ class HomeViewModel: NSObject {
     private func addMember(member: Member, to room: Room) -> Future<Void, Error> {
         Future { promise in
             if room.memberCount >= 8 {
-                promise(.failure(AppError.message("Room limit reached")))
+                promise(.failure(AppError.error("Room limit reached")))
                 return
             }
             FirestoreRepository<Member>(collectionPath: "rooms/"+room.id+"/members").create(member) { error in

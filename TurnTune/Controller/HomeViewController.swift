@@ -23,7 +23,7 @@ class HomeViewController: UIViewController {
         formView.delegate = self
         addKeyboardObserver()
         appearanceSwitch.setOn(traitCollection.userInterfaceStyle == .light ? true : false)
-        view.addSubview(activityIndicator)
+        navigationController?.view.addSubview(activityIndicator)
     }
     
     override func viewWillAppear(_ animated: Bool) {
