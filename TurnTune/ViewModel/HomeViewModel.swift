@@ -191,7 +191,7 @@ class HomeViewModel: NSObject {
             }
             
             spotifyInitiateSessionSubject
-            .timeout(10, scheduler: DispatchQueue.main, options: nil) {
+            .timeout(15, scheduler: DispatchQueue.main, options: nil) {
                 AppError.error("Could not initiate Spotify session")
             }
             .sink { completion in
